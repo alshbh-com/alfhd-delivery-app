@@ -9,7 +9,244 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      allowed_cities: {
+        Row: {
+          created_at: string | null
+          delivery_price: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          delivery_price?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          delivery_price?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+        }
+        Relationships: []
+      }
+      app_settings: {
+        Row: {
+          description: string | null
+          id: string
+          key: string
+          updated_at: string | null
+          value: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
+      main_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      offers: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          discount_percentage: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          title: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          discount_percentage?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          title: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          discount_percentage?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          title?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_city: string
+          customer_location: string | null
+          customer_name: string
+          customer_phone: string
+          delivery_fee: number
+          id: string
+          items: Json
+          status: string | null
+          total_amount: number
+          whatsapp_sent: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_city: string
+          customer_location?: string | null
+          customer_name: string
+          customer_phone: string
+          delivery_fee: number
+          id?: string
+          items: Json
+          status?: string | null
+          total_amount: number
+          whatsapp_sent?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_city?: string
+          customer_location?: string | null
+          customer_name?: string
+          customer_phone?: string
+          delivery_fee?: number
+          id?: string
+          items?: Json
+          status?: string | null
+          total_amount?: number
+          whatsapp_sent?: boolean | null
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          price: number
+          sort_order: number | null
+          sub_category_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          price: number
+          sort_order?: number | null
+          sub_category_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          sort_order?: number | null
+          sub_category_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_sub_category_id_fkey"
+            columns: ["sub_category_id"]
+            isOneToOne: false
+            referencedRelation: "sub_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sub_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          main_category_id: string | null
+          name: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          main_category_id?: string | null
+          name: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          main_category_id?: string | null
+          name?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_categories_main_category_id_fkey"
+            columns: ["main_category_id"]
+            isOneToOne: false
+            referencedRelation: "main_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

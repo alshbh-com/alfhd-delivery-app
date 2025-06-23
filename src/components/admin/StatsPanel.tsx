@@ -1,91 +1,142 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, ShoppingBag, TrendingUp, Trash2 } from 'lucide-react';
-import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ArrowLeft, Trash2, BarChart3, DollarSign, ShoppingCart, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from "@/integrations/supabase/client";
 
 interface StatsPanelProps {
   onBack: () => void;
 }
 
 export const StatsPanel = ({ onBack }: StatsPanelProps) => {
+  const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalRevenue: 0,
-    recentOrders: []
+    todayOrders: 0,
+    todayRevenue: 0
   });
-  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    loadStats();
+    loadOrders();
+    calculateStats();
   }, []);
 
-  const loadStats = async () => {
+  const loadOrders = async () => {
     try {
-      const { data: orders } = await supabase
+      const { data } = await supabase
         .from('orders')
         .select('*')
         .order('created_at', { ascending: false });
-
-      if (orders) {
-        const totalOrders = orders.length;
-        const totalRevenue = orders.reduce((sum, order) => sum + order.delivery_fee, 0);
-        
-        setStats({
-          totalOrders,
-          totalRevenue,
-          recentOrders: orders.slice(0, 10)
-        });
-      }
+      setOrders(data || []);
     } catch (error) {
-      console.error('Error loading stats:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error loading orders:', error);
     }
   };
 
-  const handleDeleteAllOrders = async () => {
+  const calculateStats = async () => {
+    try {
+      const { data: allOrders } = await supabase
+        .from('orders')
+        .select('delivery_fee, created_at');
+
+      const today = new Date().toDateString();
+      
+      if (allOrders) {
+        const totalOrders = allOrders.length;
+        const totalRevenue = allOrders.reduce((sum, order) => sum + Number(order.delivery_fee), 0);
+        
+        const todayOrders = allOrders.filter(order => 
+          new Date(order.created_at).toDateString() === today
+        );
+        const todayOrdersCount = todayOrders.length;
+        const todayRevenue = todayOrders.reduce((sum, order) => sum + Number(order.delivery_fee), 0);
+
+        setStats({
+          totalOrders,
+          totalRevenue,
+          todayOrders: todayOrdersCount,
+          todayRevenue
+        });
+      }
+    } catch (error) {
+      console.error('Error calculating stats:', error);
+    }
+  };
+
+  const deleteAllOrders = async () => {
     if (!confirm('هل أنت متأكد من حذف جميع الطلبات؟ هذا الإجراء لا يمكن التراجع عنه.')) {
       return;
     }
 
     try {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // حذف جميع الطلبات
-
-      if (error) throw error;
-
-      toast({
-        title: "تم الحذف",
-        description: "تم حذف جميع الطلبات بنجاح",
-      });
-
-      loadStats(); // إعادة تحميل الإحصائيات
+      await supabase.from('orders').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      toast({ title: "تم حذف جميع الطلبات بنجاح" });
+      setOrders([]);
+      setStats({ totalOrders: 0, totalRevenue: 0, todayOrders: 0, todayRevenue: 0 });
     } catch (error) {
       console.error('Error deleting orders:', error);
-      toast({
-        title: "خطأ",
-        description: "حدث خطأ أثناء حذف الطلبات",
-        variant: "destructive"
-      });
+      toast({ title: "حدث خطأ في حذف الطلبات", variant: "destructive" });
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-4 flex items-center justify-center min-h-[200px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">جاري تحميل الإحصائيات...</p>
-        </div>
-      </div>
-    );
-  }
+  const deleteOrder = async (orderId: string) => {
+    if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+
+    try {
+      await supabase.from('orders').delete().eq('id', orderId);
+      toast({ title: "تم حذف الطلب بنجاح" });
+      loadOrders();
+      calculateStats();
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      toast({ title: "حدث خطأ في حذف الطلب", variant: "destructive" });
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      await supabase
+        .from('orders')
+        .update({ status: newStatus })
+        .eq('id', orderId);
+      toast({ title: "تم تحديث حالة الطلب" });
+      loadOrders();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      toast({ title: "حدث خطأ", variant: "destructive" });
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString('ar-EG');
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'confirmed': return 'bg-blue-100 text-blue-800';
+      case 'preparing': return 'bg-orange-100 text-orange-800';
+      case 'delivered': return 'bg-green-100 text-green-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'pending': return 'قيد الانتظار';
+      case 'confirmed': return 'مؤكد';
+      case 'preparing': return 'قيد التحضير';
+      case 'delivered': return 'تم التوصيل';
+      case 'cancelled': return 'ملغي';
+      default: return status;
+    }
+  };
 
   return (
     <div className="p-4 space-y-4">
@@ -93,82 +144,135 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         <Button variant="outline" size="sm" onClick={onBack}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
-        <h1 className="text-2xl font-bold text-gray-800">الإحصائيات</h1>
+        <h1 className="text-2xl font-bold text-gray-800">الإحصائيات والطلبات</h1>
       </div>
 
-      {/* ملخص الإحصائيات */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      {/* بطاقات الإحصائيات */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <ShoppingBag className="w-8 h-8 text-blue-600" />
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <ShoppingCart className="w-8 h-8 text-blue-600" />
               <div>
-                <h3 className="font-semibold text-lg">إجمالي الطلبات</h3>
-                <p className="text-2xl font-bold text-blue-600">{stats.totalOrders}</p>
+                <p className="text-sm text-gray-600">إجمالي الطلبات</p>
+                <p className="text-2xl font-bold">{stats.totalOrders}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <TrendingUp className="w-8 h-8 text-green-600" />
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <DollarSign className="w-8 h-8 text-green-600" />
               <div>
-                <h3 className="font-semibold text-lg">إجمالي أرباح التوصيل</h3>
-                <p className="text-2xl font-bold text-green-600">{stats.totalRevenue} جنيه</p>
+                <p className="text-sm text-gray-600">إجمالي الأرباح</p>
+                <p className="text-2xl font-bold">{stats.totalRevenue} ج</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-8 h-8 text-orange-600" />
+              <div>
+                <p className="text-sm text-gray-600">طلبات اليوم</p>
+                <p className="text-2xl font-bold">{stats.todayOrders}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-8 h-8 text-purple-600" />
+              <div>
+                <p className="text-sm text-gray-600">أرباح اليوم</p>
+                <p className="text-2xl font-bold">{stats.todayRevenue} ج</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* الطلبات الحديثة */}
+      {/* أزرار الإجراءات */}
+      <div className="flex gap-2 mb-4">
+        <Button
+          onClick={deleteAllOrders}
+          variant="destructive"
+          className="bg-red-600 hover:bg-red-700"
+        >
+          <Trash2 className="w-4 h-4 ml-2" />
+          حذف جميع الطلبات
+        </Button>
+      </div>
+
+      {/* جدول الطلبات */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold text-lg">الطلبات الحديثة</h3>
-            <Button
-              onClick={handleDeleteAllOrders}
-              variant="destructive"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              حذف جميع الطلبات
-            </Button>
-          </div>
-          
-          {stats.recentOrders.length === 0 ? (
-            <p className="text-center text-gray-600 py-4">لا توجد طلبات</p>
+        <CardHeader>
+          <CardTitle>قائمة الطلبات</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {orders.length === 0 ? (
+            <p className="text-center text-gray-500 py-8">لا توجد طلبات حتى الآن</p>
           ) : (
-            <div className="space-y-3">
-              {stats.recentOrders.map((order: any) => (
-                <div key={order.id} className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h4 className="font-semibold">{order.customer_name}</h4>
-                      <p className="text-sm text-gray-600">{order.customer_phone}</p>
-                      <p className="text-sm text-gray-600">{order.customer_city}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-green-600">{order.total_amount} جنيه</p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(order.created_at).toLocaleDateString('ar-EG')}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-sm">
-                    <p className="text-gray-600 mb-1">المنتجات:</p>
-                    {order.items.map((item: any, index: number) => (
-                      <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded mr-1">
-                        {item.name} × {item.quantity}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>رقم الطلب</TableHead>
+                    <TableHead>اسم العميل</TableHead>
+                    <TableHead>رقم الهاتف</TableHead>
+                    <TableHead>المنطقة</TableHead>
+                    <TableHead>المبلغ الكلي</TableHead>
+                    <TableHead>رسوم التوصيل</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead>التاريخ</TableHead>
+                    <TableHead>الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map(order => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-mono text-sm">
+                        {order.id.substring(0, 8)}...
+                      </TableCell>
+                      <TableCell>{order.customer_name}</TableCell>
+                      <TableCell>{order.customer_phone}</TableCell>
+                      <TableCell>{order.customer_city}</TableCell>
+                      <TableCell className="font-bold">{order.total_amount} ج</TableCell>
+                      <TableCell className="font-bold text-green-600">{order.delivery_fee} ج</TableCell>
+                      <TableCell>
+                        <select
+                          value={order.status}
+                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                          className={`px-2 py-1 text-xs rounded ${getStatusColor(order.status)}`}
+                        >
+                          <option value="pending">قيد الانتظار</option>
+                          <option value="confirmed">مؤكد</option>
+                          <option value="preparing">قيد التحضير</option>
+                          <option value="delivered">تم التوصيل</option>
+                          <option value="cancelled">ملغي</option>
+                        </select>
+                      </TableCell>
+                      <TableCell className="text-sm">{formatDate(order.created_at)}</TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => deleteOrder(order.id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </CardContent>

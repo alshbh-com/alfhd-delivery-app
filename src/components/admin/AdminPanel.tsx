@@ -3,6 +3,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Power } from 'lucide-react';
+import { CategoryManagement } from './CategoryManagement';
+import { ProductManagement } from './ProductManagement';
+import { OfferManagement } from './OfferManagement';
+import { CityManagement } from './CityManagement';
+import { AppSettings } from './AppSettings';
 
 interface AdminPanelProps {
   onBack: () => void;
@@ -17,8 +22,27 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
     { id: 'offers', icon: Gift, title: 'إدارة العروض', description: 'إضافة وتعديل العروض الترويجية' },
     { id: 'cities', icon: MapPin, title: 'إدارة المناطق', description: 'إدارة المناطق وأسعار التوصيل' },
     { id: 'settings', icon: Settings, title: 'الإعدادات العامة', description: 'إعدادات التطبيق العامة' },
-    { id: 'app-control', icon: Power, title: 'التحكم في التطبيق', description: 'فتح/إغلاق التطبيق' },
   ];
+
+  if (activeSection === 'categories') {
+    return <CategoryManagement onBack={() => setActiveSection(null)} />;
+  }
+
+  if (activeSection === 'products') {
+    return <ProductManagement onBack={() => setActiveSection(null)} />;
+  }
+
+  if (activeSection === 'offers') {
+    return <OfferManagement onBack={() => setActiveSection(null)} />;
+  }
+
+  if (activeSection === 'cities') {
+    return <CityManagement onBack={() => setActiveSection(null)} />;
+  }
+
+  if (activeSection === 'settings') {
+    return <AppSettings onBack={() => setActiveSection(null)} />;
+  }
 
   return (
     <div className="p-4 space-y-4">
@@ -51,24 +75,6 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
           );
         })}
       </div>
-
-      {/* سيتم إضافة المكونات الفرعية لكل قسم لاحقاً */}
-      {activeSection && (
-        <Card className="mt-6">
-          <CardContent className="p-6">
-            <p className="text-center text-gray-600">
-              قسم {adminSections.find(s => s.id === activeSection)?.title} سيتم تطويره في الخطوة التالية
-            </p>
-            <Button
-              onClick={() => setActiveSection(null)}
-              variant="outline"
-              className="w-full mt-4"
-            >
-              العودة للقائمة الرئيسية
-            </Button>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };

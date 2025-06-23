@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ArrowLeft, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -18,7 +20,8 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
   const [editingCity, setEditingCity] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
-    delivery_price: ''
+    delivery_price: 0,
+    is_active: true
   });
   const { toast } = useToast();
 
@@ -32,37 +35,31 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
         .from('allowed_cities')
         .select('*')
         .order('name');
-      setCities(data || []);
+      
+      if (data) setCities(data);
     } catch (error) {
       console.error('Error loading cities:', error);
+      toast({ title: "خطأ في تحميل البيانات", variant: "destructive" });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      const cityData = {
-        name: formData.name,
-        delivery_price: parseFloat(formData.delivery_price)
-      };
-
       if (editingCity) {
         await supabase
           .from('allowed_cities')
-          .update(cityData)
+          .update(formData)
           .eq('id', editingCity.id);
-        toast({ title: "تم تحديث المنطقة بنجاح" });
+        toast({ title: "تم التحديث بنجاح" });
       } else {
         await supabase
           .from('allowed_cities')
-          .insert([cityData]);
-        toast({ title: "تم إضافة المنطقة بنجاح" });
+          .insert([formData]);
+        toast({ title: "تم الإضافة بنجاح" });
       }
-
-      setFormData({ name: '', delivery_price: '' });
-      setShowAddForm(false);
-      setEditingCity(null);
+      
+      resetForm();
       loadCities();
     } catch (error) {
       console.error('Error saving city:', error);
@@ -70,21 +67,14 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
     }
   };
 
-  const handleEdit = (city: any) => {
-    setEditingCity(city);
-    setFormData({
-      name: city.name,
-      delivery_price: city.delivery_price.toString()
-    });
-    setShowAddForm(true);
-  };
-
   const handleDelete = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذه المنطقة؟')) return;
-
     try {
-      await supabase.from('allowed_cities').delete().eq('id', id);
-      toast({ title: "تم حذف المنطقة بنجاح" });
+      await supabase
+        .from('allowed_cities')
+        .delete()
+        .eq('id', id);
+      
+      toast({ title: "تم الحذف بنجاح" });
       loadCities();
     } catch (error) {
       console.error('Error deleting city:', error);
@@ -92,18 +82,24 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
     }
   };
 
-  const toggleCityStatus = async (id: string, currentStatus: boolean) => {
-    try {
-      await supabase
-        .from('allowed_cities')
-        .update({ is_active: !currentStatus })
-        .eq('id', id);
-      toast({ title: "تم تحديث حالة المنطقة" });
-      loadCities();
-    } catch (error) {
-      console.error('Error updating city status:', error);
-      toast({ title: "حدث خطأ", variant: "destructive" });
-    }
+  const handleEdit = (city: any) => {
+    setEditingCity(city);
+    setFormData({
+      name: city.name || '',
+      delivery_price: city.delivery_price || 0,
+      is_active: city.is_active ?? true
+    });
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      delivery_price: 0,
+      is_active: true
+    });
+    setEditingCity(null);
+    setShowAddForm(false);
   };
 
   return (
@@ -115,15 +111,56 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
         <h1 className="text-2xl font-bold text-gray-800">إدارة المناطق</h1>
       </div>
 
-      <Button onClick={() => { setShowAddForm(true); setEditingCity(null); }}>
-        <Plus className="w-4 h-4 ml-2" />
-        إضافة منطقة جديدة
-      </Button>
+      {!showAddForm ? (
+        <div className="space-y-6">
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus className="w-4 h-4 ml-2" />
+            إضافة منطقة جديدة
+          </Button>
 
-      {showAddForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>قائمة المناطق المسموحة</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>اسم المنطقة</TableHead>
+                    <TableHead>رسوم التوصيل</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead>الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {cities.map((city) => (
+                    <TableRow key={city.id}>
+                      <TableCell>{city.name}</TableCell>
+                      <TableCell>{city.delivery_price} جنيه</TableCell>
+                      <TableCell>{city.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(city)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(city.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
         <Card>
           <CardHeader>
-            <CardTitle>{editingCity ? 'تعديل المنطقة' : 'إضافة منطقة جديدة'}</CardTitle>
+            <CardTitle>
+              {editingCity ? 'تعديل المنطقة' : 'إضافة منطقة جديدة'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -133,29 +170,38 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="أدخل اسم المنطقة"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="price">سعر التوصيل (جنيه)</Label>
+                <Label htmlFor="delivery-price">رسوم التوصيل (جنيه)</Label>
                 <Input
-                  id="price"
+                  id="delivery-price"
                   type="number"
                   step="0.01"
                   value={formData.delivery_price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, delivery_price: e.target.value }))}
-                  placeholder="0.00"
+                  onChange={(e) => setFormData(prev => ({ ...prev, delivery_price: parseFloat(e.target.value) || 0 }))}
                   required
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="active">نشط</Label>
+                <Switch
+                  id="active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
                 />
               </div>
 
               <div className="flex gap-2">
                 <Button type="submit">
+                  <Save className="w-4 h-4 ml-2" />
                   {editingCity ? 'تحديث' : 'إضافة'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => { setShowAddForm(false); setEditingCity(null); }}>
+                <Button type="button" variant="outline" onClick={resetForm}>
+                  <X className="w-4 h-4 ml-2" />
                   إلغاء
                 </Button>
               </div>
@@ -163,38 +209,6 @@ export const CityManagement = ({ onBack }: CityManagementProps) => {
           </CardContent>
         </Card>
       )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>قائمة المناطق</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {cities.map(city => (
-              <div key={city.id} className="flex items-center justify-between p-4 border rounded">
-                <div>
-                  <h4 className="font-semibold">{city.name}</h4>
-                  <p className="text-lg font-bold text-green-600">{city.delivery_price} جنيه</p>
-                  <span className={`inline-block px-2 py-1 text-xs rounded ${city.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {city.is_active ? 'نشط' : 'غير نشط'}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => toggleCityStatus(city.id, city.is_active)}>
-                    {city.is_active ? 'إيقاف' : 'تفعيل'}
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(city)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(city.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

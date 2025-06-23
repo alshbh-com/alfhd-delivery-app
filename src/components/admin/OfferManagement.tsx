@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ArrowLeft, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -20,8 +22,9 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    discount_percentage: '',
     image_url: '',
+    discount_percentage: 0,
+    is_active: true,
     valid_until: ''
   });
   const { toast } = useToast();
@@ -36,40 +39,36 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
         .from('offers')
         .select('*')
         .order('created_at', { ascending: false });
-      setOffers(data || []);
+      
+      if (data) setOffers(data);
     } catch (error) {
       console.error('Error loading offers:', error);
+      toast({ title: "خطأ في تحميل البيانات", variant: "destructive" });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      const offerData = {
-        title: formData.title,
-        description: formData.description,
-        discount_percentage: formData.discount_percentage ? parseFloat(formData.discount_percentage) : null,
-        image_url: formData.image_url,
+      const submitData = {
+        ...formData,
         valid_until: formData.valid_until ? new Date(formData.valid_until).toISOString() : null
       };
 
       if (editingOffer) {
         await supabase
           .from('offers')
-          .update(offerData)
+          .update(submitData)
           .eq('id', editingOffer.id);
-        toast({ title: "تم تحديث العرض بنجاح" });
+        toast({ title: "تم التحديث بنجاح" });
       } else {
         await supabase
           .from('offers')
-          .insert([offerData]);
-        toast({ title: "تم إضافة العرض بنجاح" });
+          .insert([submitData]);
+        toast({ title: "تم الإضافة بنجاح" });
       }
-
-      setFormData({ title: '', description: '', discount_percentage: '', image_url: '', valid_until: '' });
-      setShowAddForm(false);
-      setEditingOffer(null);
+      
+      resetForm();
       loadOffers();
     } catch (error) {
       console.error('Error saving offer:', error);
@@ -77,24 +76,14 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
     }
   };
 
-  const handleEdit = (offer: any) => {
-    setEditingOffer(offer);
-    setFormData({
-      title: offer.title,
-      description: offer.description || '',
-      discount_percentage: offer.discount_percentage?.toString() || '',
-      image_url: offer.image_url || '',
-      valid_until: offer.valid_until ? new Date(offer.valid_until).toISOString().split('T')[0] : ''
-    });
-    setShowAddForm(true);
-  };
-
   const handleDelete = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا العرض؟')) return;
-
     try {
-      await supabase.from('offers').delete().eq('id', id);
-      toast({ title: "تم حذف العرض بنجاح" });
+      await supabase
+        .from('offers')
+        .delete()
+        .eq('id', id);
+      
+      toast({ title: "تم الحذف بنجاح" });
       loadOffers();
     } catch (error) {
       console.error('Error deleting offer:', error);
@@ -102,18 +91,30 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
     }
   };
 
-  const toggleOfferStatus = async (id: string, currentStatus: boolean) => {
-    try {
-      await supabase
-        .from('offers')
-        .update({ is_active: !currentStatus })
-        .eq('id', id);
-      toast({ title: "تم تحديث حالة العرض" });
-      loadOffers();
-    } catch (error) {
-      console.error('Error updating offer status:', error);
-      toast({ title: "حدث خطأ", variant: "destructive" });
-    }
+  const handleEdit = (offer: any) => {
+    setEditingOffer(offer);
+    setFormData({
+      title: offer.title || '',
+      description: offer.description || '',
+      image_url: offer.image_url || '',
+      discount_percentage: offer.discount_percentage || 0,
+      is_active: offer.is_active ?? true,
+      valid_until: offer.valid_until ? new Date(offer.valid_until).toISOString().slice(0, 16) : ''
+    });
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      image_url: '',
+      discount_percentage: 0,
+      is_active: true,
+      valid_until: ''
+    });
+    setEditingOffer(null);
+    setShowAddForm(false);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,15 +137,60 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
         <h1 className="text-2xl font-bold text-gray-800">إدارة العروض</h1>
       </div>
 
-      <Button onClick={() => { setShowAddForm(true); setEditingOffer(null); }}>
-        <Plus className="w-4 h-4 ml-2" />
-        إضافة عرض جديد
-      </Button>
+      {!showAddForm ? (
+        <div className="space-y-6">
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus className="w-4 h-4 ml-2" />
+            إضافة عرض جديد
+          </Button>
 
-      {showAddForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>قائمة العروض</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>العنوان</TableHead>
+                    <TableHead>نسبة الخصم</TableHead>
+                    <TableHead>صالح حتى</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead>الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {offers.map((offer) => (
+                    <TableRow key={offer.id}>
+                      <TableCell>{offer.title}</TableCell>
+                      <TableCell>{offer.discount_percentage}%</TableCell>
+                      <TableCell>
+                        {offer.valid_until ? new Date(offer.valid_until).toLocaleDateString('ar-EG') : 'بدون تاريخ انتهاء'}
+                      </TableCell>
+                      <TableCell>{offer.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(offer)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(offer.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
         <Card>
           <CardHeader>
-            <CardTitle>{editingOffer ? 'تعديل العرض' : 'إضافة عرض جديد'}</CardTitle>
+            <CardTitle>
+              {editingOffer ? 'تعديل العرض' : 'إضافة عرض جديد'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -154,7 +200,6 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="أدخل عنوان العرض"
                   required
                 />
               </div>
@@ -165,7 +210,6 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="أدخل وصف العرض"
                 />
               </div>
 
@@ -176,17 +220,17 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
                   type="number"
                   min="0"
                   max="100"
+                  step="0.01"
                   value={formData.discount_percentage}
-                  onChange={(e) => setFormData(prev => ({ ...prev, discount_percentage: e.target.value }))}
-                  placeholder="0"
+                  onChange={(e) => setFormData(prev => ({ ...prev, discount_percentage: parseFloat(e.target.value) || 0 }))}
                 />
               </div>
 
               <div>
-                <Label htmlFor="valid_until">صالح حتى</Label>
+                <Label htmlFor="valid-until">صالح حتى</Label>
                 <Input
-                  id="valid_until"
-                  type="date"
+                  id="valid-until"
+                  type="datetime-local"
                   value={formData.valid_until}
                   onChange={(e) => setFormData(prev => ({ ...prev, valid_until: e.target.value }))}
                 />
@@ -205,11 +249,22 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
                 )}
               </div>
 
+              <div className="flex items-center justify-between">
+                <Label htmlFor="active">نشط</Label>
+                <Switch
+                  id="active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+                />
+              </div>
+
               <div className="flex gap-2">
                 <Button type="submit">
+                  <Save className="w-4 h-4 ml-2" />
                   {editingOffer ? 'تحديث' : 'إضافة'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => { setShowAddForm(false); setEditingOffer(null); }}>
+                <Button type="button" variant="outline" onClick={resetForm}>
+                  <X className="w-4 h-4 ml-2" />
                   إلغاء
                 </Button>
               </div>
@@ -217,51 +272,6 @@ export const OfferManagement = ({ onBack }: OfferManagementProps) => {
           </CardContent>
         </Card>
       )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>قائمة العروض</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {offers.map(offer => (
-              <div key={offer.id} className="flex items-center justify-between p-4 border rounded">
-                <div className="flex items-center gap-4">
-                  {offer.image_url && (
-                    <img src={offer.image_url} alt={offer.title} className="w-16 h-16 object-cover rounded" />
-                  )}
-                  <div>
-                    <h4 className="font-semibold">{offer.title}</h4>
-                    <p className="text-sm text-gray-600">{offer.description}</p>
-                    {offer.discount_percentage && (
-                      <p className="text-lg font-bold text-red-600">خصم {offer.discount_percentage}%</p>
-                    )}
-                    {offer.valid_until && (
-                      <p className="text-xs text-gray-500">
-                        صالح حتى: {new Date(offer.valid_until).toLocaleDateString('ar-EG')}
-                      </p>
-                    )}
-                    <span className={`inline-block px-2 py-1 text-xs rounded ${offer.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {offer.is_active ? 'نشط' : 'غير نشط'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => toggleOfferStatus(offer.id, offer.is_active)}>
-                    {offer.is_active ? 'إيقاف' : 'تفعيل'}
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(offer)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(offer.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

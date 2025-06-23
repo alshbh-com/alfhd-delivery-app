@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Plus, Edit, Trash2, Upload } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ArrowLeft, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -17,14 +19,15 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
   const [mainCategories, setMainCategories] = useState<any[]>([]);
   const [subCategories, setSubCategories] = useState<any[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<any>(null);
   const [formType, setFormType] = useState<'main' | 'sub'>('main');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     image_url: '',
-    main_category_id: '',
-    sort_order: 0
+    is_active: true,
+    sort_order: 0,
+    main_category_id: ''
   });
   const { toast } = useToast();
 
@@ -34,80 +37,54 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
 
   const loadCategories = async () => {
     try {
-      const { data: mainCats } = await supabase
+      const { data: mainData } = await supabase
         .from('main_categories')
         .select('*')
         .order('sort_order');
       
-      const { data: subCats } = await supabase
+      const { data: subData } = await supabase
         .from('sub_categories')
         .select('*, main_categories(name)')
         .order('sort_order');
-
-      setMainCategories(mainCats || []);
-      setSubCategories(subCats || []);
+      
+      if (mainData) setMainCategories(mainData);
+      if (subData) setSubCategories(subData);
     } catch (error) {
       console.error('Error loading categories:', error);
+      toast({ title: "خطأ في تحميل البيانات", variant: "destructive" });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      if (editingCategory) {
-        // تحديث موجود
+      if (editingItem) {
         if (formType === 'main') {
           await supabase
             .from('main_categories')
-            .update({
-              name: formData.name,
-              description: formData.description,
-              image_url: formData.image_url,
-              sort_order: formData.sort_order
-            })
-            .eq('id', editingCategory.id);
+            .update(formData)
+            .eq('id', editingItem.id);
         } else {
           await supabase
             .from('sub_categories')
-            .update({
-              name: formData.name,
-              description: formData.description,
-              image_url: formData.image_url,
-              main_category_id: formData.main_category_id,
-              sort_order: formData.sort_order
-            })
-            .eq('id', editingCategory.id);
+            .update(formData)
+            .eq('id', editingItem.id);
         }
         toast({ title: "تم التحديث بنجاح" });
       } else {
-        // إضافة جديد
         if (formType === 'main') {
           await supabase
             .from('main_categories')
-            .insert([{
-              name: formData.name,
-              description: formData.description,
-              image_url: formData.image_url,
-              sort_order: formData.sort_order
-            }]);
+            .insert([formData]);
         } else {
           await supabase
             .from('sub_categories')
-            .insert([{
-              name: formData.name,
-              description: formData.description,
-              image_url: formData.image_url,
-              main_category_id: formData.main_category_id,
-              sort_order: formData.sort_order
-            }]);
+            .insert([formData]);
         }
         toast({ title: "تم الإضافة بنجاح" });
       }
-
-      setFormData({ name: '', description: '', image_url: '', main_category_id: '', sort_order: 0 });
-      setShowAddForm(false);
-      setEditingCategory(null);
+      
+      resetForm();
       loadCategories();
     } catch (error) {
       console.error('Error saving category:', error);
@@ -115,34 +92,53 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
     }
   };
 
-  const handleEdit = (category: any, type: 'main' | 'sub') => {
-    setEditingCategory(category);
-    setFormType(type);
-    setFormData({
-      name: category.name,
-      description: category.description || '',
-      image_url: category.image_url || '',
-      main_category_id: category.main_category_id || '',
-      sort_order: category.sort_order || 0
-    });
-    setShowAddForm(true);
-  };
-
   const handleDelete = async (id: string, type: 'main' | 'sub') => {
-    if (!confirm('هل أنت متأكد من حذف هذا القسم؟')) return;
-
     try {
       if (type === 'main') {
-        await supabase.from('main_categories').delete().eq('id', id);
+        await supabase
+          .from('main_categories')
+          .delete()
+          .eq('id', id);
       } else {
-        await supabase.from('sub_categories').delete().eq('id', id);
+        await supabase
+          .from('sub_categories')
+          .delete()
+          .eq('id', id);
       }
+      
       toast({ title: "تم الحذف بنجاح" });
       loadCategories();
     } catch (error) {
       console.error('Error deleting category:', error);
       toast({ title: "حدث خطأ في الحذف", variant: "destructive" });
     }
+  };
+
+  const handleEdit = (item: any, type: 'main' | 'sub') => {
+    setEditingItem(item);
+    setFormType(type);
+    setFormData({
+      name: item.name || '',
+      description: item.description || '',
+      image_url: item.image_url || '',
+      is_active: item.is_active ?? true,
+      sort_order: item.sort_order || 0,
+      main_category_id: item.main_category_id || ''
+    });
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      image_url: '',
+      is_active: true,
+      sort_order: 0,
+      main_category_id: ''
+    });
+    setEditingItem(null);
+    setShowAddForm(false);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,33 +161,112 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
         <h1 className="text-2xl font-bold text-gray-800">إدارة الأقسام</h1>
       </div>
 
-      <div className="flex gap-2 mb-4">
-        <Button onClick={() => { setFormType('main'); setShowAddForm(true); setEditingCategory(null); }}>
-          <Plus className="w-4 h-4 ml-2" />
-          إضافة قسم رئيسي
-        </Button>
-        <Button onClick={() => { setFormType('sub'); setShowAddForm(true); setEditingCategory(null); }}>
-          <Plus className="w-4 h-4 ml-2" />
-          إضافة قسم فرعي
-        </Button>
-      </div>
+      {!showAddForm ? (
+        <div className="space-y-6">
+          <div className="flex gap-2">
+            <Button onClick={() => { setFormType('main'); setShowAddForm(true); }}>
+              <Plus className="w-4 h-4 ml-2" />
+              إضافة قسم رئيسي
+            </Button>
+            <Button onClick={() => { setFormType('sub'); setShowAddForm(true); }}>
+              <Plus className="w-4 h-4 ml-2" />
+              إضافة قسم فرعي
+            </Button>
+          </div>
 
-      {showAddForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>الأقسام الرئيسية</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>الاسم</TableHead>
+                    <TableHead>الوصف</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead>الترتيب</TableHead>
+                    <TableHead>الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {mainCategories.map((category) => (
+                    <TableRow key={category.id}>
+                      <TableCell>{category.name}</TableCell>
+                      <TableCell>{category.description}</TableCell>
+                      <TableCell>{category.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                      <TableCell>{category.sort_order}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'main')}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(category.id, 'main')}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>الأقسام الفرعية</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>الاسم</TableHead>
+                    <TableHead>القسم الرئيسي</TableHead>
+                    <TableHead>الوصف</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead>الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {subCategories.map((category) => (
+                    <TableRow key={category.id}>
+                      <TableCell>{category.name}</TableCell>
+                      <TableCell>{category.main_categories?.name}</TableCell>
+                      <TableCell>{category.description}</TableCell>
+                      <TableCell>{category.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'sub')}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(category.id, 'sub')}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
         <Card>
           <CardHeader>
             <CardTitle>
-              {editingCategory ? 'تعديل' : 'إضافة'} {formType === 'main' ? 'قسم رئيسي' : 'قسم فرعي'}
+              {editingItem ? 'تعديل' : 'إضافة'} {formType === 'main' ? 'قسم رئيسي' : 'قسم فرعي'}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">اسم القسم</Label>
+                <Label htmlFor="name">الاسم</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="أدخل اسم القسم"
                   required
                 />
               </div>
@@ -202,22 +277,21 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="أدخل وصف القسم"
                 />
               </div>
 
               {formType === 'sub' && (
                 <div>
-                  <Label htmlFor="main_category">القسم الرئيسي</Label>
+                  <Label htmlFor="main-category">القسم الرئيسي</Label>
                   <select
-                    id="main_category"
+                    id="main-category"
                     value={formData.main_category_id}
                     onChange={(e) => setFormData(prev => ({ ...prev, main_category_id: e.target.value }))}
                     className="w-full p-2 border rounded"
                     required
                   >
                     <option value="">اختر القسم الرئيسي</option>
-                    {mainCategories.map(cat => (
+                    {mainCategories.map((cat) => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
@@ -225,17 +299,7 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
               )}
 
               <div>
-                <Label htmlFor="sort_order">ترتيب العرض</Label>
-                <Input
-                  id="sort_order"
-                  type="number"
-                  value={formData.sort_order}
-                  onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) }))}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="image">صورة القسم</Label>
+                <Label htmlFor="image">الصورة</Label>
                 <Input
                   id="image"
                   type="file"
@@ -243,15 +307,36 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
                   onChange={handleImageUpload}
                 />
                 {formData.image_url && (
-                  <img src={formData.image_url} alt="Preview" className="mt-2 w-20 h-20 object-cover rounded" />
+                  <img src={formData.image_url} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
                 )}
+              </div>
+
+              <div>
+                <Label htmlFor="sort-order">ترتيب العرض</Label>
+                <Input
+                  id="sort-order"
+                  type="number"
+                  value={formData.sort_order}
+                  onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="active">الحالة</Label>
+                <Switch
+                  id="active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+                />
               </div>
 
               <div className="flex gap-2">
                 <Button type="submit">
-                  {editingCategory ? 'تحديث' : 'إضافة'}
+                  <Save className="w-4 h-4 ml-2" />
+                  {editingItem ? 'تحديث' : 'إضافة'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => { setShowAddForm(false); setEditingCategory(null); }}>
+                <Button type="button" variant="outline" onClick={resetForm}>
+                  <X className="w-4 h-4 ml-2" />
                   إلغاء
                 </Button>
               </div>
@@ -259,71 +344,6 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
           </CardContent>
         </Card>
       )}
-
-      {/* الأقسام الرئيسية */}
-      <Card>
-        <CardHeader>
-          <CardTitle>الأقسام الرئيسية</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {mainCategories.map(category => (
-              <div key={category.id} className="flex items-center justify-between p-3 border rounded">
-                <div className="flex items-center gap-3">
-                  {category.image_url && (
-                    <img src={category.image_url} alt={category.name} className="w-12 h-12 object-cover rounded" />
-                  )}
-                  <div>
-                    <h4 className="font-semibold">{category.name}</h4>
-                    <p className="text-sm text-gray-600">{category.description}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'main')}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(category.id, 'main')}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* الأقسام الفرعية */}
-      <Card>
-        <CardHeader>
-          <CardTitle>الأقسام الفرعية</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {subCategories.map(category => (
-              <div key={category.id} className="flex items-center justify-between p-3 border rounded">
-                <div className="flex items-center gap-3">
-                  {category.image_url && (
-                    <img src={category.image_url} alt={category.name} className="w-12 h-12 object-cover rounded" />
-                  )}
-                  <div>
-                    <h4 className="font-semibold">{category.name}</h4>
-                    <p className="text-sm text-gray-600">{category.description}</p>
-                    <p className="text-xs text-blue-600">القسم الرئيسي: {category.main_categories?.name}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'sub')}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(category.id, 'sub')}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

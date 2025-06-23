@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ArrowLeft, Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -21,103 +23,104 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: '',
+    price: 0,
     image_url: '',
-    sub_category_id: '',
-    sort_order: 0
+    is_active: true,
+    sort_order: 0,
+    sub_category_id: ''
   });
   const { toast } = useToast();
 
   useEffect(() => {
-    loadProducts();
-    loadSubCategories();
+    loadData();
   }, []);
 
-  const loadProducts = async () => {
+  const loadData = async () => {
     try {
-      const { data } = await supabase
+      const { data: productsData } = await supabase
         .from('products')
-        .select('*, sub_categories(name, main_categories(name))')
+        .select('*, sub_categories(name)')
         .order('sort_order');
-      setProducts(data || []);
-    } catch (error) {
-      console.error('Error loading products:', error);
-    }
-  };
-
-  const loadSubCategories = async () => {
-    try {
-      const { data } = await supabase
+      
+      const { data: subCategoriesData } = await supabase
         .from('sub_categories')
-        .select('*, main_categories(name)')
+        .select('*')
         .eq('is_active', true)
         .order('name');
-      setSubCategories(data || []);
+      
+      if (productsData) setProducts(productsData);
+      if (subCategoriesData) setSubCategories(subCategoriesData);
     } catch (error) {
-      console.error('Error loading subcategories:', error);
+      console.error('Error loading data:', error);
+      toast({ title: "خطأ في تحميل البيانات", variant: "destructive" });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      const productData = {
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        image_url: formData.image_url,
-        sub_category_id: formData.sub_category_id,
-        sort_order: formData.sort_order
-      };
-
       if (editingProduct) {
         await supabase
           .from('products')
-          .update(productData)
+          .update(formData)
           .eq('id', editingProduct.id);
-        toast({ title: "تم تحديث المنتج بنجاح" });
+        toast({ title: "تم التحديث بنجاح" });
       } else {
         await supabase
           .from('products')
-          .insert([productData]);
-        toast({ title: "تم إضافة المنتج بنجاح" });
+          .insert([formData]);
+        toast({ title: "تم الإضافة بنجاح" });
       }
-
-      setFormData({ name: '', description: '', price: '', image_url: '', sub_category_id: '', sort_order: 0 });
-      setShowAddForm(false);
-      setEditingProduct(null);
-      loadProducts();
+      
+      resetForm();
+      loadData();
     } catch (error) {
       console.error('Error saving product:', error);
       toast({ title: "حدث خطأ", variant: "destructive" });
     }
   };
 
-  const handleEdit = (product: any) => {
-    setEditingProduct(product);
-    setFormData({
-      name: product.name,
-      description: product.description || '',
-      price: product.price.toString(),
-      image_url: product.image_url || '',
-      sub_category_id: product.sub_category_id,
-      sort_order: product.sort_order || 0
-    });
-    setShowAddForm(true);
-  };
-
   const handleDelete = async (id: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
-
     try {
-      await supabase.from('products').delete().eq('id', id);
-      toast({ title: "تم حذف المنتج بنجاح" });
-      loadProducts();
+      await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+      
+      toast({ title: "تم الحذف بنجاح" });
+      loadData();
     } catch (error) {
       console.error('Error deleting product:', error);
       toast({ title: "حدث خطأ في الحذف", variant: "destructive" });
     }
+  };
+
+  const handleEdit = (product: any) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price || 0,
+      image_url: product.image_url || '',
+      is_active: product.is_active ?? true,
+      sort_order: product.sort_order || 0,
+      sub_category_id: product.sub_category_id || ''
+    });
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      price: 0,
+      image_url: '',
+      is_active: true,
+      sort_order: 0,
+      sub_category_id: ''
+    });
+    setEditingProduct(null);
+    setShowAddForm(false);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,15 +143,58 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
         <h1 className="text-2xl font-bold text-gray-800">إدارة المنتجات</h1>
       </div>
 
-      <Button onClick={() => { setShowAddForm(true); setEditingProduct(null); }}>
-        <Plus className="w-4 h-4 ml-2" />
-        إضافة منتج جديد
-      </Button>
+      {!showAddForm ? (
+        <div className="space-y-6">
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus className="w-4 h-4 ml-2" />
+            إضافة منتج جديد
+          </Button>
 
-      {showAddForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>قائمة المنتجات</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>الاسم</TableHead>
+                    <TableHead>القسم</TableHead>
+                    <TableHead>السعر</TableHead>
+                    <TableHead>الحالة</TableHead>
+                    <TableHead>الإجراءات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell>{product.name}</TableCell>
+                      <TableCell>{product.sub_categories?.name}</TableCell>
+                      <TableCell>{product.price} جنيه</TableCell>
+                      <TableCell>{product.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(product.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
         <Card>
           <CardHeader>
-            <CardTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</CardTitle>
+            <CardTitle>
+              {editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -158,59 +204,44 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="أدخل اسم المنتج"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="description">وصف المنتج</Label>
+                <Label htmlFor="description">الوصف</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="أدخل وصف المنتج"
                 />
               </div>
 
               <div>
-                <Label htmlFor="price">السعر (جنيه)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="sub_category">القسم</Label>
+                <Label htmlFor="sub-category">القسم</Label>
                 <select
-                  id="sub_category"
+                  id="sub-category"
                   value={formData.sub_category_id}
                   onChange={(e) => setFormData(prev => ({ ...prev, sub_category_id: e.target.value }))}
                   className="w-full p-2 border rounded"
                   required
                 >
                   <option value="">اختر القسم</option>
-                  {subCategories.map(cat => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.main_categories?.name} - {cat.name}
-                    </option>
+                  {subCategories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <Label htmlFor="sort_order">ترتيب العرض</Label>
+                <Label htmlFor="price">السعر</Label>
                 <Input
-                  id="sort_order"
+                  id="price"
                   type="number"
-                  value={formData.sort_order}
-                  onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) }))}
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                  required
                 />
               </div>
 
@@ -227,11 +258,32 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
                 )}
               </div>
 
+              <div>
+                <Label htmlFor="sort-order">ترتيب العرض</Label>
+                <Input
+                  id="sort-order"
+                  type="number"
+                  value={formData.sort_order}
+                  onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="active">نشط</Label>
+                <Switch
+                  id="active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+                />
+              </div>
+
               <div className="flex gap-2">
                 <Button type="submit">
+                  <Save className="w-4 h-4 ml-2" />
                   {editingProduct ? 'تحديث' : 'إضافة'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => { setShowAddForm(false); setEditingProduct(null); }}>
+                <Button type="button" variant="outline" onClick={resetForm}>
+                  <X className="w-4 h-4 ml-2" />
                   إلغاء
                 </Button>
               </div>
@@ -239,41 +291,6 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
           </CardContent>
         </Card>
       )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>قائمة المنتجات</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {products.map(product => (
-              <div key={product.id} className="flex items-center justify-between p-4 border rounded">
-                <div className="flex items-center gap-4">
-                  {product.image_url && (
-                    <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover rounded" />
-                  )}
-                  <div>
-                    <h4 className="font-semibold">{product.name}</h4>
-                    <p className="text-sm text-gray-600">{product.description}</p>
-                    <p className="text-lg font-bold text-green-600">{product.price} جنيه</p>
-                    <p className="text-xs text-blue-600">
-                      {product.sub_categories?.main_categories?.name} - {product.sub_categories?.name}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(product.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

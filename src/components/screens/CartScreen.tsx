@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,7 +51,7 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
         },
         (error) => {
           console.error('Error getting location:', error);
-          await submitOrderWithLocation(null);
+          submitOrderWithLocation(null);
         }
       );
     } else {

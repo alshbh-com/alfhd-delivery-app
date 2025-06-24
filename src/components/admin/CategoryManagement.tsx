@@ -71,18 +71,44 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
     e.preventDefault();
     try {
       console.log('Submitting form data:', formData);
+      console.log('Form type:', formType);
+      
+      // إعداد البيانات حسب نوع النموذج
+      let submitData;
+      if (formType === 'main') {
+        // للأقسام الرئيسية - إزالة main_category_id
+        submitData = {
+          name: formData.name,
+          description: formData.description,
+          image_url: formData.image_url,
+          is_active: formData.is_active,
+          sort_order: formData.sort_order
+        };
+      } else {
+        // للأقسام الفرعية - تضمين main_category_id
+        submitData = {
+          name: formData.name,
+          description: formData.description,
+          image_url: formData.image_url,
+          is_active: formData.is_active,
+          sort_order: formData.sort_order,
+          main_category_id: formData.main_category_id
+        };
+      }
+      
+      console.log('Submit data prepared:', submitData);
       
       if (editingItem) {
         if (formType === 'main') {
           const { error } = await supabase
             .from('main_categories')
-            .update(formData)
+            .update(submitData)
             .eq('id', editingItem.id);
           if (error) throw error;
         } else {
           const { error } = await supabase
             .from('sub_categories')
-            .update(formData)
+            .update(submitData)
             .eq('id', editingItem.id);
           if (error) throw error;
         }
@@ -91,12 +117,12 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
         if (formType === 'main') {
           const { error } = await supabase
             .from('main_categories')
-            .insert([formData]);
+            .insert([submitData]);
           if (error) throw error;
         } else {
           const { error } = await supabase
             .from('sub_categories')
-            .insert([formData]);
+            .insert([submitData]);
           if (error) throw error;
         }
         toast({ title: "تم الإضافة بنجاح" });
@@ -104,7 +130,7 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
       
       console.log('Operation completed successfully, reloading data...');
       resetForm();
-      await loadCategories(); // إعادة تحميل البيانات فوراً
+      await loadCategories();
     } catch (error) {
       console.error('Error saving category:', error);
       toast({ title: "حدث خطأ: " + error.message, variant: "destructive" });
@@ -131,7 +157,7 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
       
       console.log('Delete completed successfully, reloading data...');
       toast({ title: "تم الحذف بنجاح" });
-      await loadCategories(); // إعادة تحميل البيانات فوراً
+      await loadCategories();
     } catch (error) {
       console.error('Error deleting category:', error);
       toast({ title: "حدث خطأ في الحذف: " + error.message, variant: "destructive" });

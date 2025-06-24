@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,15 +36,28 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
 
   const loadCategories = async () => {
     try {
-      const { data: mainData } = await supabase
+      console.log('Loading categories...');
+      const { data: mainData, error: mainError } = await supabase
         .from('main_categories')
         .select('*')
         .order('sort_order');
       
-      const { data: subData } = await supabase
+      const { data: subData, error: subError } = await supabase
         .from('sub_categories')
         .select('*, main_categories(name)')
         .order('sort_order');
+      
+      if (mainError) {
+        console.error('Error loading main categories:', mainError);
+        throw mainError;
+      }
+      if (subError) {
+        console.error('Error loading sub categories:', subError);
+        throw subError;
+      }
+      
+      console.log('Main categories loaded:', mainData);
+      console.log('Sub categories loaded:', subData);
       
       if (mainData) setMainCategories(mainData);
       if (subData) setSubCategories(subData);
@@ -58,59 +70,71 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      console.log('Submitting form data:', formData);
+      
       if (editingItem) {
         if (formType === 'main') {
-          await supabase
+          const { error } = await supabase
             .from('main_categories')
             .update(formData)
             .eq('id', editingItem.id);
+          if (error) throw error;
         } else {
-          await supabase
+          const { error } = await supabase
             .from('sub_categories')
             .update(formData)
             .eq('id', editingItem.id);
+          if (error) throw error;
         }
         toast({ title: "تم التحديث بنجاح" });
       } else {
         if (formType === 'main') {
-          await supabase
+          const { error } = await supabase
             .from('main_categories')
             .insert([formData]);
+          if (error) throw error;
         } else {
-          await supabase
+          const { error } = await supabase
             .from('sub_categories')
             .insert([formData]);
+          if (error) throw error;
         }
         toast({ title: "تم الإضافة بنجاح" });
       }
       
+      console.log('Operation completed successfully, reloading data...');
       resetForm();
-      loadCategories();
+      await loadCategories(); // إعادة تحميل البيانات فوراً
     } catch (error) {
       console.error('Error saving category:', error);
-      toast({ title: "حدث خطأ", variant: "destructive" });
+      toast({ title: "حدث خطأ: " + error.message, variant: "destructive" });
     }
   };
 
   const handleDelete = async (id: string, type: 'main' | 'sub') => {
     try {
+      console.log('Deleting item:', id, type);
+      
       if (type === 'main') {
-        await supabase
+        const { error } = await supabase
           .from('main_categories')
           .delete()
           .eq('id', id);
+        if (error) throw error;
       } else {
-        await supabase
+        const { error } = await supabase
           .from('sub_categories')
           .delete()
           .eq('id', id);
+        if (error) throw error;
       }
       
+      console.log('Delete completed successfully, reloading data...');
       toast({ title: "تم الحذف بنجاح" });
-      loadCategories();
+      await loadCategories(); // إعادة تحميل البيانات فوراً
     } catch (error) {
       console.error('Error deleting category:', error);
-      toast({ title: "حدث خطأ في الحذف", variant: "destructive" });
+      toast({ title: "حدث خطأ في الحذف: " + error.message, variant: "destructive" });
     }
   };
 
@@ -159,6 +183,14 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="text-2xl font-bold text-gray-800">إدارة الأقسام</h1>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={loadCategories}
+          className="mr-auto"
+        >
+          تحديث البيانات
+        </Button>
       </div>
 
       {!showAddForm ? (
@@ -176,79 +208,87 @@ export const CategoryManagement = ({ onBack }: CategoryManagementProps) => {
 
           <Card>
             <CardHeader>
-              <CardTitle>الأقسام الرئيسية</CardTitle>
+              <CardTitle>الأقسام الرئيسية ({mainCategories.length})</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>الاسم</TableHead>
-                    <TableHead>الوصف</TableHead>
-                    <TableHead>الحالة</TableHead>
-                    <TableHead>الترتيب</TableHead>
-                    <TableHead>الإجراءات</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mainCategories.map((category) => (
-                    <TableRow key={category.id}>
-                      <TableCell>{category.name}</TableCell>
-                      <TableCell>{category.description}</TableCell>
-                      <TableCell>{category.is_active ? 'نشط' : 'غير نشط'}</TableCell>
-                      <TableCell>{category.sort_order}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'main')}>
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleDelete(category.id, 'main')}>
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              {mainCategories.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">لا توجد أقسام رئيسية</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>الاسم</TableHead>
+                      <TableHead>الوصف</TableHead>
+                      <TableHead>الحالة</TableHead>
+                      <TableHead>الترتيب</TableHead>
+                      <TableHead>الإجراءات</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {mainCategories.map((category) => (
+                      <TableRow key={category.id}>
+                        <TableCell>{category.name}</TableCell>
+                        <TableCell>{category.description}</TableCell>
+                        <TableCell>{category.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                        <TableCell>{category.sort_order}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'main')}>
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="destructive" onClick={() => handleDelete(category.id, 'main')}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>الأقسام الفرعية</CardTitle>
+              <CardTitle>الأقسام الفرعية ({subCategories.length})</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>الاسم</TableHead>
-                    <TableHead>القسم الرئيسي</TableHead>
-                    <TableHead>الوصف</TableHead>
-                    <TableHead>الحالة</TableHead>
-                    <TableHead>الإجراءات</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {subCategories.map((category) => (
-                    <TableRow key={category.id}>
-                      <TableCell>{category.name}</TableCell>
-                      <TableCell>{category.main_categories?.name}</TableCell>
-                      <TableCell>{category.description}</TableCell>
-                      <TableCell>{category.is_active ? 'نشط' : 'غير نشط'}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'sub')}>
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleDelete(category.id, 'sub')}>
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              {subCategories.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">لا توجد أقسام فرعية</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>الاسم</TableHead>
+                      <TableHead>القسم الرئيسي</TableHead>
+                      <TableHead>الوصف</TableHead>
+                      <TableHead>الحالة</TableHead>
+                      <TableHead>الإجراءات</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {subCategories.map((category) => (
+                      <TableRow key={category.id}>
+                        <TableCell>{category.name}</TableCell>
+                        <TableCell>{category.main_categories?.name}</TableCell>
+                        <TableCell>{category.description}</TableCell>
+                        <TableCell>{category.is_active ? 'نشط' : 'غير نشط'}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => handleEdit(category, 'sub')}>
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button size="sm" variant="destructive" onClick={() => handleDelete(category.id, 'sub')}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </div>

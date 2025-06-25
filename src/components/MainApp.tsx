@@ -1,9 +1,9 @@
-
 import { useState } from 'react';
 import { BottomNavigation } from './BottomNavigation';
 import { HomeScreen } from './screens/HomeScreen';
 import { CartScreen } from './screens/CartScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { ProfileScreen } from './screens/ProfileScreen';
 
 interface MainAppProps {
   selectedCity: string;
@@ -12,8 +12,10 @@ interface MainAppProps {
 export const MainApp = ({ selectedCity }: MainAppProps) => {
   const [activeTab, setActiveTab] = useState('home');
   const [cart, setCart] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [showAdmin, setShowAdmin] = useState(false);
 
-  const addToCart = (product: any, quantity: number = 1) => {
+  const handleAddToCart = (product: any, quantity: number = 1) => {
     setCart(prev => {
       const existingItem = prev.find(item => item.id === product.id);
       if (existingItem) {
@@ -27,7 +29,7 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
     });
   };
 
-  const updateCartItem = (productId: string, quantity: number) => {
+  const handleUpdateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
       setCart(prev => prev.filter(item => item.id !== productId));
     } else {
@@ -39,34 +41,35 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
     }
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const handleRemoveItem = (productId: string) => {
+    setCart(prev => prev.filter(item => item.id !== productId));
   };
 
-  const renderScreen = () => {
+  const handleCheckout = () => {
+    // Implement checkout logic here
+  };
+
+  const renderActiveScreen = () => {
     switch (activeTab) {
       case 'home':
-        return <HomeScreen onAddToCart={addToCart} />;
+        return <HomeScreen onAddToCart={handleAddToCart} selectedCity={selectedCity} />;
+      case 'search':
+        return <HomeScreen onAddToCart={handleAddToCart} selectedCity={selectedCity} />;
       case 'cart':
-        return (
-          <CartScreen
-            cart={cart}
-            selectedCity={selectedCity}
-            onUpdateCart={updateCartItem}
-            onClearCart={clearCart}
-          />
-        );
+        return <CartScreen cartItems={cartItems} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onCheckout={handleCheckout} />;
+      case 'profile':
+        return <ProfileScreen />;
       case 'settings':
-        return <SettingsScreen />;
+        return <SettingsScreen onShowAdmin={() => setShowAdmin(true)} />;
       default:
-        return <HomeScreen onAddToCart={addToCart} />;
+        return <HomeScreen onAddToCart={handleAddToCart} selectedCity={selectedCity} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="pb-20">
-        {renderScreen()}
+        {renderActiveScreen()}
       </div>
       <BottomNavigation
         activeTab={activeTab}

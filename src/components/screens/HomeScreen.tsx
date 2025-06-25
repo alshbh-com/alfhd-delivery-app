@@ -4,9 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { OffersCarousel } from '../OffersCarousel';
 import { CategoriesGrid } from '../CategoriesGrid';
 import { ProductsGrid } from '../ProductsGrid';
-import { Search, MapPin, Bell, ChevronRight, X } from 'lucide-react';
+import { DeveloperContact } from '../DeveloperContact';
+import { Search, MapPin, Bell, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 interface HomeScreenProps {
   onAddToCart: (product: any, quantity: number) => void;
@@ -17,14 +17,10 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
     setSelectedSubCategory(null);
-    setSearchQuery('');
-    setIsSearching(false);
   };
 
   const handleSubCategorySelect = (subCategoryId: string) => {
@@ -37,37 +33,6 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
     } else {
       setSelectedCategory(null);
     }
-  };
-
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    
-    if (query.trim().length < 2) {
-      setSearchResults([]);
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-    
-    try {
-      const { data: products } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_active', true)
-        .ilike('name', `%${query}%`);
-      
-      setSearchResults(products || []);
-    } catch (error) {
-      console.error('Error searching products:', error);
-      setSearchResults([]);
-    }
-  };
-
-  const clearSearch = () => {
-    setSearchQuery('');
-    setSearchResults([]);
-    setIsSearching(false);
   };
 
   return (
@@ -106,19 +71,9 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
             <Input
               placeholder="ابحث عن المنتجات والمحلات..."
               value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="talabat-input pr-12 pl-12 text-right arabic-text bg-white/90 backdrop-blur-sm border-0"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="talabat-input pr-12 text-right arabic-text bg-white/90 backdrop-blur-sm border-0"
             />
-            {searchQuery && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearSearch}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-200"
-              >
-                <X className="h-4 w-4 text-gray-500" />
-              </Button>
-            )}
           </div>
         </div>
 
@@ -150,16 +105,10 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
       {/* Content */}
       <div className="px-4 -mt-2 relative z-10">
         {/* Navigation */}
-        {(selectedCategory || selectedSubCategory || isSearching) && (
+        {(selectedCategory || selectedSubCategory) && (
           <div className="floating-card p-4 mb-4">
             <button
-              onClick={() => {
-                if (isSearching) {
-                  clearSearch();
-                } else {
-                  handleBackToCategories();
-                }
-              }}
+              onClick={handleBackToCategories}
               className="flex items-center text-orange-600 hover:text-orange-700 font-medium arabic-text"
             >
               <ChevronRight className="ml-2 h-5 w-5" />
@@ -169,60 +118,11 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
         )}
 
         {/* Main Content */}
-        {isSearching ? (
-          <div className="space-y-4">
-            <div className="floating-card p-4">
-              <h2 className="text-xl font-bold text-gray-800 arabic-text mb-2">
-                نتائج البحث عن "{searchQuery}"
-              </h2>
-              <p className="text-gray-600 arabic-text">
-                تم العثور على {searchResults.length} منتج
-              </p>
-            </div>
-            
-            {searchResults.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {searchResults.map((product) => (
-                  <div key={product.id} className="product-card p-4">
-                    {product.image_url && (
-                      <img
-                        src={product.image_url}
-                        alt={product.name}
-                        className="w-full h-32 object-cover rounded-xl mb-3"
-                      />
-                    )}
-                    <h3 className="font-bold text-gray-800 mb-2 arabic-text">{product.name}</h3>
-                    {product.description && (
-                      <p className="text-gray-600 text-sm mb-3 arabic-text">{product.description}</p>
-                    )}
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-orange-600">{product.price} جنيه</span>
-                      <Button
-                        onClick={() => onAddToCart(product, 1)}
-                        className="talabat-button px-4 py-2 text-sm"
-                      >
-                        إضافة للسلة
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="floating-card p-8 text-center">
-                <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-600 mb-2 arabic-text">
-                  لم يتم العثور على نتائج
-                </h3>
-                <p className="text-gray-500 arabic-text">
-                  جرب البحث بكلمات مختلفة
-                </p>
-              </div>
-            )}
-          </div>
-        ) : !selectedCategory ? (
+        {!selectedCategory ? (
           <div className="space-y-6">
             <OffersCarousel />
             <CategoriesGrid onCategorySelect={handleCategorySelect} />
+            <DeveloperContact />
           </div>
         ) : !selectedSubCategory ? (
           <CategoriesGrid 

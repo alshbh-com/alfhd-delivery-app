@@ -1,9 +1,9 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
+/* إعداد الألوان مثل تطبيق طلبات */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 255 95% 55%; /* لون برتقالي مثل طلبات */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -24,7 +24,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 255 95% 55%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -32,63 +32,48 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 255 95% 55%;
 
-    --radius: 0.5rem;
+    --radius: 1rem; /* زوايا أكثر استدارة */
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
+    --primary: 255 95% 55%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 255 95% 55%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 255 95% 55%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 255 95% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 255 95% 55%;
   }
 }
 
@@ -98,6 +83,46 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
+}
+
+/* تأثيرات مخصصة مثل تطبيق طلبات */
+@layer components {
+  .talabat-gradient {
+    @apply bg-gradient-to-br from-orange-400 via-red-400 to-pink-400;
+  }
+  
+  .talabat-card {
+    @apply bg-white rounded-2xl shadow-lg border-0 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+  }
+  
+  .talabat-button {
+    @apply bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+  }
+  
+  .talabat-input {
+    @apply bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white transition-all duration-300;
+  }
+  
+  .category-card {
+    @apply bg-white rounded-2xl shadow-md border-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105;
+  }
+  
+  .product-card {
+    @apply bg-white rounded-2xl shadow-md border-0 overflow-hidden transition-all duration-300 hover:shadow-lg;
+  }
+  
+  .floating-card {
+    @apply bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100;
+  }
+}
+
+/* تحسينات الخط والطباعة */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+.arabic-text {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
 }

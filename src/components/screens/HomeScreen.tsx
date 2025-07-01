@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { ProductsGrid } from '@/components/ProductsGrid';
-import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { OffersCarousel } from '@/components/OffersCarousel';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -111,34 +110,49 @@ export const HomeScreen = ({ onAddToCart, selectedSubCategory }: HomeScreenProps
 
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <WelcomeScreen />
+      <div className="min-h-screen bg-white">
+        <div className="bg-gradient-to-br from-orange-100 to-red-100 py-8">
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2 arabic-text">
+              مرحباً بك في متجرنا
+            </h1>
+            <p className="text-gray-600 arabic-text">
+              اختر القسم المناسب وابدأ التسوق
+            </p>
+          </div>
+        </div>
         <OffersCarousel />
-        <CategoriesGrid 
-          categories={categories} 
-          onCategorySelect={handleCategorySelect}
-        />
+        <div className="p-4">
+          <CategoriesGrid 
+            categories={categories} 
+            onCategorySelect={handleCategorySelect}
+          />
+        </div>
       </div>
     );
   }
 
   if (!currentSubCategory) {
     return (
-      <CategoriesGrid 
-        categories={subCategories} 
-        onCategorySelect={handleSubCategorySelect}
-        onBack={handleBack}
-        title="اختر القسم الفرعي"
-      />
+      <div className="min-h-screen bg-white p-4">
+        <CategoriesGrid 
+          categories={subCategories} 
+          onCategorySelect={handleSubCategorySelect}
+          onBack={handleBack}
+          title="اختر القسم الفرعي"
+        />
+      </div>
     );
   }
 
   return (
-    <ProductsGrid 
-      products={products}
-      onAddToCart={handleAddToCartWithWarning}
-      onBack={handleBack}
-      selectedSubCategory={selectedSubCategory}
-    />
+    <div className="min-h-screen bg-white p-4">
+      <ProductsGrid 
+        products={products}
+        onAddToCart={handleAddToCartWithWarning}
+        onBack={handleBack}
+        selectedSubCategory={selectedSubCategory}
+      />
+    </div>
   );
 };

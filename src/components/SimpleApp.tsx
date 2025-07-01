@@ -5,8 +5,10 @@ import { HomeScreen } from './screens/HomeScreen';
 import { CartScreen } from './screens/CartScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
+import { WelcomeScreen } from './WelcomeScreen';
 
 export const SimpleApp = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [cart, setCart] = useState<any[]>([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
@@ -54,6 +56,14 @@ export const SimpleApp = () => {
     setSelectedSubCategory(null);
   };
 
+  const handleStartShopping = () => {
+    setShowWelcome(false);
+  };
+
+  if (showWelcome) {
+    return <WelcomeScreen onContinue={handleStartShopping} />;
+  }
+
   const renderScreen = () => {
     switch (activeTab) {
       case 'home':
@@ -87,7 +97,7 @@ export const SimpleApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="pb-20">
         {renderScreen()}
       </div>

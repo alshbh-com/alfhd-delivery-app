@@ -83,39 +83,39 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-white text-foreground font-sans;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 
-/* تأثيرات مخصصة مثل تطبيق طلبات */
+/* تأثيرات مخصصة مثل تطبيق طلبات - تحسين للوضوح */
 @layer components {
   .talabat-gradient {
     @apply bg-gradient-to-br from-orange-400 via-red-400 to-pink-400;
   }
   
   .talabat-card {
-    @apply bg-white rounded-2xl shadow-lg border-0 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+    @apply bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105;
   }
   
   .talabat-button {
-    @apply bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+    @apply bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105;
   }
   
   .talabat-input {
-    @apply bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white transition-all duration-300;
+    @apply bg-white border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white transition-all duration-300;
   }
   
   .category-card {
-    @apply bg-white rounded-2xl shadow-md border-0 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105;
+    @apply bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105;
   }
   
   .product-card {
-    @apply bg-white rounded-2xl shadow-md border-0 overflow-hidden transition-all duration-300 hover:shadow-lg;
+    @apply bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg;
   }
   
   .floating-card {
-    @apply bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100;
+    @apply bg-white rounded-2xl shadow-lg border border-gray-100;
   }
 }
 

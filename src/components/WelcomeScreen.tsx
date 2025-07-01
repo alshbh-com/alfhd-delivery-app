@@ -39,12 +39,12 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex flex-col">
       {/* Header */}
       <div className="flex-1 flex flex-col items-center justify-center p-6">
         {/* Logo */}
         <div className="mb-8">
-          <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl">
+          <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-lg">
             <span className="text-4xl">🛍️</span>
           </div>
         </div>
@@ -84,21 +84,21 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-2 mx-auto">
               <Clock className="w-6 h-6 text-green-600" />
             </div>
-            <p className="text-xs text-gray-600 arabic-text">توصيل سريع</p>
+            <p className="text-xs text-gray-700 arabic-text font-medium">توصيل سريع</p>
           </div>
           
           <div className="text-center">
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2 mx-auto">
               <Star className="w-6 h-6 text-blue-600" />
             </div>
-            <p className="text-xs text-gray-600 arabic-text">جودة عالية</p>
+            <p className="text-xs text-gray-700 arabic-text font-medium">جودة عالية</p>
           </div>
           
           <div className="text-center">
             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-2 mx-auto">
               <Truck className="w-6 h-6 text-purple-600" />
             </div>
-            <p className="text-xs text-gray-600 arabic-text">خدمة 24/7</p>
+            <p className="text-xs text-gray-700 arabic-text font-medium">خدمة 24/7</p>
           </div>
         </div>
       </div>
@@ -107,13 +107,13 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
       <div className="p-6 space-y-4">
         <Button
           onClick={onContinue}
-          className="w-full talabat-button text-lg py-4 arabic-text"
+          className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg py-4 arabic-text font-semibold rounded-xl shadow-lg"
         >
           ابدأ التسوق الآن
           <ChevronLeft className="mr-2 h-5 w-5" />
         </Button>
         
-        <p className="text-center text-sm text-gray-500 arabic-text">
+        <p className="text-center text-sm text-gray-600 arabic-text">
           اضغط للمتابعة وابدأ تجربة تسوق رائعة
         </p>
       </div>

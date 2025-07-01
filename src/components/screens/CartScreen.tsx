@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,11 +19,36 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deliveryFee, setDeliveryFee] = useState(15);
   const { toast } = useToast();
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 15; // سيتم حسابها من قاعدة البيانات لاحقاً
   const total = subtotal + deliveryFee;
+
+  // تحديد سعر التوصيل حسب المدينة المختارة
+  useEffect(() => {
+    const getDeliveryFee = async () => {
+      try {
+        const { data } = await supabase
+          .from('allowed_cities')
+          .select('delivery_price')
+          .eq('name', selectedCity)
+          .eq('is_active', true)
+          .single();
+        
+        if (data) {
+          setDeliveryFee(Number(data.delivery_price));
+        }
+      } catch (error) {
+        console.error('Error getting delivery fee:', error);
+        setDeliveryFee(15); // القيمة الافتراضية
+      }
+    };
+
+    if (selectedCity) {
+      getDeliveryFee();
+    }
+  }, [selectedCity]);
 
   const handleSubmitOrder = async () => {
     if (!customerName.trim() || !customerPhone.trim()) {
@@ -120,7 +146,7 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
       const whatsappNumber = settingsData?.value || '201024713976';
 
       // تكوين رسالة الطلب
-      let message = `🛍️ *طلب جديد من متجر الفهد*\n\n`;
+      let message = `🛍️ *طلب جديد من تطبيق طلبيات*\n\n`;
       message += `👤 *اسم العميل:* ${order.customer_name}\n`;
       message += `📱 *رقم الهاتف:* ${order.customer_phone}\n`;
       message += `📍 *المنطقة:* ${order.customer_city}\n\n`;

@@ -16,8 +16,8 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
   const [stats, setStats] = useState({
     totalOrders: 0,
     todayOrders: 0,
-    totalRevenue: 0,
-    todayRevenue: 0
+    totalDeliveryRevenue: 0,
+    todayDeliveryRevenue: 0
   });
   const { toast } = useToast();
 
@@ -44,7 +44,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
     try {
       const { data: allOrders } = await supabase
         .from('orders')
-        .select('total_amount, created_at');
+        .select('delivery_fee, created_at');
       
       if (allOrders) {
         const today = new Date().toDateString();
@@ -52,11 +52,15 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
           new Date(order.created_at).toDateString() === today
         );
         
+        // حساب أرباح التوصيل فقط
+        const totalDeliveryRevenue = allOrders.reduce((sum, order) => sum + Number(order.delivery_fee || 0), 0);
+        const todayDeliveryRevenue = todayOrders.reduce((sum, order) => sum + Number(order.delivery_fee || 0), 0);
+        
         setStats({
           totalOrders: allOrders.length,
           todayOrders: todayOrders.length,
-          totalRevenue: allOrders.reduce((sum, order) => sum + Number(order.total_amount), 0),
-          todayRevenue: todayOrders.reduce((sum, order) => sum + Number(order.total_amount), 0)
+          totalDeliveryRevenue,
+          todayDeliveryRevenue
         });
       }
     } catch (error) {
@@ -105,16 +109,6 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending': return 'في الانتظار';
-      case 'confirmed': return 'مؤكد';
-      case 'completed': return 'مكتمل';
-      case 'cancelled': return 'ملغي';
-      default: return status;
-    }
-  };
-
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center gap-3 mb-6">
@@ -124,7 +118,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         <h1 className="text-2xl font-bold text-gray-800">الإحصائيات والطلبات</h1>
       </div>
 
-      {/* إحصائيات سريعة */}
+      {/* إحصائيات سريعة - أرباح التوصيل فقط */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
@@ -147,8 +141,8 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         <Card>
           <CardContent className="p-4">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-700">إجمالي الأرباح</h3>
-              <p className="text-3xl font-bold text-purple-600">{stats.totalRevenue.toFixed(2)} جنيه</p>
+              <h3 className="text-lg font-semibold text-gray-700">إجمالي أرباح التوصيل</h3>
+              <p className="text-3xl font-bold text-purple-600">{stats.totalDeliveryRevenue.toFixed(2)} جنيه</p>
             </div>
           </CardContent>
         </Card>
@@ -156,8 +150,8 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         <Card>
           <CardContent className="p-4">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-700">أرباح اليوم</h3>
-              <p className="text-3xl font-bold text-orange-600">{stats.todayRevenue.toFixed(2)} جنيه</p>
+              <h3 className="text-lg font-semibold text-gray-700">أرباح التوصيل اليوم</h3>
+              <p className="text-3xl font-bold text-orange-600">{stats.todayDeliveryRevenue.toFixed(2)} جنيه</p>
             </div>
           </CardContent>
         </Card>
@@ -176,7 +170,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                 <TableHead>اسم العميل</TableHead>
                 <TableHead>الهاتف</TableHead>
                 <TableHead>المنطقة</TableHead>
-                <TableHead>المبلغ الإجمالي</TableHead>
+                <TableHead>رسوم التوصيل</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead>التاريخ</TableHead>
                 <TableHead>الإجراءات</TableHead>
@@ -189,7 +183,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                   <TableCell>{order.customer_name}</TableCell>
                   <TableCell>{order.customer_phone}</TableCell>
                   <TableCell>{order.customer_city}</TableCell>
-                  <TableCell>{Number(order.total_amount).toFixed(2)} جنيه</TableCell>
+                  <TableCell>{Number(order.delivery_fee || 0).toFixed(2)} جنيه</TableCell>
                   <TableCell>
                     <select
                       value={order.status}
@@ -212,7 +206,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                         variant="outline"
                         onClick={() => {
                           const items = JSON.stringify(order.items, null, 2);
-                          alert(`تفاصيل الطلب:\n\nالعناصر:\n${items}\n\nالموقع: ${order.customer_location || 'غير محدد'}`);
+                          alert(`تفاصيل الطلب:\n\nالعناصر:\n${items}\n\nالموقع: ${order.customer_location || 'غير محدد'}\n\nإجمالي المبلغ: ${order.total_amount} جنيه`);
                         }}
                       >
                         <Eye className="w-4 h-4" />

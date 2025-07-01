@@ -4,6 +4,7 @@ import { BottomNavigation } from './BottomNavigation';
 import { HomeScreen } from './screens/HomeScreen';
 import { CartScreen } from './screens/CartScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { ProfileScreen } from './screens/ProfileScreen';
 
 interface MainAppProps {
   selectedCity: string;
@@ -46,7 +47,7 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
   const renderScreen = () => {
     switch (activeTab) {
       case 'home':
-        return <HomeScreen onAddToCart={addToCart} />;
+        return <HomeScreen onAddToCart={addToCart} selectedCity={selectedCity} />;
       case 'cart':
         return (
           <CartScreen
@@ -58,8 +59,10 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
         );
       case 'settings':
         return <SettingsScreen />;
+      case 'profile':
+        return <ProfileScreen />;
       default:
-        return <HomeScreen onAddToCart={addToCart} />;
+        return <HomeScreen onAddToCart={addToCart} selectedCity={selectedCity} />;
     }
   };
 

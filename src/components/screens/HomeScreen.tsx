@@ -4,9 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { OffersCarousel } from '../OffersCarousel';
 import { CategoriesGrid } from '../CategoriesGrid';
 import { ProductsGrid } from '../ProductsGrid';
-import { DeveloperContact } from '../DeveloperContact';
-import { Search, MapPin, Bell, ChevronRight } from 'lucide-react';
+import { Search, MapPin, Bell, ChevronRight, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface HomeScreenProps {
   onAddToCart: (product: any, quantity: number) => void;
@@ -17,10 +17,44 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      handleSearch(searchQuery);
+    } else {
+      setFilteredProducts([]);
+      setIsSearching(false);
+    }
+  }, [searchQuery]);
+
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      setFilteredProducts([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .ilike('name', `%${query}%`);
+      
+      setFilteredProducts(data || []);
+    } catch (error) {
+      console.error('Search error:', error);
+    }
+  };
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
     setSelectedSubCategory(null);
+    setSearchQuery('');
+    setIsSearching(false);
   };
 
   const handleSubCategorySelect = (subCategoryId: string) => {
@@ -30,8 +64,11 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
   const handleBackToCategories = () => {
     if (selectedSubCategory) {
       setSelectedSubCategory(null);
-    } else {
+    } else if (selectedCategory) {
       setSelectedCategory(null);
+    } else if (isSearching) {
+      setSearchQuery('');
+      setIsSearching(false);
     }
   };
 
@@ -61,8 +98,8 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
 
           {/* Brand */}
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold mb-2 arabic-text">متجر الفهد</h1>
-            <p className="text-white/90 arabic-text">أسرع خدمة توصيل في منطقتك</p>
+            <h1 className="text-4xl font-bold mb-2 arabic-text">طلبيات</h1>
+            <p className="text-white/90 arabic-text">أسرع خدمة توصيل في المنصورة</p>
           </div>
 
           {/* Search Bar */}
@@ -104,8 +141,16 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
 
       {/* Content */}
       <div className="px-4 -mt-2 relative z-10">
+        {/* إشعار المنصورة */}
+        <Alert className="mb-4 bg-blue-50 border-blue-200">
+          <AlertCircle className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800 arabic-text">
+            📍 التطبيق متاح حالياً في محافظة المنصورة فقط - قريباً سيتم التوسع لباقي محافظات مصر
+          </AlertDescription>
+        </Alert>
+
         {/* Navigation */}
-        {(selectedCategory || selectedSubCategory) && (
+        {(selectedCategory || selectedSubCategory || isSearching) && (
           <div className="floating-card p-4 mb-4">
             <button
               onClick={handleBackToCategories}
@@ -118,11 +163,54 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: Hom
         )}
 
         {/* Main Content */}
-        {!selectedCategory ? (
+        {isSearching ? (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800 arabic-text">
+              نتائج البحث عن: "{searchQuery}"
+            </h2>
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredProducts.map((product) => (
+                  <div key={product.id} className="product-card p-4">
+                    {product.image_url && (
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        className="w-full h-40 object-cover rounded-lg mb-3"
+                      />
+                    )}
+                    <h3 className="font-semibold text-gray-800 mb-2">{product.name}</h3>
+                    {product.description && (
+                      <p className="text-gray-600 text-sm mb-3">{product.description}</p>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <span className="text-green-600 font-bold">{product.price} جنيه</span>
+                      <button
+                        onClick={() => onAddToCart(product, 1)}
+                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                      >
+                        إضافة للسلة
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-8">لا توجد نتائج للبحث</p>
+            )}
+          </div>
+        ) : !selectedCategory ? (
           <div className="space-y-6">
             <OffersCarousel />
             <CategoriesGrid onCategorySelect={handleCategorySelect} />
-            <DeveloperContact />
+            
+            {/* إشعار إضافي */}
+            <Alert className="bg-green-50 border-green-200">
+              <Bell className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800 arabic-text">
+                🎉 مرحباً بك في تطبيق طلبيات - خدمة التوصيل الأسرع في المنصورة!
+              </AlertDescription>
+            </Alert>
           </div>
         ) : !selectedSubCategory ? (
           <CategoriesGrid 

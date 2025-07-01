@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { BottomNavigation } from './BottomNavigation';
 import { HomeScreen } from './screens/HomeScreen';
@@ -64,7 +63,6 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
         return (
           <HomeScreen 
             onAddToCart={addToCart} 
-            selectedCity={selectedCity}
             selectedSubCategory={selectedSubCategory}
           />
         );
@@ -72,7 +70,6 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
         return (
           <CartScreen
             cart={cart}
-            selectedCity={selectedCity}
             onUpdateCart={updateCartItem}
             onClearCart={clearCart}
             selectedSubCategory={selectedSubCategory}
@@ -86,7 +83,6 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
         return (
           <HomeScreen 
             onAddToCart={addToCart} 
-            selectedCity={selectedCity}
             selectedSubCategory={selectedSubCategory}
           />
         );

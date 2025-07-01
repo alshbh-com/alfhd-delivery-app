@@ -26,12 +26,9 @@ export const CategoryGridHeader = ({ showSubCategories, categoriesCount }: Categ
           </div>
           
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 arabic-text mb-1 flex items-center">
+            <h2 className="text-2xl font-bold text-gray-800 arabic-text mb-1">
               {showSubCategories ? '🏪 اختر المتجر' : '🎯 الأقسام الرئيسية'}
             </h2>
-            <p className="text-gray-600 arabic-text text-base leading-relaxed">
-              {showSubCategories ? 'اختر من بين أفضل المتاجر المتاحة' : 'جميع الأقسام المتاحة في التطبيق'}
-            </p>
           </div>
         </div>
         

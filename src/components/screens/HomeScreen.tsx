@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { OffersCarousel } from '../OffersCarousel';
@@ -15,7 +16,7 @@ interface HomeScreenProps {
 
 export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة", selectedSubCategory }: HomeScreenProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(selectedSubCategory);
+  const [currentSubCategory, setCurrentSubCategory] = useState<string | null>(selectedSubCategory || null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -52,18 +53,18 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة", selec
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    setSelectedSubCategory(null);
+    setCurrentSubCategory(null);
     setSearchQuery('');
     setIsSearching(false);
   };
 
   const handleSubCategorySelect = (subCategoryId: string) => {
-    setSelectedSubCategory(subCategoryId);
+    setCurrentSubCategory(subCategoryId);
   };
 
   const handleBackToCategories = () => {
-    if (selectedSubCategory) {
-      setSelectedSubCategory(null);
+    if (currentSubCategory) {
+      setCurrentSubCategory(null);
     } else if (selectedCategory) {
       setSelectedCategory(null);
     } else if (isSearching) {
@@ -150,7 +151,7 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة", selec
         </Alert>
 
         {/* Navigation */}
-        {(selectedCategory || selectedSubCategory || isSearching) && (
+        {(selectedCategory || currentSubCategory || isSearching) && (
           <div className="floating-card p-4 mb-4">
             <button
               onClick={handleBackToCategories}
@@ -212,7 +213,7 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة", selec
               </AlertDescription>
             </Alert>
           </div>
-        ) : !selectedSubCategory ? (
+        ) : !currentSubCategory ? (
           <CategoriesGrid 
             parentCategoryId={selectedCategory}
             onCategorySelect={handleSubCategorySelect}
@@ -220,7 +221,7 @@ export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة", selec
           />
         ) : (
           <ProductsGrid 
-            subCategoryId={selectedSubCategory}
+            subCategoryId={currentSubCategory}
             onAddToCart={onAddToCart}
           />
         )}

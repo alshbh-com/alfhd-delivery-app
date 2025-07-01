@@ -3,7 +3,7 @@ import { useState, useCallback, memo } from 'react';
 import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { ProductsGrid } from '@/components/ProductsGrid';
 import { OffersCarousel } from '@/components/OffersCarousel';
-import { MapPin, Search, Bell } from 'lucide-react';
+import { MapPin, Search, Bell, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface HomeScreenProps {
@@ -14,14 +14,60 @@ interface HomeScreenProps {
 export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreenProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentSubCategory, setCurrentSubCategory] = useState<string | null>(null);
+  const [categoryName, setCategoryName] = useState<string>('');
+  const [subCategoryName, setSubCategoryName] = useState<string>('');
 
-  const handleCategorySelect = useCallback((categoryId: string) => {
+  const handleCategorySelect = useCallback(async (categoryId: string) => {
     setSelectedCategory(categoryId);
     setCurrentSubCategory(null);
+    
+    // Get category name for display
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data } = await supabase
+        .from('main_categories')
+        .select('name')
+        .eq('id', categoryId)
+        .single();
+      
+      if (data) {
+        setCategoryName(data.name);
+      }
+    } catch (error) {
+      console.error('Error fetching category name:', error);
+    }
   }, []);
 
-  const handleSubCategorySelect = useCallback((subCategoryId: string) => {
+  const handleSubCategorySelect = useCallback(async (subCategoryId: string) => {
     setCurrentSubCategory(subCategoryId);
+    
+    // Get subcategory name for display
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data } = await supabase
+        .from('sub_categories')
+        .select('name')
+        .eq('id', subCategoryId)
+        .single();
+      
+      if (data) {
+        setSubCategoryName(data.name);
+      }
+    } catch (error) {
+      console.error('Error fetching subcategory name:', error);
+    }
+  }, []);
+
+  const handleBackToMain = useCallback(() => {
+    setSelectedCategory(null);
+    setCurrentSubCategory(null);
+    setCategoryName('');
+    setSubCategoryName('');
+  }, []);
+
+  const handleBackToCategory = useCallback(() => {
+    setCurrentSubCategory(null);
+    setSubCategoryName('');
   }, []);
 
   const handleAddToCartWithWarning = useCallback((product: any, quantity: number = 1) => {
@@ -34,6 +80,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
     onAddToCart(product, quantity);
   }, [selectedSubCategory, onAddToCart]);
 
+  // Main categories screen
   if (!selectedCategory) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
@@ -108,18 +155,33 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
     );
   }
 
+  // Sub-categories screen
   if (!currentSubCategory) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
         <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-6 pt-12">
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative z-10 px-4 text-center">
-            <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
-              🏪 اختر المتجر المفضل
-            </h1>
-            <p className="text-white/90 arabic-text text-lg drop-shadow-md">
-              تصفح أفضل المتاجر والمطاعم
-            </p>
+          <div className="relative z-10 px-4">
+            {/* Back Button */}
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                onClick={handleBackToMain}
+                variant="ghost"
+                className="text-white hover:bg-white/20 p-2 rounded-xl"
+              >
+                <ArrowRight className="w-5 h-5 ml-2" />
+                <span className="arabic-text">العودة للرئيسية</span>
+              </Button>
+            </div>
+            
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
+                🏪 {categoryName}
+              </h1>
+              <p className="text-white/90 arabic-text text-lg drop-shadow-md">
+                اختر المتجر المفضل لديك
+              </p>
+            </div>
           </div>
         </div>
         
@@ -135,17 +197,32 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
     );
   }
 
+  // Products screen
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
       <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-6 pt-12">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 px-4 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
-            🍽️ قائمة المنتجات
-          </h1>
-          <p className="text-white/90 arabic-text text-lg drop-shadow-md">
-            اختر منتجاتك المفضلة
-          </p>
+        <div className="relative z-10 px-4">
+          {/* Back Button */}
+          <div className="flex items-center justify-between mb-4">
+            <Button
+              onClick={handleBackToCategory}
+              variant="ghost"
+              className="text-white hover:bg-white/20 p-2 rounded-xl"
+            >
+              <ArrowRight className="w-5 h-5 ml-2" />
+              <span className="arabic-text">العودة للمتاجر</span>
+            </Button>
+          </div>
+          
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
+              🍽️ {subCategoryName}
+            </h1>
+            <p className="text-white/90 arabic-text text-lg drop-shadow-md">
+              اختر منتجاتك المفضلة
+            </p>
+          </div>
         </div>
       </div>
       

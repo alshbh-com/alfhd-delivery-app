@@ -27,16 +27,16 @@ export const CategoryGridHeader = ({ showSubCategories, categoriesCount }: Categ
           
           <div>
             <h2 className="text-2xl font-bold text-gray-800 arabic-text mb-1 flex items-center">
-              {showSubCategories ? '🏪 المتاجر والمطاعم' : '🎯 تصفح حسب الفئة'}
+              {showSubCategories ? '🏪 اختر المتجر' : '🎯 الأقسام الرئيسية'}
             </h2>
             <p className="text-gray-600 arabic-text text-base leading-relaxed">
-              {showSubCategories ? 'اختر المتجر المفضل لديك واستمتع بالتسوق' : 'اكتشف أفضل الفئات المتاحة لديك'}
+              {showSubCategories ? 'اختر من بين أفضل المتاجر المتاحة' : 'جميع الأقسام المتاحة في التطبيق'}
             </p>
           </div>
         </div>
         
         <Badge className="arabic-text text-lg px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 shadow-lg font-bold">
-          {categoriesCount} {showSubCategories ? 'متجر' : 'فئة'}
+          {categoriesCount} {showSubCategories ? 'متجر' : 'قسم'}
         </Badge>
       </div>
     </div>

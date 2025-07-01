@@ -44,7 +44,6 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
     if (videoRef.current) {
       videoRef.current.muted = true;
       videoRef.current.play().catch(() => {
-        // Video autoplay failed, which is fine
         setIsVideoPlaying(false);
       });
     }
@@ -63,11 +62,11 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex flex-col relative overflow-hidden">
-      {/* Background Video */}
+      {/* Background Video - Real cooking video */}
       <div className="absolute inset-0 z-0">
         <video
           ref={videoRef}
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-full object-cover opacity-25"
           autoPlay
           muted
           loop
@@ -75,14 +74,12 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
           onLoadStart={() => console.log('Video loading started')}
           onCanPlay={() => console.log('Video can play')}
         >
-          <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
-          {/* Fallback gradient if video fails */}
+          <source src="https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/2620043/2620043-uhd_2560_1440_30fps.mp4" type="video/mp4" />
         </video>
         
-        {/* Video overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/80 via-white/90 to-red-50/80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/85 via-white/90 to-red-50/85" />
         
-        {/* Video control button */}
         <button
           onClick={toggleVideo}
           className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"

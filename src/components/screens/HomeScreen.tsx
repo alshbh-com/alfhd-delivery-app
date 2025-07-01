@@ -34,19 +34,19 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
-        <div className="bg-gradient-to-br from-orange-200 via-white to-red-200 py-8 shadow-lg">
-          <div className="text-center mb-6 px-4">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4 arabic-text drop-shadow-lg">
-              🛍️ مرحباً بك في متجرنا
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white py-6 shadow-sm border-b">
+          <div className="text-center mb-4 px-4">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2 arabic-text">
+              🛍️ طلبيات
             </h1>
-            <p className="text-gray-700 arabic-text text-xl font-medium">
+            <p className="text-gray-600 arabic-text text-lg">
               اختر القسم المناسب وابدأ التسوق الآن
             </p>
           </div>
         </div>
         <OffersCarousel />
-        <div className="p-6">
+        <div className="p-4">
           <CategoriesGrid 
             onCategorySelect={handleCategorySelect}
             selectedSubCategory={selectedSubCategory}
@@ -58,7 +58,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   if (!currentSubCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 p-6">
+      <div className="min-h-screen bg-gray-50 p-4">
         <CategoriesGrid 
           parentCategoryId={selectedCategory}
           onCategorySelect={handleSubCategorySelect}
@@ -70,7 +70,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4">
       <ProductsGrid 
         subCategoryId={currentSubCategory}
         onAddToCart={handleAddToCartWithWarning}

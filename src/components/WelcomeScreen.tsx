@@ -12,7 +12,7 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
 
   const slides = [
     {
-      title: "أهلاً بك في متجر الفهد",
+      title: "أهلاً بك في طلبيات",
       subtitle: "أسرع خدمة توصيل في منطقتك",
       icon: "🛍️",
       color: "from-orange-400 to-red-400"

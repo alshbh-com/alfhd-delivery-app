@@ -44,8 +44,8 @@ export const ProfileScreen = () => {
     {
       icon: Phone,
       title: 'رقم الهاتف',
-      value: '+20 102 471 3976',
-      action: () => window.open('tel:+201024713976')
+      value: '+20 120 448 6263',
+      action: () => window.open('tel:+201204486263')
     },
     {
       icon: Mail,

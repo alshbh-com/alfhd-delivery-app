@@ -34,7 +34,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 255 95% 55%;
 
-    --radius: 1rem; /* زوايا أكثر استدارة */
+    --radius: 1.5rem; /* زوايا أكثر استدارة */
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -83,7 +83,7 @@
   }
 
   body {
-    @apply bg-white text-foreground font-sans;
+    @apply bg-gradient-to-br from-orange-50 via-white to-red-50 text-foreground font-sans;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
@@ -91,38 +91,70 @@
 /* تأثيرات مخصصة مثل تطبيق طلبات - تحسين للوضوح */
 @layer components {
   .talabat-gradient {
-    @apply bg-gradient-to-br from-orange-400 via-red-400 to-pink-400;
+    @apply bg-gradient-to-br from-orange-500 via-red-500 to-pink-500;
   }
   
   .talabat-card {
-    @apply bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105;
+    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
   }
   
   .talabat-button {
-    @apply bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105;
+    @apply bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 hover:from-orange-600 hover:to-red-600;
   }
   
   .talabat-input {
-    @apply bg-white border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white transition-all duration-300;
+    @apply bg-white/95 backdrop-blur-md border-2 border-orange-200 rounded-2xl px-6 py-4 focus:border-orange-500 focus:bg-white transition-all duration-300 shadow-lg;
   }
   
   .category-card {
-    @apply bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105;
+    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105 hover:-translate-y-2;
   }
   
   .product-card {
-    @apply bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg;
+    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-102;
   }
   
   .floating-card {
-    @apply bg-white rounded-2xl shadow-lg border border-gray-100;
+    @apply bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-orange-100;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
   }
 }
 
 /* تحسينات الخط والطباعة */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 .arabic-text {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   direction: rtl;
+}
+
+/* تحسينات الحركة */
+@layer utilities {
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
+  }
 }

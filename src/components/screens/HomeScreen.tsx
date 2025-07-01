@@ -3,6 +3,8 @@ import { useState, useCallback, memo } from 'react';
 import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { ProductsGrid } from '@/components/ProductsGrid';
 import { OffersCarousel } from '@/components/OffersCarousel';
+import { MapPin, Search, Bell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface HomeScreenProps {
   onAddToCart: (product: any, quantity?: number) => void;
@@ -34,23 +36,73 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white py-6 shadow-sm border-b">
-          <div className="text-center mb-4 px-4">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2 arabic-text">
-              🛍️ طلبيات
-            </h1>
-            <p className="text-gray-600 arabic-text text-lg">
-              اختر القسم المناسب وابدأ التسوق الآن
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+        {/* Header المحدث */}
+        <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-8 pt-12">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative z-10 px-4">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3 text-white">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-sm arabic-text">التوصيل إلى</p>
+                  <p className="text-white font-bold arabic-text">الموقع الحالي</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl">
+                  <Bell className="w-5 h-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl">
+                  <Search className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Welcome Message */}
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-2xl">
+                <span className="text-4xl">🛍️</span>
+              </div>
+              <h1 className="text-4xl font-bold text-white mb-3 arabic-text drop-shadow-lg">
+                أهلاً بك في طلبيات
+              </h1>
+              <p className="text-white/90 arabic-text text-lg font-medium drop-shadow-md">
+                اختر القسم المناسب وابدأ التسوق الآن
+              </p>
+            </div>
+
+            {/* Search Bar */}
+            <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-2xl border border-white/50">
+              <div className="flex items-center space-x-3">
+                <Search className="w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="ابحث عن المطاعم والمتاجر..."
+                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text"
+                />
+              </div>
+            </div>
           </div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-4 right-4 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-4 left-4 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
         </div>
-        <OffersCarousel />
-        <div className="p-4">
-          <CategoriesGrid 
-            onCategorySelect={handleCategorySelect}
-            selectedSubCategory={selectedSubCategory}
-          />
+
+        {/* Content */}
+        <div className="relative -mt-4 z-10">
+          <OffersCarousel />
+          <div className="p-4">
+            <CategoriesGrid 
+              onCategorySelect={handleCategorySelect}
+              selectedSubCategory={selectedSubCategory}
+            />
+          </div>
         </div>
       </div>
     );
@@ -58,23 +110,51 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   if (!currentSubCategory) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <CategoriesGrid 
-          parentCategoryId={selectedCategory}
-          onCategorySelect={handleSubCategorySelect}
-          showSubCategories={true}
-          selectedSubCategory={selectedSubCategory}
-        />
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+        <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-6 pt-12">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative z-10 px-4 text-center">
+            <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
+              🏪 اختر المتجر المفضل
+            </h1>
+            <p className="text-white/90 arabic-text text-lg drop-shadow-md">
+              تصفح أفضل المتاجر والمطاعم
+            </p>
+          </div>
+        </div>
+        
+        <div className="relative -mt-4 z-10 p-4">
+          <CategoriesGrid 
+            parentCategoryId={selectedCategory}
+            onCategorySelect={handleSubCategorySelect}
+            showSubCategories={true}
+            selectedSubCategory={selectedSubCategory}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <ProductsGrid 
-        subCategoryId={currentSubCategory}
-        onAddToCart={handleAddToCartWithWarning}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+      <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-6 pt-12">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10 px-4 text-center">
+          <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
+            🍽️ قائمة المنتجات
+          </h1>
+          <p className="text-white/90 arabic-text text-lg drop-shadow-md">
+            اختر منتجاتك المفضلة
+          </p>
+        </div>
+      </div>
+      
+      <div className="relative -mt-4 z-10 p-4">
+        <ProductsGrid 
+          subCategoryId={currentSubCategory}
+          onAddToCart={handleAddToCartWithWarning}
+        />
+      </div>
     </div>
   );
 });

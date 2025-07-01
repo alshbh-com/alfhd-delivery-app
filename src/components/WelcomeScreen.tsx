@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Star, Clock, Truck } from 'lucide-react';
+import { ChevronLeft, Star, Clock, Truck, Play, Pause } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onContinue: () => void;
@@ -9,6 +9,8 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const slides = [
     {
@@ -34,86 +36,139 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {
+        // Video autoplay failed, which is fine
+        setIsVideoPlaying(false);
+      });
+    }
+  }, []);
+
+  const toggleVideo = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex flex-col">
-      {/* Header */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex flex-col relative overflow-hidden">
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover opacity-20"
+          autoPlay
+          muted
+          loop
+          playsInline
+          onLoadStart={() => console.log('Video loading started')}
+          onCanPlay={() => console.log('Video can play')}
+        >
+          <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
+          {/* Fallback gradient if video fails */}
+        </video>
+        
+        {/* Video overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/80 via-white/90 to-red-50/80" />
+        
+        {/* Video control button */}
+        <button
+          onClick={toggleVideo}
+          className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+        >
+          {isVideoPlaying ? (
+            <Pause className="w-5 h-5 text-gray-700" />
+          ) : (
+            <Play className="w-5 h-5 text-gray-700 ml-0.5" />
+          )}
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
         {/* Logo */}
-        <div className="mb-8">
-          <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-4xl">🛍️</span>
+        <div className="mb-8 animate-bounce">
+          <div className="w-28 h-28 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white">
+            <span className="text-5xl">🛍️</span>
           </div>
         </div>
 
         {/* Slide Content */}
         <div className="text-center mb-12 px-4 max-w-md">
-          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br ${slides[currentSlide].color} mb-6 shadow-lg`}>
-            <span className="text-2xl">{slides[currentSlide].icon}</span>
+          <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${slides[currentSlide].color} mb-6 shadow-2xl border-4 border-white animate-pulse`}>
+            <span className="text-3xl">{slides[currentSlide].icon}</span>
           </div>
           
-          <h1 className="text-3xl font-bold text-gray-800 mb-4 arabic-text">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4 arabic-text animate-fade-in">
             {slides[currentSlide].title}
           </h1>
           
-          <p className="text-lg text-gray-600 arabic-text leading-relaxed">
+          <p className="text-xl text-gray-600 arabic-text leading-relaxed animate-fade-in">
             {slides[currentSlide].subtitle}
           </p>
         </div>
 
         {/* Slide Indicators */}
-        <div className="flex space-x-2 mb-8">
+        <div className="flex space-x-3 mb-8">
           {slides.map((_, index) => (
             <div
               key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`h-4 rounded-full transition-all duration-500 border-2 border-white shadow-lg ${
                 index === currentSlide
-                  ? 'bg-orange-500 w-8'
-                  : 'bg-gray-300'
+                  ? 'bg-orange-500 w-12'
+                  : 'bg-gray-300 w-4'
               }`}
             />
           ))}
         </div>
 
         {/* Features */}
-        <div className="grid grid-cols-3 gap-4 w-full max-w-md mb-8">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-2 mx-auto">
-              <Clock className="w-6 h-6 text-green-600" />
+        <div className="grid grid-cols-3 gap-6 w-full max-w-sm mb-8">
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-xl border-2 border-white group-hover:scale-110 transition-transform duration-300">
+              <Clock className="w-8 h-8 text-white" />
             </div>
-            <p className="text-xs text-gray-700 arabic-text font-medium">توصيل سريع</p>
+            <p className="text-sm text-gray-700 arabic-text font-bold">توصيل سريع</p>
           </div>
           
-          <div className="text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2 mx-auto">
-              <Star className="w-6 h-6 text-blue-600" />
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-xl border-2 border-white group-hover:scale-110 transition-transform duration-300">
+              <Star className="w-8 h-8 text-white" />
             </div>
-            <p className="text-xs text-gray-700 arabic-text font-medium">جودة عالية</p>
+            <p className="text-sm text-gray-700 arabic-text font-bold">جودة عالية</p>
           </div>
           
-          <div className="text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-2 mx-auto">
-              <Truck className="w-6 h-6 text-purple-600" />
+          <div className="text-center group">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-xl border-2 border-white group-hover:scale-110 transition-transform duration-300">
+              <Truck className="w-8 h-8 text-white" />
             </div>
-            <p className="text-xs text-gray-700 arabic-text font-medium">خدمة 24/7</p>
+            <p className="text-sm text-gray-700 arabic-text font-bold">خدمة 24/7</p>
           </div>
         </div>
       </div>
 
       {/* Bottom Section */}
-      <div className="p-6 space-y-4">
+      <div className="relative z-10 p-6 space-y-4">
         <Button
           onClick={onContinue}
-          className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg py-4 arabic-text font-semibold rounded-xl shadow-lg"
+          className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xl py-6 arabic-text font-bold rounded-2xl shadow-2xl border-2 border-white hover:scale-105 transition-all duration-300"
         >
           ابدأ التسوق الآن
-          <ChevronLeft className="mr-2 h-5 w-5" />
+          <ChevronLeft className="mr-3 h-6 w-6" />
         </Button>
         
-        <p className="text-center text-sm text-gray-600 arabic-text">
+        <p className="text-center text-base text-gray-600 arabic-text font-medium">
           اضغط للمتابعة وابدأ تجربة تسوق رائعة
         </p>
       </div>

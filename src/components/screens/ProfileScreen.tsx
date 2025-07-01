@@ -50,8 +50,8 @@ export const ProfileScreen = () => {
     {
       icon: Mail,
       title: 'البريد الإلكتروني',
-      value: 'developer@example.com',
-      action: () => window.open('mailto:developer@example.com')
+      value: 'alshbhh@outlook.com',
+      action: () => window.open('mailto:alshbhh@outlook.com')
     },
     {
       icon: MapPin,

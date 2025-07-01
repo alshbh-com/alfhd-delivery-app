@@ -131,6 +131,7 @@ export type Database = {
           id: string
           items: Json
           status: string | null
+          sub_category_id: string | null
           total_amount: number
           whatsapp_sent: boolean | null
         }
@@ -144,6 +145,7 @@ export type Database = {
           id?: string
           items: Json
           status?: string | null
+          sub_category_id?: string | null
           total_amount: number
           whatsapp_sent?: boolean | null
         }
@@ -157,10 +159,19 @@ export type Database = {
           id?: string
           items?: Json
           status?: string | null
+          sub_category_id?: string | null
           total_amount?: number
           whatsapp_sent?: boolean | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_sub_category_id_fkey"
+            columns: ["sub_category_id"]
+            isOneToOne: false
+            referencedRelation: "sub_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -213,9 +224,11 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean | null
+          is_open: boolean | null
           main_category_id: string | null
           name: string
           sort_order: number | null
+          whatsapp_number: string | null
         }
         Insert: {
           created_at?: string | null
@@ -223,9 +236,11 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_open?: boolean | null
           main_category_id?: string | null
           name: string
           sort_order?: number | null
+          whatsapp_number?: string | null
         }
         Update: {
           created_at?: string | null
@@ -233,9 +248,11 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_open?: boolean | null
           main_category_id?: string | null
           name?: string
           sort_order?: number | null
+          whatsapp_number?: string | null
         }
         Relationships: [
           {

@@ -2,12 +2,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Power } from 'lucide-react';
+import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Store } from 'lucide-react';
 import { CategoryManagement } from './CategoryManagement';
 import { ProductManagement } from './ProductManagement';
 import { OfferManagement } from './OfferManagement';
 import { CityManagement } from './CityManagement';
 import { AppSettings } from './AppSettings';
+import { SubCategoryManager } from './SubCategoryManager';
+import { StatsPanel } from './StatsPanel';
 
 interface AdminPanelProps {
   onBack: () => void;
@@ -18,6 +20,7 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
 
   const adminSections = [
     { id: 'categories', icon: Tag, title: 'إدارة الأقسام', description: 'إضافة وتعديل الأقسام الرئيسية والفرعية' },
+    { id: 'subcategories', icon: Store, title: 'إدارة الأقسام الفرعية', description: 'إدارة أرقام الواتساب وحالة الأقسام' },
     { id: 'products', icon: Package, title: 'إدارة المنتجات', description: 'إضافة وتعديل المنتجات' },
     { id: 'offers', icon: Gift, title: 'إدارة العروض', description: 'إضافة وتعديل العروض الترويجية' },
     { id: 'cities', icon: MapPin, title: 'إدارة المناطق', description: 'إدارة المناطق وأسعار التوصيل' },
@@ -26,6 +29,10 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
 
   if (activeSection === 'categories') {
     return <CategoryManagement onBack={() => setActiveSection(null)} />;
+  }
+
+  if (activeSection === 'subcategories') {
+    return <SubCategoryManager onBack={() => setActiveSection(null)} />;
   }
 
   if (activeSection === 'products') {

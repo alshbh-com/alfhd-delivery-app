@@ -13,7 +13,8 @@ interface StatsPanelProps {
 
 export const StatsPanel = ({ onBack }: StatsPanelProps) => {
   const [orders, setOrders] = useState<any[]>([]);
-  const [stats, setStats] = useState({
+  const [subCategoryStats, setSubCategoryStats] = useState<any[]>([]);
+  const [totalStats, setTotalStats] = useState({
     totalOrders: 0,
     todayOrders: 0,
     totalDeliveryRevenue: 0,
@@ -30,7 +31,10 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
     try {
       const { data } = await supabase
         .from('orders')
-        .select('*')
+        .select(`
+          *,
+          sub_categories(name, whatsapp_number)
+        `)
         .order('created_at', { ascending: false });
       
       if (data) setOrders(data);
@@ -42,23 +46,66 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
 
   const loadStats = async () => {
     try {
-      const { data: allOrders } = await supabase
+      // جلب إحصائيات الأقسام الفرعية
+      const { data: subCategoryData } = await supabase
         .from('orders')
-        .select('delivery_fee, created_at');
+        .select(`
+          sub_category_id,
+          delivery_fee,
+          created_at,
+          sub_categories(name)
+        `);
       
-      if (allOrders) {
+      if (subCategoryData) {
         const today = new Date().toDateString();
-        const todayOrders = allOrders.filter(order => 
+        
+        // تجميع الإحصائيات حسب القسم الفرعي
+        const statsMap = new Map();
+        
+        subCategoryData.forEach(order => {
+          const subCategoryId = order.sub_category_id;
+          const subCategoryName = order.sub_categories?.name || 'غير محدد';
+          const isToday = new Date(order.created_at).toDateString() === today;
+          const deliveryFee = Number(order.delivery_fee || 0);
+          
+          if (!statsMap.has(subCategoryId)) {
+            statsMap.set(subCategoryId, {
+              id: subCategoryId,
+              name: subCategoryName,
+              totalOrders: 0,
+              todayOrders: 0,
+              totalRevenue: 0,
+              todayRevenue: 0
+            });
+          }
+          
+          const stats = statsMap.get(subCategoryId);
+          stats.totalOrders += 1;
+          stats.totalRevenue += deliveryFee;
+          
+          if (isToday) {
+            stats.todayOrders += 1;
+            stats.todayRevenue += deliveryFee;
+          }
+        });
+        
+        setSubCategoryStats(Array.from(statsMap.values()));
+        
+        // حساب الإحصائيات الإجمالية
+        const totalOrders = subCategoryData.length;
+        const todayOrders = subCategoryData.filter(order => 
           new Date(order.created_at).toDateString() === today
+        ).length;
+        const totalDeliveryRevenue = subCategoryData.reduce((sum, order) => 
+          sum + Number(order.delivery_fee || 0), 0
         );
+        const todayDeliveryRevenue = subCategoryData
+          .filter(order => new Date(order.created_at).toDateString() === today)
+          .reduce((sum, order) => sum + Number(order.delivery_fee || 0), 0);
         
-        // حساب أرباح التوصيل فقط
-        const totalDeliveryRevenue = allOrders.reduce((sum, order) => sum + Number(order.delivery_fee || 0), 0);
-        const todayDeliveryRevenue = todayOrders.reduce((sum, order) => sum + Number(order.delivery_fee || 0), 0);
-        
-        setStats({
-          totalOrders: allOrders.length,
-          todayOrders: todayOrders.length,
+        setTotalStats({
+          totalOrders,
+          todayOrders,
           totalDeliveryRevenue,
           todayDeliveryRevenue
         });
@@ -118,13 +165,13 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         <h1 className="text-2xl font-bold text-gray-800">الإحصائيات والطلبات</h1>
       </div>
 
-      {/* إحصائيات سريعة - أرباح التوصيل فقط */}
+      {/* الإحصائيات الإجمالية */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardContent className="p-4">
             <div className="text-center">
               <h3 className="text-lg font-semibold text-gray-700">إجمالي الطلبات</h3>
-              <p className="text-3xl font-bold text-blue-600">{stats.totalOrders}</p>
+              <p className="text-3xl font-bold text-blue-600">{totalStats.totalOrders}</p>
             </div>
           </CardContent>
         </Card>
@@ -133,7 +180,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
           <CardContent className="p-4">
             <div className="text-center">
               <h3 className="text-lg font-semibold text-gray-700">طلبات اليوم</h3>
-              <p className="text-3xl font-bold text-green-600">{stats.todayOrders}</p>
+              <p className="text-3xl font-bold text-green-600">{totalStats.todayOrders}</p>
             </div>
           </CardContent>
         </Card>
@@ -142,7 +189,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
           <CardContent className="p-4">
             <div className="text-center">
               <h3 className="text-lg font-semibold text-gray-700">إجمالي أرباح التوصيل</h3>
-              <p className="text-3xl font-bold text-purple-600">{stats.totalDeliveryRevenue.toFixed(2)} جنيه</p>
+              <p className="text-3xl font-bold text-purple-600">{totalStats.totalDeliveryRevenue.toFixed(2)} جنيه</p>
             </div>
           </CardContent>
         </Card>
@@ -151,11 +198,42 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
           <CardContent className="p-4">
             <div className="text-center">
               <h3 className="text-lg font-semibold text-gray-700">أرباح التوصيل اليوم</h3>
-              <p className="text-3xl font-bold text-orange-600">{stats.todayDeliveryRevenue.toFixed(2)} جنيه</p>
+              <p className="text-3xl font-bold text-orange-600">{totalStats.todayDeliveryRevenue.toFixed(2)} جنيه</p>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* إحصائيات الأقسام الفرعية */}
+      <Card>
+        <CardHeader>
+          <CardTitle>إحصائيات الأقسام الفرعية</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>اسم القسم</TableHead>
+                <TableHead>إجمالي الطلبات</TableHead>
+                <TableHead>طلبات اليوم</TableHead>
+                <TableHead>إجمالي الأرباح</TableHead>
+                <TableHead>أرباح اليوم</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {subCategoryStats.map((stat) => (
+                <TableRow key={stat.id}>
+                  <TableCell className="font-medium">{stat.name}</TableCell>
+                  <TableCell>{stat.totalOrders}</TableCell>
+                  <TableCell>{stat.todayOrders}</TableCell>
+                  <TableCell>{stat.totalRevenue.toFixed(2)} جنيه</TableCell>
+                  <TableCell>{stat.todayRevenue.toFixed(2)} جنيه</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       {/* جدول الطلبات */}
       <Card>
@@ -169,7 +247,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                 <TableHead>رقم الطلب</TableHead>
                 <TableHead>اسم العميل</TableHead>
                 <TableHead>الهاتف</TableHead>
-                <TableHead>المنطقة</TableHead>
+                <TableHead>القسم</TableHead>
                 <TableHead>رسوم التوصيل</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead>التاريخ</TableHead>
@@ -182,7 +260,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                   <TableCell className="font-mono text-sm">{order.id.slice(0, 8)}</TableCell>
                   <TableCell>{order.customer_name}</TableCell>
                   <TableCell>{order.customer_phone}</TableCell>
-                  <TableCell>{order.customer_city}</TableCell>
+                  <TableCell>{order.sub_categories?.name || 'غير محدد'}</TableCell>
                   <TableCell>{Number(order.delivery_fee || 0).toFixed(2)} جنيه</TableCell>
                   <TableCell>
                     <select
@@ -206,7 +284,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                         variant="outline"
                         onClick={() => {
                           const items = JSON.stringify(order.items, null, 2);
-                          alert(`تفاصيل الطلب:\n\nالعناصر:\n${items}\n\nالموقع: ${order.customer_location || 'غير محدد'}\n\nإجمالي المبلغ: ${order.total_amount} جنيه`);
+                          alert(`تفاصيل الطلب:\n\nالعناصر:\n${items}\n\nالموقع: ${order.customer_location || 'غير محدد'}\n\nإجمالي المبلغ: ${order.total_amount} جنيه\n\nرقم الواتساب: ${order.sub_categories?.whatsapp_number || 'غير محدد'}`);
                         }}
                       >
                         <Eye className="w-4 h-4" />

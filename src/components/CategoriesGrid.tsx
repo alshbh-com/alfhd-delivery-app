@@ -3,18 +3,20 @@ import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, Store, Utensils } from 'lucide-react';
+import { ChevronLeft, Store, Utensils, Clock } from 'lucide-react';
 
 interface CategoriesGridProps {
   parentCategoryId?: string;
   onCategorySelect: (categoryId: string) => void;
   showSubCategories?: boolean;
+  selectedSubCategory?: string | null;
 }
 
 export const CategoriesGrid = ({ 
   parentCategoryId, 
   onCategorySelect, 
-  showSubCategories = false 
+  showSubCategories = false,
+  selectedSubCategory 
 }: CategoriesGridProps) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +71,11 @@ export const CategoriesGrid = ({
     );
   }
 
+  // إخفاء الأقسام الأخرى إذا تم اختيار قسم فرعي معين
+  const filteredCategories = selectedSubCategory && showSubCategories 
+    ? categories.filter(cat => cat.id === selectedSubCategory)
+    : categories;
+
   const gradients = [
     'from-blue-400 to-purple-500',
     'from-green-400 to-teal-500',
@@ -95,18 +102,24 @@ export const CategoriesGrid = ({
         
         {!showSubCategories && (
           <Badge variant="secondary" className="arabic-text">
-            {categories.length} فئة
+            {filteredCategories.length} فئة
           </Badge>
         )}
       </div>
       
       {/* Categories Grid */}
       <div className="grid grid-cols-2 gap-4">
-        {categories.map((category, index) => (
+        {filteredCategories.map((category, index) => (
           <Card
             key={category.id}
-            className="category-card cursor-pointer group"
-            onClick={() => onCategorySelect(category.id)}
+            className={`category-card cursor-pointer group ${
+              !category.is_open ? 'opacity-60' : ''
+            }`}
+            onClick={() => {
+              if (category.is_open !== false) {
+                onCategorySelect(category.id);
+              }
+            }}
           >
             <CardContent className="p-0 relative overflow-hidden">
               {/* Background */}
@@ -117,6 +130,16 @@ export const CategoriesGrid = ({
                 <div className="absolute top-2 right-2 w-16 h-16 border-2 border-white rounded-full" />
                 <div className="absolute bottom-2 left-2 w-8 h-8 border-2 border-white rounded-full" />
               </div>
+              
+              {/* Closed Status Overlay */}
+              {category.is_open === false && (
+                <div className="absolute inset-0 bg-black/60 z-20 flex items-center justify-center">
+                  <div className="text-white text-center">
+                    <Clock className="w-8 h-8 mx-auto mb-2" />
+                    <p className="text-sm font-semibold">مغلق مؤقتاً</p>
+                  </div>
+                </div>
+              )}
               
               {/* Content */}
               <div className="relative z-10 p-4 h-36 flex flex-col justify-between text-white">
@@ -166,7 +189,7 @@ export const CategoriesGrid = ({
         ))}
       </div>
       
-      {categories.length === 0 && (
+      {filteredCategories.length === 0 && (
         <div className="text-center py-12">
           <div className="w-24 h-24 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Store className="w-12 h-12 text-gray-400" />

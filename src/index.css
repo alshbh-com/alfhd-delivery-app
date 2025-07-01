@@ -1,4 +1,5 @@
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -111,7 +112,7 @@
   }
   
   .product-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-102;
+    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
   }
   
   .floating-card {
@@ -158,3 +159,4 @@
     @apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
   }
 }
+

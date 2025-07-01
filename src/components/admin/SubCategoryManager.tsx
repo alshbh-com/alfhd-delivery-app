@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit, Phone, Power, PowerOff } from 'lucide-react';
+import { Edit, Phone, Power, PowerOff, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -62,6 +62,38 @@ export const SubCategoryManager = ({ onBack }: SubCategoryManagerProps) => {
     } catch (error) {
       console.error('Error updating sub category:', error);
       toast({ title: "حدث خطأ في التحديث", variant: "destructive" });
+    }
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`هل أنت متأكد من حذف القسم "${name}"؟\n\nسيتم حذف جميع المنتجات والطلبات المرتبطة بهذا القسم.`)) {
+      return;
+    }
+
+    try {
+      // أولاً احذف جميع المنتجات المرتبطة بهذا القسم
+      await supabase
+        .from('products')
+        .delete()
+        .eq('sub_category_id', id);
+
+      // ثم احذف جميع الطلبات المرتبطة بهذا القسم
+      await supabase
+        .from('orders')
+        .delete()
+        .eq('sub_category_id', id);
+
+      // أخيراً احذف القسم الفرعي نفسه
+      await supabase
+        .from('sub_categories')
+        .delete()
+        .eq('id', id);
+
+      toast({ title: "تم حذف القسم وجميع البيانات المرتبطة به بنجاح" });
+      loadSubCategories();
+    } catch (error) {
+      console.error('Error deleting sub category:', error);
+      toast({ title: "حدث خطأ في الحذف", variant: "destructive" });
     }
   };
 
@@ -173,6 +205,13 @@ export const SubCategoryManager = ({ onBack }: SubCategoryManagerProps) => {
                             ) : (
                               <Power className="w-4 h-4" />
                             )}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(subCategory.id, subCategory.name)}
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </>
                       )}

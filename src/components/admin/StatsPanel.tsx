@@ -219,6 +219,29 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         </Card>
       </div>
 
+      {/* قسم الإحصائيات المميز - عدد الطلبات لكل قسم */}
+      <Card>
+        <CardHeader>
+          <CardTitle>الأقسام الأكثر طلباً</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {subCategoryStats
+              .sort((a, b) => b.totalOrders - a.totalOrders)
+              .slice(0, 6)
+              .map((stat) => (
+                <div key={stat.id} className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border">
+                  <h4 className="font-semibold text-gray-800 mb-2">{stat.name}</h4>
+                  <div className="flex justify-between items-center">
+                    <span className="text-2xl font-bold text-blue-600">{stat.totalOrders}</span>
+                    <span className="text-sm text-gray-600">طلب</span>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* إحصائيات الأقسام الفرعية */}
       <Card>
         <CardHeader>

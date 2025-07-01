@@ -1,60 +1,47 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Minus, Trash2, ShoppingBag, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
 interface CartScreenProps {
   cart: any[];
-  selectedCity: string;
   onUpdateCart: (productId: string, quantity: number) => void;
   onClearCart: () => void;
   selectedSubCategory?: string;
 }
 
-export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, selectedSubCategory }: CartScreenProps) => {
+export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategory }: CartScreenProps) => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [deliveryFee, setDeliveryFee] = useState(15);
+  const [addressWritten, setAddressWritten] = useState(false);
   const { toast } = useToast();
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const deliveryFee = 0; // سيتم تحديده على الواتساب
   const total = subtotal + deliveryFee;
-
-  // تحديد سعر التوصيل حسب المدينة المختارة
-  useEffect(() => {
-    const getDeliveryFee = async () => {
-      try {
-        const { data } = await supabase
-          .from('allowed_cities')
-          .select('delivery_price')
-          .eq('name', selectedCity)
-          .eq('is_active', true)
-          .single();
-        
-        if (data) {
-          setDeliveryFee(Number(data.delivery_price));
-        }
-      } catch (error) {
-        console.error('Error getting delivery fee:', error);
-        setDeliveryFee(15); // القيمة الافتراضية
-      }
-    };
-
-    if (selectedCity) {
-      getDeliveryFee();
-    }
-  }, [selectedCity]);
 
   const handleSubmitOrder = async () => {
     if (!customerName.trim() || !customerPhone.trim()) {
       toast({
         title: "بيانات مطلوبة",
         description: "يرجى إدخال الاسم ورقم الهاتف",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!addressWritten) {
+      toast({
+        title: "العنوان مطلوب",
+        description: "يرجى كتابة العنوان والضغط على 'كتبت العنوان'",
         variant: "destructive"
       });
       return;
@@ -69,40 +56,24 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
       return;
     }
 
-    // طلب إذن الموقع
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          await submitOrderWithLocation(position.coords);
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          submitOrderWithLocation(null);
-        }
-      );
-    } else {
-      await submitOrderWithLocation(null);
-    }
+    await submitOrder();
   };
 
-  const submitOrderWithLocation = async (coords: any) => {
+  const submitOrder = async () => {
     setIsSubmitting(true);
 
     try {
-      // تحديد القسم الفرعي من المنتجات في السلة أو من selectedSubCategory
-      const subCategoryId = selectedSubCategory || (cart.length > 0 ? cart[0].sub_category_id : null);
-
       // حفظ الطلب في قاعدة البيانات
       const orderData = {
         customer_name: customerName,
         customer_phone: customerPhone,
-        customer_city: selectedCity,
-        customer_location: coords ? `${coords.latitude},${coords.longitude}` : null,
+        customer_city: 'غير محدد', // سيتم تحديده على الواتساب
+        customer_location: customerAddress,
         items: cart,
         total_amount: total,
-        delivery_fee: deliveryFee,
+        delivery_fee: 0, // سيتم تحديده على الواتساب
         status: 'pending',
-        sub_category_id: subCategoryId
+        sub_category_id: selectedSubCategory
       };
 
       console.log('Submitting order with data:', orderData);
@@ -121,16 +92,18 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
       console.log('Order saved successfully:', data);
 
       // إرسال الطلب عبر واتساب
-      await sendWhatsAppOrder(subCategoryId);
+      await sendWhatsAppOrder();
 
       // مسح السلة وإعادة تعيين النموذج
       onClearCart();
       setCustomerName('');
       setCustomerPhone('');
+      setCustomerAddress('');
+      setAddressWritten(false);
 
       toast({
         title: "تم إرسال الطلب",
-        description: "سيتم التواصل معك قريباً لتأكيد الطلب",
+        description: "سيتم التواصل معك قريباً لتأكيد الطلب وتحديد رسوم التوصيل",
       });
 
     } catch (error) {
@@ -145,18 +118,18 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
     }
   };
 
-  const sendWhatsAppOrder = async (subCategoryId: string | null) => {
+  const sendWhatsAppOrder = async () => {
     try {
       // الحصول على رقم واتساب القسم الفرعي
       let whatsappNumber = '201024713976'; // الافتراضي
       
-      if (subCategoryId) {
-        console.log('Getting WhatsApp number for sub-category:', subCategoryId);
+      if (selectedSubCategory) {
+        console.log('Getting WhatsApp number for sub-category:', selectedSubCategory);
         
         const { data: subCategoryData, error } = await supabase
           .from('sub_categories')
           .select('whatsapp_number, name')
-          .eq('id', subCategoryId)
+          .eq('id', selectedSubCategory)
           .single();
         
         console.log('Sub-category data:', subCategoryData);
@@ -177,7 +150,7 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
       let message = `🛍️ *طلب جديد من تطبيق طلبيات*\n\n`;
       message += `👤 *اسم العميل:* ${customerName}\n`;
       message += `📱 *رقم الهاتف:* ${customerPhone}\n`;
-      message += `🏙️ *المدينة:* ${selectedCity}\n\n`;
+      message += `📍 *العنوان:* ${customerAddress}\n\n`;
       message += `🛒 *تفاصيل الطلب:*\n`;
       
       cart.forEach(item => {
@@ -185,9 +158,9 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
       });
       
       message += `\n💰 *المجموع الفرعي:* ${subtotal} جنيه\n`;
-      message += `🚚 *رسوم التوصيل:* ${deliveryFee} جنيه\n`;
-      message += `💳 *المجموع الكلي:* ${total} جنيه\n\n`;
-      message += `📍 *معرف القسم الفرعي:* ${subCategoryId || 'غير محدد'}\n`;
+      message += `🚚 *رسوم التوصيل:* سيتم تحديدها حسب المنطقة\n`;
+      message += `💳 *المجموع النهائي:* ${subtotal} جنيه + رسوم التوصيل\n\n`;
+      message += `📝 *ملاحظة:* يرجى تأكيد الطلب وتحديد رسوم التوصيل حسب المنطقة`;
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
       console.log('Opening WhatsApp URL:', whatsappUrl);
@@ -196,6 +169,22 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
     } catch (error) {
       console.error('Error sending WhatsApp message:', error);
     }
+  };
+
+  const handleAddressWritten = () => {
+    if (!customerAddress.trim()) {
+      toast({
+        title: "العنوان فارغ",
+        description: "يرجى كتابة العنوان أولاً",
+        variant: "destructive"
+      });
+      return;
+    }
+    setAddressWritten(true);
+    toast({
+      title: "تم تأكيد العنوان",
+      description: "يمكنك الآن إتمام الطلب",
+    });
   };
 
   if (cart.length === 0) {
@@ -271,13 +260,13 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
               <span>{subtotal} جنيه</span>
             </div>
             <div className="flex justify-between">
-              <span>رسوم التوصيل ({selectedCity}):</span>
-              <span>{deliveryFee} جنيه</span>
+              <span>رسوم التوصيل:</span>
+              <span>سيتم تحديدها على الواتساب</span>
             </div>
             <hr />
             <div className="flex justify-between font-bold text-lg">
-              <span>المجموع الكلي:</span>
-              <span>{total} جنيه</span>
+              <span>المجموع:</span>
+              <span>{subtotal} جنيه + رسوم التوصيل</span>
             </div>
           </div>
         </CardContent>
@@ -310,11 +299,25 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
           </div>
           
           <div className="space-y-2">
-            <Label>المنطقة المختارة</Label>
-            <div className="p-2 bg-gray-100 rounded">
-              {selectedCity}
-            </div>
+            <Label htmlFor="address">العنوان التفصيلي</Label>
+            <Textarea
+              id="address"
+              value={customerAddress}
+              onChange={(e) => setCustomerAddress(e.target.value)}
+              placeholder="أدخل عنوانك التفصيلي (الشارع، المنطقة، معالم مميزة)"
+              rows={3}
+            />
           </div>
+
+          <Button
+            onClick={handleAddressWritten}
+            variant={addressWritten ? "default" : "outline"}
+            className={`w-full ${addressWritten ? 'bg-green-600 hover:bg-green-700' : ''}`}
+            disabled={!customerAddress.trim()}
+          >
+            <MapPin className="w-4 h-4 mr-2" />
+            {addressWritten ? '✓ تم تأكيد العنوان' : 'كتبت العنوان'}
+          </Button>
 
           {/* عرض معلومات القسم الفرعي للتأكد */}
           {selectedSubCategory && (
@@ -332,7 +335,7 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
       <div className="space-y-3">
         <Button
           onClick={handleSubmitOrder}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !addressWritten}
           className="w-full bg-green-600 hover:bg-green-700 py-3 text-lg"
         >
           {isSubmitting ? 'جاري إرسال الطلب...' : 'إتمام الطلب'}

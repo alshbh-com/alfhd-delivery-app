@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { OffersCarousel } from '../OffersCarousel';
@@ -11,11 +10,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 interface HomeScreenProps {
   onAddToCart: (product: any, quantity: number) => void;
   selectedCity?: string;
+  selectedSubCategory?: string;
 }
 
-export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة" }: HomeScreenProps) => {
+export const HomeScreen = ({ onAddToCart, selectedCity = "المدينة", selectedSubCategory }: HomeScreenProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(selectedSubCategory);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);

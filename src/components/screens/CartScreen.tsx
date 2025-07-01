@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,9 +12,10 @@ interface CartScreenProps {
   selectedCity: string;
   onUpdateCart: (productId: string, quantity: number) => void;
   onClearCart: () => void;
+  selectedSubCategory?: string;
 }
 
-export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: CartScreenProps) => {
+export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, selectedSubCategory }: CartScreenProps) => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,7 +98,8 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
         items: cart,
         total_amount: total,
         delivery_fee: deliveryFee,
-        status: 'pending'
+        status: 'pending',
+        sub_category_id: selectedSubCategory
       };
 
       const { data, error } = await supabase
@@ -110,7 +111,7 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
       if (error) throw error;
 
       // إرسال الطلب عبر واتساب
-      await sendWhatsAppOrder(data, coords);
+      await sendWhatsAppOrder();
 
       // مسح السلة وإعادة تعيين النموذج
       onClearCart();
@@ -134,22 +135,27 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
     }
   };
 
-  const sendWhatsAppOrder = async (order: any, coords: any) => {
+  const sendWhatsAppOrder = async () => {
     try {
-      // الحصول على رقم واتساب من الإعدادات
-      const { data: settingsData } = await supabase
-        .from('app_settings')
-        .select('value')
-        .eq('key', 'whatsapp_number')
-        .single();
-
-      const whatsappNumber = settingsData?.value || '201024713976';
+      // الحصول على رقم واتساب القسم الفرعي
+      let whatsappNumber = '201024713976'; // الافتراضي
+      
+      if (selectedSubCategory) {
+        const { data: subCategoryData } = await supabase
+          .from('sub_categories')
+          .select('whatsapp_number')
+          .eq('id', selectedSubCategory)
+          .single();
+        
+        if (subCategoryData?.whatsapp_number) {
+          whatsappNumber = subCategoryData.whatsapp_number;
+        }
+      }
 
       // تكوين رسالة الطلب
       let message = `🛍️ *طلب جديد من تطبيق طلبيات*\n\n`;
-      message += `👤 *اسم العميل:* ${order.customer_name}\n`;
-      message += `📱 *رقم الهاتف:* ${order.customer_phone}\n`;
-      message += `📍 *المنطقة:* ${order.customer_city}\n\n`;
+      message += `👤 *اسم العميل:* ${customerName}\n`;
+      message += `📱 *رقم الهاتف:* ${customerPhone}\n\n`;
       message += `🛒 *تفاصيل الطلب:*\n`;
       
       cart.forEach(item => {
@@ -159,21 +165,9 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart }: Ca
       message += `\n💰 *المجموع الفرعي:* ${subtotal} جنيه\n`;
       message += `🚚 *رسوم التوصيل:* ${deliveryFee} جنيه\n`;
       message += `💳 *المجموع الكلي:* ${total} جنيه\n\n`;
-      message += `📋 *رقم الطلب:* ${order.id}\n`;
-
-      // إضافة الموقع إذا كان متاحاً
-      if (coords) {
-        message += `📍 *الموقع:* https://maps.google.com/?q=${coords.latitude},${coords.longitude}`;
-      }
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
-
-      // تحديث حالة الطلب
-      await supabase
-        .from('orders')
-        .update({ whatsapp_sent: true })
-        .eq('id', order.id);
 
     } catch (error) {
       console.error('Error sending WhatsApp message:', error);

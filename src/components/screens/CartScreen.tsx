@@ -89,6 +89,9 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
     setIsSubmitting(true);
 
     try {
+      // تحديد القسم الفرعي من المنتجات في السلة أو من selectedSubCategory
+      const subCategoryId = selectedSubCategory || (cart.length > 0 ? cart[0].sub_category_id : null);
+
       // حفظ الطلب في قاعدة البيانات
       const orderData = {
         customer_name: customerName,
@@ -99,8 +102,10 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
         total_amount: total,
         delivery_fee: deliveryFee,
         status: 'pending',
-        sub_category_id: selectedSubCategory
+        sub_category_id: subCategoryId
       };
+
+      console.log('Submitting order with data:', orderData);
 
       const { data, error } = await supabase
         .from('orders')
@@ -108,10 +113,15 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error inserting order:', error);
+        throw error;
+      }
+
+      console.log('Order saved successfully:', data);
 
       // إرسال الطلب عبر واتساب
-      await sendWhatsAppOrder();
+      await sendWhatsAppOrder(subCategoryId);
 
       // مسح السلة وإعادة تعيين النموذج
       onClearCart();
@@ -135,27 +145,39 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
     }
   };
 
-  const sendWhatsAppOrder = async () => {
+  const sendWhatsAppOrder = async (subCategoryId: string | null) => {
     try {
       // الحصول على رقم واتساب القسم الفرعي
       let whatsappNumber = '201024713976'; // الافتراضي
       
-      if (selectedSubCategory) {
-        const { data: subCategoryData } = await supabase
+      if (subCategoryId) {
+        console.log('Getting WhatsApp number for sub-category:', subCategoryId);
+        
+        const { data: subCategoryData, error } = await supabase
           .from('sub_categories')
-          .select('whatsapp_number')
-          .eq('id', selectedSubCategory)
+          .select('whatsapp_number, name')
+          .eq('id', subCategoryId)
           .single();
+        
+        console.log('Sub-category data:', subCategoryData);
+        
+        if (error) {
+          console.error('Error getting sub-category:', error);
+        }
         
         if (subCategoryData?.whatsapp_number) {
           whatsappNumber = subCategoryData.whatsapp_number;
+          console.log('Using sub-category WhatsApp number:', whatsappNumber);
+        } else {
+          console.log('No WhatsApp number found for sub-category, using default:', whatsappNumber);
         }
       }
 
       // تكوين رسالة الطلب
       let message = `🛍️ *طلب جديد من تطبيق طلبيات*\n\n`;
       message += `👤 *اسم العميل:* ${customerName}\n`;
-      message += `📱 *رقم الهاتف:* ${customerPhone}\n\n`;
+      message += `📱 *رقم الهاتف:* ${customerPhone}\n`;
+      message += `🏙️ *المدينة:* ${selectedCity}\n\n`;
       message += `🛒 *تفاصيل الطلب:*\n`;
       
       cart.forEach(item => {
@@ -165,8 +187,10 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
       message += `\n💰 *المجموع الفرعي:* ${subtotal} جنيه\n`;
       message += `🚚 *رسوم التوصيل:* ${deliveryFee} جنيه\n`;
       message += `💳 *المجموع الكلي:* ${total} جنيه\n\n`;
+      message += `📍 *معرف القسم الفرعي:* ${subCategoryId || 'غير محدد'}\n`;
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      console.log('Opening WhatsApp URL:', whatsappUrl);
       window.open(whatsappUrl, '_blank');
 
     } catch (error) {
@@ -291,6 +315,16 @@ export const CartScreen = ({ cart, selectedCity, onUpdateCart, onClearCart, sele
               {selectedCity}
             </div>
           </div>
+
+          {/* عرض معلومات القسم الفرعي للتأكد */}
+          {selectedSubCategory && (
+            <div className="space-y-2">
+              <Label>معرف القسم الفرعي</Label>
+              <div className="p-2 bg-blue-50 rounded text-sm">
+                {selectedSubCategory}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

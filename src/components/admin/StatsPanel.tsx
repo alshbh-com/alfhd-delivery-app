@@ -29,14 +29,20 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
 
   const loadOrders = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('orders')
         .select(`
           *,
-          sub_categories(name, whatsapp_number)
+          sub_categories!left(name, whatsapp_number)
         `)
         .order('created_at', { ascending: false });
       
+      if (error) {
+        console.error('Error loading orders:', error);
+        throw error;
+      }
+      
+      console.log('Loaded orders:', data);
       if (data) setOrders(data);
     } catch (error) {
       console.error('Error loading orders:', error);
@@ -46,15 +52,22 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
 
   const loadStats = async () => {
     try {
-      // جلب إحصائيات الأقسام الفرعية
-      const { data: subCategoryData } = await supabase
+      // جلب إحصائيات الأقسام الفرعية مع أسمائها
+      const { data: subCategoryData, error } = await supabase
         .from('orders')
         .select(`
           sub_category_id,
           delivery_fee,
           created_at,
-          sub_categories(name)
+          sub_categories!left(name)
         `);
+      
+      if (error) {
+        console.error('Error loading stats:', error);
+        throw error;
+      }
+      
+      console.log('Sub-category data for stats:', subCategoryData);
       
       if (subCategoryData) {
         const today = new Date().toDateString();
@@ -63,7 +76,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
         const statsMap = new Map();
         
         subCategoryData.forEach(order => {
-          const subCategoryId = order.sub_category_id;
+          const subCategoryId = order.sub_category_id || 'unknown';
           const subCategoryName = order.sub_categories?.name || 'غير محدد';
           const isToday = new Date(order.created_at).toDateString() === today;
           const deliveryFee = Number(order.delivery_fee || 0);
@@ -89,7 +102,9 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
           }
         });
         
-        setSubCategoryStats(Array.from(statsMap.values()));
+        const statsArray = Array.from(statsMap.values());
+        console.log('Final stats:', statsArray);
+        setSubCategoryStats(statsArray);
         
         // حساب الإحصائيات الإجمالية
         const totalOrders = subCategoryData.length;
@@ -284,7 +299,7 @@ export const StatsPanel = ({ onBack }: StatsPanelProps) => {
                         variant="outline"
                         onClick={() => {
                           const items = JSON.stringify(order.items, null, 2);
-                          alert(`تفاصيل الطلب:\n\nالعناصر:\n${items}\n\nالموقع: ${order.customer_location || 'غير محدد'}\n\nإجمالي المبلغ: ${order.total_amount} جنيه\n\nرقم الواتساب: ${order.sub_categories?.whatsapp_number || 'غير محدد'}`);
+                          alert(`تفاصيل الطلب:\n\nالعناصر:\n${items}\n\nالموقع: ${order.customer_location || 'غير محدد'}\n\nإجمالي المبلغ: ${order.total_amount} جنيه\n\nرقم الواتساب: ${order.sub_categories?.whatsapp_number || 'غير محدد'}\n\nمعرف القسم: ${order.sub_category_id || 'غير محدد'}`);
                         }}
                       >
                         <Eye className="w-4 h-4" />

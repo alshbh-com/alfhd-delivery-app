@@ -1,9 +1,7 @@
-
 import { useState, useCallback, memo } from 'react';
 import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { ProductsGrid } from '@/components/ProductsGrid';
 import { OffersCarousel } from '@/components/OffersCarousel';
-import { DeliveryNotice } from '@/components/DeliveryNotice';
 import { MapPin, Search, Bell, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -146,7 +144,6 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         <div className="relative -mt-4 z-10">
           <OffersCarousel />
           <div className="p-4">
-            <DeliveryNotice />
             <CategoriesGrid 
               onCategorySelect={handleCategorySelect}
               selectedSubCategory={selectedSubCategory}
@@ -188,7 +185,6 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         </div>
         
         <div className="relative -mt-4 z-10 p-4">
-          <DeliveryNotice />
           <CategoriesGrid 
             parentCategoryId={selectedCategory}
             onCategorySelect={handleSubCategorySelect}
@@ -230,7 +226,6 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
       </div>
       
       <div className="relative -mt-4 z-10 p-4">
-        <DeliveryNotice />
         <ProductsGrid 
           subCategoryId={currentSubCategory}
           onAddToCart={handleAddToCartWithWarning}

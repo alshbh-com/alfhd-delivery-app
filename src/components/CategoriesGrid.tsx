@@ -2,7 +2,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { CategoryCard } from '@/components/CategoryCard';
-import { CategoryGridHeader } from '@/components/CategoryGridHeader';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { EmptyState } from '@/components/EmptyState';
 
@@ -69,11 +68,6 @@ export const CategoriesGrid = ({
 
   return (
     <div className="space-y-4">
-      <CategoryGridHeader 
-        showSubCategories={showSubCategories}
-        categoriesCount={filteredCategories.length}
-      />
-      
       <div className="grid grid-cols-2 gap-3">
         {filteredCategories.map((category, index) => (
           <CategoryCard

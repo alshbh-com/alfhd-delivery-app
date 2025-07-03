@@ -4,6 +4,9 @@ import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { ProductsGrid } from '@/components/ProductsGrid';
 import { OffersCarousel } from '@/components/OffersCarousel';
 import { DeliveryNotice } from '@/components/DeliveryNotice';
+import { SearchScreen } from '@/components/screens/SearchScreen';
+import { RecommendationsPanel } from '@/components/RecommendationsPanel';
+import { LoyaltyPanel } from '@/components/LoyaltyPanel';
 import { MapPin, Search, Bell, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -17,6 +20,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   const [currentSubCategory, setCurrentSubCategory] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState<string>('');
   const [subCategoryName, setSubCategoryName] = useState<string>('');
+  const [showSearch, setShowSearch] = useState(false);
 
   const handleCategorySelect = useCallback(async (categoryId: string) => {
     setSelectedCategory(categoryId);
@@ -81,6 +85,16 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
     onAddToCart(product, quantity);
   }, [selectedSubCategory, onAddToCart]);
 
+  // Search screen
+  if (showSearch) {
+    return (
+      <SearchScreen 
+        onAddToCart={onAddToCart}
+        onBack={() => setShowSearch(false)}
+      />
+    );
+  }
+
   // Main categories screen
   if (!selectedCategory) {
     return (
@@ -105,7 +119,12 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
                 <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl">
                   <Bell className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setShowSearch(true)}
+                  className="text-white hover:bg-white/20 w-10 h-10 rounded-xl"
+                >
                   <Search className="w-5 h-5" />
                 </Button>
               </div>

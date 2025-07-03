@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Store } from 'lucide-react';
+import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Store, Bell } from 'lucide-react';
 import { CategoryManagement } from './CategoryManagement';
 import { ProductManagement } from './ProductManagement';
 import { OfferManagement } from './OfferManagement';
@@ -10,6 +10,7 @@ import { CityManagement } from './CityManagement';
 import { AppSettings } from './AppSettings';
 import { SubCategoryManager } from './SubCategoryManager';
 import { StatsPanel } from './StatsPanel';
+import { NotificationManager } from './NotificationManager';
 
 interface AdminPanelProps {
   onBack: () => void;
@@ -19,6 +20,7 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const adminSections = [
+    { id: 'notifications', icon: Bell, title: 'إدارة الإشعارات', description: 'إرسال إشعارات للمستخدمين مع الصور والأصوات' },
     { id: 'categories', icon: Tag, title: 'إدارة الأقسام', description: 'إضافة وتعديل الأقسام الرئيسية والفرعية' },
     { id: 'subcategories', icon: Store, title: 'إدارة الأقسام الفرعية', description: 'إدارة أرقام الواتساب وحالة الأقسام' },
     { id: 'products', icon: Package, title: 'إدارة المنتجات', description: 'إضافة وتعديل المنتجات' },
@@ -26,6 +28,10 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
     { id: 'cities', icon: MapPin, title: 'إدارة المناطق', description: 'إدارة المناطق وأسعار التوصيل' },
     { id: 'settings', icon: Settings, title: 'الإعدادات العامة', description: 'إعدادات التطبيق العامة' },
   ];
+
+  if (activeSection === 'notifications') {
+    return <NotificationManager onBack={() => setActiveSection(null)} />;
+  }
 
   if (activeSection === 'categories') {
     return <CategoryManagement onBack={() => setActiveSection(null)} />;

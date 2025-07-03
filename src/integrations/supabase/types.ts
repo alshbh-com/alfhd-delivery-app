@@ -170,6 +170,57 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string | null
+          message: string
+          scheduled_for: string | null
+          sent_at: string | null
+          sent_count: number | null
+          sound: string | null
+          status: string | null
+          target_audience: string | null
+          target_criteria: Json | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          message: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          sent_count?: number | null
+          sound?: string | null
+          status?: string | null
+          target_audience?: string | null
+          target_criteria?: Json | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string | null
+          message?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          sent_count?: number | null
+          sound?: string | null
+          status?: string | null
+          target_audience?: string | null
+          target_criteria?: Json | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       offers: {
         Row: {
           created_at: string | null
@@ -474,6 +525,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_devices: {
+        Row: {
+          created_at: string
+          device_info: Json | null
+          device_type: string | null
+          fcm_token: string
+          id: string
+          is_active: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_info?: Json | null
+          device_type?: string | null
+          fcm_token: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_info?: Json | null
+          device_type?: string | null
+          fcm_token?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_follows: {
         Row: {

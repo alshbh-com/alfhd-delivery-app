@@ -4,19 +4,35 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { User, Bell, Shield, HelpCircle, LogOut, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { User, Bell, Shield, HelpCircle, LogOut, Phone, Mail, MapPin, Clock, Edit, MessageCircle, Lock, Eye } from 'lucide-react';
 import { DeveloperContact } from '../DeveloperContact';
 
 export const ProfileScreen = () => {
   const [notifications, setNotifications] = useState(true);
   const [showDeveloperContact, setShowDeveloperContact] = useState(false);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
+  const [showFAQ, setShowFAQ] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
+  
+  // Profile data state
+  const [profileData, setProfileData] = useState({
+    name: 'محمد أحمد',
+    email: 'user@example.com',
+    phone: '+20 100 000 0000',
+    address: 'القاهرة، مصر'
+  });
 
   const profileItems = [
     {
       icon: User,
       title: 'الملف الشخصي',
       description: 'إدارة معلوماتك الشخصية',
-      action: () => console.log('Profile clicked')
+      action: () => setShowProfileEdit(true)
     },
     {
       icon: Bell,
@@ -30,13 +46,54 @@ export const ProfileScreen = () => {
       icon: Shield,
       title: 'الخصوصية والأمان',
       description: 'إعدادات الحساب والخصوصية',
-      action: () => console.log('Privacy clicked')
+      action: () => setShowPrivacy(true)
     },
     {
       icon: HelpCircle,
       title: 'المساعدة والدعم',
       description: 'الأسئلة الشائعة والدعم الفني',
-      action: () => console.log('Help clicked')
+      action: () => setShowFAQ(true)
+    }
+  ];
+
+  const faqData = [
+    {
+      question: 'كيف يمكنني تتبع طلبي؟',
+      answer: 'يمكنك تتبع طلبك من خلال قسم "طلباتي" في التطبيق، أو من خلال الرسائل التي ستصلك على واتساب.'
+    },
+    {
+      question: 'ما هي طرق الدفع المتاحة؟',
+      answer: 'نقبل الدفع نقداً عند الاستلام، أو الدفع الإلكتروني من خلال فيزا أو ماستركارد.'
+    },
+    {
+      question: 'كم تستغرق مدة التوصيل؟',
+      answer: 'تتراوح مدة التوصيل بين 30-60 دقيقة حسب موقعك وزحام الطرق.'
+    },
+    {
+      question: 'هل يمكنني إلغاء طلبي؟',
+      answer: 'يمكن إلغاء الطلب خلال 10 دقائق من تأكيده، بعد ذلك لن يكون الإلغاء متاحاً.'
+    },
+    {
+      question: 'كيف أحصل على نقاط الولاء؟',
+      answer: 'تحصل على نقطة واحدة لكل جنيه تنفقه، ويمكن استبدال النقاط بخصومات أو منتجات مجانية.'
+    }
+  ];
+
+  const privacyData = [
+    {
+      title: 'حماية البيانات',
+      description: 'نحن نحمي بياناتك الشخصية وفقاً لأعلى معايير الأمان',
+      icon: Lock
+    },
+    {
+      title: 'الخصوصية',
+      description: 'لا نشارك معلوماتك مع أطراف ثالثة بدون موافقتك',
+      icon: Eye
+    },
+    {
+      title: 'الأمان',
+      description: 'جميع عمليات الدفع محمية بتشفير SSL',
+      icon: Shield
     }
   ];
 
@@ -162,6 +219,145 @@ export const ProfileScreen = () => {
           <p className="text-xs text-gray-500">آخر تحديث: يناير 2024</p>
         </CardContent>
       </Card>
+
+      {/* Profile Edit Dialog */}
+      <Dialog open={showProfileEdit} onOpenChange={setShowProfileEdit}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Edit className="w-5 h-5" />
+              تعديل الملف الشخصي
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">الاسم</Label>
+              <Input
+                id="name"
+                value={profileData.name}
+                onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">البريد الإلكتروني</Label>
+              <Input
+                id="email"
+                type="email"
+                value={profileData.email}
+                onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone">رقم الهاتف</Label>
+              <Input
+                id="phone"
+                value={profileData.phone}
+                onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+              />
+            </div>
+            <div>
+              <Label htmlFor="address">العنوان</Label>
+              <Input
+                id="address"
+                value={profileData.address}
+                onChange={(e) => setProfileData({...profileData, address: e.target.value})}
+              />
+            </div>
+            <Button 
+              onClick={() => setShowProfileEdit(false)}
+              className="w-full bg-blue-600 hover:bg-blue-700"
+            >
+              حفظ التغييرات
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* FAQ Dialog */}
+      <Dialog open={showFAQ} onOpenChange={setShowFAQ}>
+        <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <HelpCircle className="w-5 h-5" />
+              الأسئلة الشائعة والدعم الفني
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            {/* Technical Support */}
+            <Card className="bg-green-50 border-green-200">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <MessageCircle className="w-6 h-6 text-green-600" />
+                  <h3 className="font-semibold text-green-800">الدعم الفني المباشر</h3>
+                </div>
+                <p className="text-green-700 mb-3">تواصل معنا مباشرة عبر واتساب للحصول على دعم فوري</p>
+                <Button 
+                  onClick={() => window.open('https://wa.me/201204486263', '_blank')}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <MessageCircle className="w-4 h-4 ml-2" />
+                  الدعم الفني عبر واتساب
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* FAQ Accordion */}
+            <Accordion type="single" collapsible className="w-full">
+              {faqData.map((faq, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger className="text-right">{faq.question}</AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Privacy Dialog */}
+      <Dialog open={showPrivacy} onOpenChange={setShowPrivacy}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              الخصوصية والأمان
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {privacyData.map((item, index) => (
+              <Card key={index} className="border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <item.icon className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-1">{item.title}</h3>
+                      <p className="text-sm text-gray-600">{item.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            <div className="pt-4 border-t">
+              <h3 className="font-semibold mb-2">إعدادات إضافية</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm">تفعيل المصادقة الثنائية</span>
+                  <Switch />
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm">إخفاء النشاط</span>
+                  <Switch />
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

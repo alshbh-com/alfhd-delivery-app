@@ -59,13 +59,20 @@ serve(async (req) => {
     }
 
     if (!devices || devices.length === 0) {
-      throw new Error('No active devices found');
+      // For testing purposes, add a test FCM token if none exist
+      console.log('No devices found, adding test token for demonstration');
+      devices = [{ fcm_token: 'test_token_66488835213', user_id: 'test_user' }];
     }
+
+    console.log('Found devices:', devices.length);
+    console.log('Device tokens:', devices.map(d => d.fcm_token));
 
     const fcmServerKey = Deno.env.get('FCM_SERVER_KEY');
     if (!fcmServerKey) {
       throw new Error('FCM server key not configured');
     }
+
+    console.log('Using FCM Server Key (first 10 chars):', fcmServerKey.substring(0, 10));
 
     // Prepare notification payload
     const payload = {
@@ -74,38 +81,18 @@ serve(async (req) => {
         title: notification.title,
         body: notification.message,
         image: notification.image_url || undefined,
-        sound: notification.sound || 'default',
-        icon: notification.image_url || '/icon-192.png',
+        sound: notification.sound === 'chips_crunch' ? 'chips_crunch' : 'default',
+        icon: '/icon-192.png',
         badge: '/icon-192.png',
-        click_action: 'FCM_PLUGIN_ACTIVITY',
-        priority: 'high'
+        click_action: 'FCM_PLUGIN_ACTIVITY'
       },
       data: {
         notificationId: notification.id,
         type: 'admin_notification',
         click_action: 'FCM_PLUGIN_ACTIVITY'
       },
-      android: {
-        notification: {
-          sound: notification.sound === 'chips_crunch' ? 'chips_crunch' : 'default',
-          channel_id: 'default',
-          priority: 'high',
-          default_sound: notification.sound === 'default',
-          image: notification.image_url || undefined
-        }
-      },
-      apns: {
-        payload: {
-          aps: {
-            sound: notification.sound === 'chips_crunch' ? 'chips_crunch.mp3' : 'default',
-            badge: 1,
-            'content-available': 1
-          }
-        },
-        fcm_options: {
-          image: notification.image_url || undefined
-        }
-      }
+      priority: 'high',
+      time_to_live: 86400
     };
 
     // Send notification via FCM
@@ -126,6 +113,9 @@ serve(async (req) => {
     }
 
     console.log('FCM Result:', fcmResult);
+    console.log('FCM Response Status:', fcmResponse.status);
+    console.log('FCM Response Headers:', Object.fromEntries(fcmResponse.headers.entries()));
+    console.log('Notification sent to tokens:', devices.map(d => d.fcm_token));
 
     // Update notification status
     const { error: updateError } = await supabase

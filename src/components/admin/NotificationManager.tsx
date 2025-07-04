@@ -115,9 +115,14 @@ export const NotificationManager = ({ onBack }: NotificationManagerProps) => {
   const sendNotification = async (notificationId: string) => {
     setIsLoading(true);
     try {
+      console.log('Sending notification with ID:', notificationId);
+      
       const { data, error } = await supabase.functions.invoke('send-push-notification', {
         body: { notificationId }
       });
+
+      console.log('FCM Response:', data);
+      console.log('FCM Error:', error);
 
       if (error) throw error;
 
@@ -131,7 +136,7 @@ export const NotificationManager = ({ onBack }: NotificationManagerProps) => {
       console.error('Error sending notification:', error);
       toast({
         title: 'خطأ',
-        description: 'فشل في إرسال الإشعار',
+        description: `فشل في إرسال الإشعار: ${error.message}`,
         variant: 'destructive'
       });
     } finally {

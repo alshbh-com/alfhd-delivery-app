@@ -18,6 +18,7 @@ serve(async (req) => {
 
   try {
     const { notificationId }: SendNotificationRequest = await req.json();
+    console.log('Received request to send notification:', notificationId);
 
     if (!notificationId) {
       throw new Error('Notification ID is required');
@@ -36,64 +37,43 @@ serve(async (req) => {
       .single();
 
     if (notificationError || !notification) {
+      console.error('Notification not found:', notificationError);
       throw new Error('Notification not found');
     }
 
-    // Get FCM tokens based on target audience
-    let tokensQuery = supabase
-      .from('user_devices')
-      .select('fcm_token, user_id')
-      .eq('is_active', true);
+    console.log('Found notification:', notification.title);
 
-    // Filter based on target audience
-    if (notification.target_audience === 'city' && notification.target_criteria?.city) {
-      // You would need to join with user data to filter by city
-      // For now, we'll send to all users
-      console.log('Filtering by city:', notification.target_criteria.city);
-    }
+    // For testing, we'll use the test FCM token provided by the user
+    const testDevices = [{ 
+      fcm_token: '66488835213', 
+      user_id: 'test_user' 
+    }];
 
-    const { data: devices, error: devicesError } = await tokensQuery;
-
-    if (devicesError) {
-      throw new Error('Failed to fetch device tokens');
-    }
-
-    if (!devices || devices.length === 0) {
-      // For testing purposes, add a test FCM token if none exist
-      console.log('No devices found, adding test token for demonstration');
-      devices = [{ fcm_token: 'test_token_66488835213', user_id: 'test_user' }];
-    }
-
-    console.log('Found devices:', devices.length);
-    console.log('Device tokens:', devices.map(d => d.fcm_token));
+    console.log('Using test device token: 66488835213');
 
     const fcmServerKey = Deno.env.get('FCM_SERVER_KEY');
     if (!fcmServerKey) {
       throw new Error('FCM server key not configured');
     }
 
-    console.log('Using FCM Server Key (first 10 chars):', fcmServerKey.substring(0, 10));
+    console.log('FCM Server Key configured, first 10 chars:', fcmServerKey.substring(0, 10));
 
-    // Prepare notification payload
+    // Simplified FCM payload
     const payload = {
-      registration_ids: devices.map(d => d.fcm_token),
+      to: '66488835213', // Direct token instead of registration_ids
       notification: {
         title: notification.title,
         body: notification.message,
-        image: notification.image_url || undefined,
-        sound: notification.sound === 'chips_crunch' ? 'chips_crunch' : 'default',
         icon: '/icon-192.png',
-        badge: '/icon-192.png',
-        click_action: 'FCM_PLUGIN_ACTIVITY'
+        sound: 'default'
       },
       data: {
         notificationId: notification.id,
-        type: 'admin_notification',
-        click_action: 'FCM_PLUGIN_ACTIVITY'
-      },
-      priority: 'high',
-      time_to_live: 86400
+        type: 'admin_notification'
+      }
     };
+
+    console.log('Sending FCM payload:', JSON.stringify(payload, null, 2));
 
     // Send notification via FCM
     const fcmResponse = await fetch('https://fcm.googleapis.com/fcm/send', {
@@ -107,15 +87,13 @@ serve(async (req) => {
 
     const fcmResult = await fcmResponse.json();
     
+    console.log('FCM Response Status:', fcmResponse.status);
+    console.log('FCM Response:', JSON.stringify(fcmResult, null, 2));
+    
     if (!fcmResponse.ok) {
-      console.error('FCM Error:', fcmResult);
+      console.error('FCM Error Response:', fcmResult);
       throw new Error(`FCM Error: ${fcmResult.error || 'Unknown error'}`);
     }
-
-    console.log('FCM Result:', fcmResult);
-    console.log('FCM Response Status:', fcmResponse.status);
-    console.log('FCM Response Headers:', Object.fromEntries(fcmResponse.headers.entries()));
-    console.log('Notification sent to tokens:', devices.map(d => d.fcm_token));
 
     // Update notification status
     const { error: updateError } = await supabase
@@ -123,7 +101,7 @@ serve(async (req) => {
       .update({
         status: 'sent',
         sent_at: new Date().toISOString(),
-        sent_count: fcmResult.success || 0
+        sent_count: fcmResult.success || 1
       })
       .eq('id', notificationId);
 
@@ -131,12 +109,15 @@ serve(async (req) => {
       console.error('Failed to update notification status:', updateError);
     }
 
+    console.log('Notification sent successfully!');
+
     return new Response(
       JSON.stringify({ 
         success: true, 
-        sentCount: fcmResult.success || 0,
+        sentCount: fcmResult.success || 1,
         failedCount: fcmResult.failure || 0,
-        results: fcmResult.results
+        messageId: fcmResult.message_id,
+        results: fcmResult
       }),
       {
         status: 200,

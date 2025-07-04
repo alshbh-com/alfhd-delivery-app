@@ -353,6 +353,14 @@ export const ProfileScreen = () => {
                   <span className="text-sm">إخفاء النشاط</span>
                   <Switch />
                 </div>
+                <Button
+                  onClick={() => window.open('https://www.termsfeed.com/live/028a0d53-8653-4f56-b2c8-a7be95c19210', '_blank')}
+                  variant="outline"
+                  className="w-full justify-start p-3 h-auto"
+                >
+                  <Shield className="w-4 h-4 ml-2" />
+                  سياسة الخصوصية
+                </Button>
               </div>
             </div>
           </div>

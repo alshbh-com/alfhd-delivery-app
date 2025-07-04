@@ -2,10 +2,11 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Shield, BarChart3, Users } from 'lucide-react';
+import { Shield, BarChart3, Users, AlertCircle } from 'lucide-react';
 import { AdminPanel } from '../admin/AdminPanel';
 import { StatsPanel } from '../admin/StatsPanel';
 import { PasswordDialog } from '../admin/PasswordDialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const SettingsScreen = () => {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
@@ -77,6 +78,27 @@ export const SettingsScreen = () => {
                 <h3 className="font-semibold text-lg">معلومات التطبيق</h3>
                 <p className="text-gray-600">متجر الفهد للتوصيل</p>
                 <p className="text-sm text-gray-500 mt-1">الإصدار 1.0</p>
+                
+                {/* إشعار تحذيري */}
+                <Alert className="bg-amber-50 border-amber-200 shadow-lg mt-4">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-amber-800 font-medium">
+                    <div className="space-y-2">
+                      <p className="font-bold text-lg">⚠️ تنويه مهم</p>
+                      <p className="leading-relaxed">
+                        نود التأكيد على أن شركتنا تحمل اسم <strong>"طلبيات"</strong> وليس "طلبات". 
+                        نحن شركة مستقلة تماماً ولسنا مرتبطين بأي شركة أخرى تحمل أسماء مشابهة.
+                      </p>
+                      <p className="leading-relaxed">
+                        شركة "طلبات" هي شركة محترمة ولها كامل التقدير والاحترام، ونحن نؤكد أننا 
+                        لسنا مسؤولين عن أي التباس أو خلط قد يحدث بين الشركتين.
+                      </p>
+                      <p className="font-semibold text-amber-900">
+                        يرجى التأكد من اسم الشركة عند التعامل معنا تجنباً لأي سوء فهم.
+                      </p>
+                    </div>
+                  </AlertDescription>
+                </Alert>
               </div>
             </div>
           </CardContent>

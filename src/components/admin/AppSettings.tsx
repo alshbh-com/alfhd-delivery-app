@@ -6,10 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface AppSettingsProps {
   onBack: () => void;
@@ -100,27 +99,6 @@ export const AppSettings = ({ onBack }: AppSettingsProps) => {
           <CardTitle>إعدادات التطبيق</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* إشعار تحذيري */}
-          <Alert className="bg-amber-50 border-amber-200 shadow-lg">
-            <AlertCircle className="h-4 w-4 text-amber-600" />
-            <AlertDescription className="text-amber-800 font-medium">
-              <div className="space-y-2">
-                <p className="font-bold text-lg">⚠️ تنويه مهم</p>
-                <p className="leading-relaxed">
-                  نود التأكيد على أن شركتنا تحمل اسم <strong>"طلبيات"</strong> وليس "طلبات". 
-                  نحن شركة مستقلة تماماً ولسنا مرتبطين بأي شركة أخرى تحمل أسماء مشابهة.
-                </p>
-                <p className="leading-relaxed">
-                  شركة "طلبات" هي شركة محترمة ولها كامل التقدير والاحترام، ونحن نؤكد أننا 
-                  لسنا مسؤولين عن أي التباس أو خلط قد يحدث بين الشركتين.
-                </p>
-                <p className="font-semibold text-amber-900">
-                  يرجى التأكد من اسم الشركة عند التعامل معنا تجنباً لأي سوء فهم.
-                </p>
-              </div>
-            </AlertDescription>
-          </Alert>
-
           <div className="flex items-center justify-between">
             <Label htmlFor="app-status">حالة التطبيق</Label>
             <div className="flex items-center gap-2">

@@ -58,13 +58,20 @@ serve(async (req) => {
 
     console.log('FCM Server Key configured, first 10 chars:', fcmServerKey.substring(0, 10));
 
-    // Simplified FCM payload
+    // Check if the FCM server key is valid (should start with a specific format)
+    if (!fcmServerKey.startsWith('AIza') && !fcmServerKey.startsWith('key=')) {
+      throw new Error('Invalid FCM server key format');
+    }
+
+    // Use the actual FCM token as a string, not an object
+    const fcmToken = '66488835213';
+    
+    // Simplified FCM payload with proper format
     const payload = {
-      to: '66488835213', // Direct token instead of registration_ids
+      to: fcmToken,
       notification: {
         title: notification.title,
         body: notification.message,
-        icon: '/icon-192.png',
         sound: 'default'
       },
       data: {

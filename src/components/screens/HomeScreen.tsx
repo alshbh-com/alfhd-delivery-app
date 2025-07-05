@@ -3,7 +3,7 @@ import { useState, useCallback, memo } from 'react';
 import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { ProductsGrid } from '@/components/ProductsGrid';
 import { OffersCarousel } from '@/components/OffersCarousel';
-import { DeliveryNotice } from '@/components/DeliveryNotice';
+
 import { SearchScreen } from '@/components/screens/SearchScreen';
 import { RecommendationsPanel } from '@/components/RecommendationsPanel';
 import { LoyaltyPanel } from '@/components/LoyaltyPanel';
@@ -100,7 +100,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   if (!selectedCategory) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-        {/* Header الجديد لـ Elfahd City */}
+        {/* Header الجديد لـ Elfahd App */}
         <div className="relative elfahd-gradient pb-8 pt-12">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10 px-4">
@@ -134,13 +134,13 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             {/* Welcome Message */}
             <div className="text-center mb-8">
               <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-2xl border-4 border-white/30">
-                <span className="text-5xl">🏰</span>
+                <span className="text-5xl">📱</span>
               </div>
               <h1 className="text-5xl font-bold text-white mb-3 arabic-text drop-shadow-2xl">
-                مرحباً بك في Elfahd City
+                مرحباً بك في Elfahd App
               </h1>
               <p className="text-white/90 arabic-text text-xl font-medium drop-shadow-lg">
-                مدينة الفهد - كل ما تحتاجه في مكان واحد
+                تطبيق الفهد - كل ما تحتاجه في مكان واحد
               </p>
             </div>
 
@@ -150,7 +150,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
                 <Search className="w-6 h-6 text-purple-500" />
                 <input
                   type="text"
-                  placeholder="ابحث في مدينة الفهد..."
+                  placeholder="ابحث في تطبيق الفهد..."
                   className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-lg"
                 />
               </div>
@@ -166,7 +166,6 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         <div className="relative -mt-6 z-10">
           <OffersCarousel />
           <div className="p-4 space-y-6">
-            <DeliveryNotice />
             <CategoriesGrid 
               onCategorySelect={handleCategorySelect}
               selectedSubCategory={selectedSubCategory}
@@ -198,10 +197,10 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             
             <div className="text-center">
               <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
-                🏰 {categoryName}
+                📱 {categoryName}
               </h1>
               <p className="text-white/90 arabic-text text-lg drop-shadow-md">
-                اختر المتجر المفضل لديك في مدينة الفهد
+                اختر المتجرك المفضل في تطبيق الفهد
               </p>
             </div>
           </div>
@@ -210,7 +209,6 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         <div className="relative -mt-4 z-10 p-4 space-y-6">
           {/* القسم المميز */}
           <SpecialSection />
-          <DeliveryNotice />
           <CategoriesGrid 
             parentCategoryId={selectedCategory}
             onCategorySelect={handleSubCategorySelect}
@@ -245,14 +243,13 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
               🍽️ {subCategoryName}
             </h1>
             <p className="text-white/90 arabic-text text-lg drop-shadow-md">
-              اختر منتجاتك المفضلة من مدينة الفهد
+              اختر منتجاتك المفضلة من تطبيق الفهد
             </p>
           </div>
         </div>
       </div>
       
       <div className="relative -mt-4 z-10 p-4">
-        <DeliveryNotice />
         <ProductsGrid 
           subCategoryId={currentSubCategory}
           onAddToCart={handleAddToCartWithWarning}

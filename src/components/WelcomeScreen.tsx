@@ -14,9 +14,9 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
 
   const slides = [
     {
-      title: "أهلاً بك في Elfahd City",
-      subtitle: "مدينة الفهد - كل ما تحتاجه في مكان واحد",
-      icon: "🏰",
+      title: "أهلاً بك في Elfahd App",
+      subtitle: "تطبيق الفهد - كل ما تحتاجه في مكان واحد",
+      icon: "📱",
       color: "from-purple-500 to-pink-500"
     },
     {
@@ -96,9 +96,9 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
         {/* Logo */}
         <div className="mb-8 animate-bounce">
-          <div className="w-28 h-28 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white">
-            <span className="text-5xl">🏰</span>
-          </div>
+        <div className="w-28 h-28 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white">
+          <span className="text-5xl">📱</span>
+        </div>
         </div>
 
         {/* Slide Content */}
@@ -161,12 +161,12 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
           onClick={onContinue}
           className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 arabic-text font-bold rounded-2xl shadow-2xl border-2 border-white hover:scale-105 transition-all duration-300"
         >
-          ادخل إلى Elfahd City
+          ادخل إلى Elfahd App
           <ChevronLeft className="mr-3 h-6 w-6" />
         </Button>
         
         <p className="text-center text-base text-gray-600 arabic-text font-medium">
-          مرحباً بك في مدينة الفهد - ابدأ تجربة تسوق رائعة
+          مرحباً بك في تطبيق الفهد - ابدأ تجربة تسوق رائعة
         </p>
       </div>
     </div>

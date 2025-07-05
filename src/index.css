@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ألوان Elfahd City الجديدة */
+/* ألوان Elfahd App الجديدة */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -37,7 +37,7 @@
 
     --radius: 2rem; /* زوايا أكثر استدارة */
 
-    /* ألوان إضافية لـ Elfahd City */
+    /* ألوان إضافية لـ Elfahd App */
     --elfahd-purple: 260 85% 60%;
     --elfahd-pink: 320 85% 65%;
     --elfahd-blue: 240 85% 65%;
@@ -95,7 +95,7 @@
   }
 }
 
-/* تأثيرات مخصصة لـ Elfahd City */
+/* تأثيرات مخصصة لـ Elfahd App */
 @layer components {
   .elfahd-gradient {
     @apply bg-gradient-to-br from-purple-600 via-pink-500 to-purple-700;

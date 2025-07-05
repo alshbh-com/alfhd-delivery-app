@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* إعداد الألوان مثل تطبيق طلبات */
+/* ألوان Elfahd City الجديدة */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -16,35 +16,41 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 255 95% 55%; /* لون برتقالي مثل طلبات */
+    --primary: 260 85% 60%; /* لون بنفسجي أساسي */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 270 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 270 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 255 95% 55%;
+    --accent: 320 85% 65%; /* لون وردي مميز */
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 255 95% 55%;
+    --border: 270 31.8% 91.4%;
+    --input: 270 31.8% 91.4%;
+    --ring: 260 85% 60%;
 
-    --radius: 1.5rem; /* زوايا أكثر استدارة */
+    --radius: 2rem; /* زوايا أكثر استدارة */
+
+    /* ألوان إضافية لـ Elfahd City */
+    --elfahd-purple: 260 85% 60%;
+    --elfahd-pink: 320 85% 65%;
+    --elfahd-blue: 240 85% 65%;
+    --elfahd-gradient: linear-gradient(135deg, hsl(260, 85%, 60%), hsl(320, 85%, 65%));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary: 260 85% 60%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 270 4.8% 95.9%;
+    --sidebar-accent-foreground: 260 85% 60%;
+    --sidebar-border: 270 13% 91%;
+    --sidebar-ring: 260 85% 60%;
   }
 
   .dark {
@@ -54,27 +60,27 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 255 95% 55%;
+    --primary: 260 85% 60%;
     --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 270 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 270 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 255 95% 55%;
+    --accent: 320 85% 65%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 255 95% 55%;
+    --border: 270 32.6% 17.5%;
+    --input: 270 32.6% 17.5%;
+    --ring: 260 85% 60%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 255 95% 55%;
+    --sidebar-primary: 260 85% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 255 95% 55%;
+    --sidebar-ring: 260 85% 60%;
   }
 }
 
@@ -84,39 +90,43 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-orange-50 via-white to-red-50 text-foreground font-sans;
+    @apply bg-gradient-to-br from-purple-50 via-white to-pink-50 text-foreground font-sans;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 
-/* تأثيرات مخصصة مثل تطبيق طلبات - تحسين للوضوح */
+/* تأثيرات مخصصة لـ Elfahd City */
 @layer components {
-  .talabat-gradient {
-    @apply bg-gradient-to-br from-orange-500 via-red-500 to-pink-500;
+  .elfahd-gradient {
+    @apply bg-gradient-to-br from-purple-600 via-pink-500 to-purple-700;
   }
   
-  .talabat-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
+  .elfahd-card {
+    @apply bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
   }
   
-  .talabat-button {
-    @apply bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 px-8 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 hover:from-orange-600 hover:to-red-600;
+  .special-card {
+    @apply bg-white rounded-3xl shadow-2xl border-2 border-purple-200 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
   }
   
-  .talabat-input {
-    @apply bg-white/95 backdrop-blur-md border-2 border-orange-200 rounded-2xl px-6 py-4 focus:border-orange-500 focus:bg-white transition-all duration-300 shadow-lg;
+  .elfahd-button {
+    @apply bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-8 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 hover:from-purple-700 hover:to-pink-700;
+  }
+  
+  .elfahd-input {
+    @apply bg-white/95 backdrop-blur-md border-2 border-purple-200 rounded-3xl px-6 py-4 focus:border-purple-500 focus:bg-white transition-all duration-300 shadow-lg;
   }
   
   .category-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105 hover:-translate-y-2;
+    @apply bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105 hover:-translate-y-2;
   }
   
   .product-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-orange-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
+    @apply bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
   }
   
   .floating-card {
-    @apply bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-orange-100;
+    @apply bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-purple-100;
   }
 
   .animate-shimmer {
@@ -156,7 +166,7 @@
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent;
   }
 }
 

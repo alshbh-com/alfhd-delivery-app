@@ -9,6 +9,7 @@ import { RecommendationsPanel } from '@/components/RecommendationsPanel';
 import { LoyaltyPanel } from '@/components/LoyaltyPanel';
 import { MapPin, Search, Bell, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SpecialSection } from '@/components/SpecialSection';
 
 interface HomeScreenProps {
   onAddToCart: (product: any, quantity?: number) => void;
@@ -98,9 +99,9 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   // Main categories screen
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
-        {/* Header المحدث */}
-        <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-8 pt-12">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+        {/* Header الجديد لـ Elfahd City */}
+        <div className="relative elfahd-gradient pb-8 pt-12">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10 px-4">
             {/* Top Bar */}
@@ -132,25 +133,25 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
             {/* Welcome Message */}
             <div className="text-center mb-8">
-              <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-2xl">
-                <span className="text-4xl">🛍️</span>
+              <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-2xl border-4 border-white/30">
+                <span className="text-5xl">🏰</span>
               </div>
-              <h1 className="text-4xl font-bold text-white mb-3 arabic-text drop-shadow-lg">
-                أهلاً بك في طلبيات
+              <h1 className="text-5xl font-bold text-white mb-3 arabic-text drop-shadow-2xl">
+                مرحباً بك في Elfahd City
               </h1>
-              <p className="text-white/90 arabic-text text-lg font-medium drop-shadow-md">
-                اختر القسم المناسب وابدأ التسوق الآن
+              <p className="text-white/90 arabic-text text-xl font-medium drop-shadow-lg">
+                مدينة الفهد - كل ما تحتاجه في مكان واحد
               </p>
             </div>
 
-            {/* Search Bar */}
-            <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-2xl border border-white/50">
-              <div className="flex items-center space-x-3">
-                <Search className="w-5 h-5 text-gray-400" />
+            {/* Search Bar المحدث */}
+            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-5 shadow-2xl border-2 border-white/50">
+              <div className="flex items-center space-x-4">
+                <Search className="w-6 h-6 text-purple-500" />
                 <input
                   type="text"
-                  placeholder="ابحث عن المطاعم والمتاجر..."
-                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text"
+                  placeholder="ابحث في مدينة الفهد..."
+                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-lg"
                 />
               </div>
             </div>
@@ -162,9 +163,11 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         </div>
 
         {/* Content */}
-        <div className="relative -mt-4 z-10">
+        <div className="relative -mt-6 z-10">
           <OffersCarousel />
-          <div className="p-4">
+          <div className="p-4 space-y-6">
+            {/* القسم المميز */}
+            <SpecialSection />
             <DeliveryNotice />
             <CategoriesGrid 
               onCategorySelect={handleCategorySelect}
@@ -179,8 +182,8 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   // Sub-categories screen
   if (!currentSubCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
-        <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-6 pt-12">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+        <div className="relative elfahd-gradient pb-6 pt-12">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10 px-4">
             {/* Back Button */}
@@ -197,10 +200,10 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             
             <div className="text-center">
               <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
-                🏪 {categoryName}
+                🏰 {categoryName}
               </h1>
               <p className="text-white/90 arabic-text text-lg drop-shadow-md">
-                اختر المتجر المفضل لديك
+                اختر المتجر المفضل لديك في مدينة الفهد
               </p>
             </div>
           </div>
@@ -221,8 +224,8 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   // Products screen
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
-      <div className="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 pb-6 pt-12">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+        <div className="relative elfahd-gradient pb-6 pt-12">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 px-4">
           {/* Back Button */}
@@ -242,7 +245,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
               🍽️ {subCategoryName}
             </h1>
             <p className="text-white/90 arabic-text text-lg drop-shadow-md">
-              اختر منتجاتك المفضلة
+              اختر منتجاتك المفضلة من مدينة الفهد
             </p>
           </div>
         </div>

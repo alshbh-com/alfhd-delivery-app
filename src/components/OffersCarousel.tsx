@@ -103,19 +103,19 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
                         
                         <Button 
                           onClick={() => {
-                            if (onAddToCart) {
-                              const offerProduct = {
-                                id: `offer-${offer.id}`,
-                                name: offer.title,
-                                price: 0, // السعر سيتم تحديده في المحادثة
-                                description: offer.description,
-                                image_url: offer.image_url,
-                                sub_category_id: 'special-offers',
-                                is_offer: true,
-                                discount_percentage: offer.discount_percentage
-                              };
-                              onAddToCart(offerProduct, 1);
+                            // إرسال مباشر للوتساب
+                            const whatsappNumber = '201024713976';
+                            let message = `📱 *طلب عرض خاص من Elfahd App*\n\n`;
+                            message += `🎁 *العرض:* ${offer.title}\n`;
+                            message += `📝 *الوصف:* ${offer.description}\n`;
+                            if (offer.discount_percentage) {
+                              message += `💰 *الخصم:* ${offer.discount_percentage}%\n`;
                             }
+                            message += `\n💳 *السعر:* سعر مميز - سيتم تحديده في المحادثة\n`;
+                            message += `📝 *ملاحظة:* يرجى تأكيد العرض وتحديد السعر والتفاصيل`;
+
+                            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                            window.open(whatsappUrl, '_blank');
                           }}
                           className="bg-white text-orange-600 hover:bg-white/90 font-bold px-6 py-3 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 arabic-text"
                         >

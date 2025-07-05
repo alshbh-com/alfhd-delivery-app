@@ -47,23 +47,30 @@ export const SpecialSection = ({ onAddToCart }: SpecialSectionProps) => {
       return;
     }
 
-    // إضافة الطلب المميز للسلة
-    if (onAddToCart) {
-      const specialProduct = {
-        id: `special-${Date.now()}`,
-        name: "طلب مميز",
-        price: 0, // السعر سيتم تحديده في المحادثة
-        description: message,
-        images: images,
-        sub_category_id: 'special-requests',
-        is_special: true
-      };
-      onAddToCart(specialProduct, 1);
+    // إرسال مباشر للوتساب
+    const whatsappNumber = '201024713976';
+    let whatsappMessage = `📱 *طلب مميز من Elfahd App*\n\n`;
+    whatsappMessage += `⭐ *نوع الطلب:* طلب مميز\n`;
+    if (message.trim()) {
+      whatsappMessage += `📝 *تفاصيل الطلب:* ${message}\n`;
     }
+    if (images.length > 0) {
+      whatsappMessage += `📷 *عدد الصور المرفقة:* ${images.length} صورة\n`;
+    }
+    whatsappMessage += `\n💳 *السعر:* سعر مميز - سيتم تحديده حسب الطلب\n`;
+    whatsappMessage += `📝 *ملاحظة:* يرجى تأكيد الطلب وتحديد السعر والتفاصيل`;
+
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(whatsappUrl, '_blank');
     
-    // Reset form
+    // Reset form after sending
     setMessage('');
     setImages([]);
+    
+    toast({
+      title: "تم إرسال الطلب",
+      description: "تم توجيهك للواتساب لإكمال الطلب"
+    });
   };
 
   const removeImage = (index: number) => {

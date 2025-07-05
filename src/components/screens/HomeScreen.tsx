@@ -99,15 +99,15 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   // Main categories screen
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-card">
         {/* Header الجديد لـ Elfahd App */}
-        <div className="relative elfahd-gradient pb-8 pt-12">
-          <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative elfahd-gradient pb-8 pt-12 shadow-lg border-b border-border/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-accent/80"></div>
           <div className="relative z-10 px-4">
             {/* Top Bar */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3 text-white">
-                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
@@ -117,14 +117,14 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
               </div>
               
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl border border-white/20">
                   <Bell className="w-5 h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setShowSearch(true)}
-                  className="text-white hover:bg-white/20 w-10 h-10 rounded-xl"
+                  className="text-white hover:bg-white/20 w-10 h-10 rounded-xl border border-white/20"
                 >
                   <Search className="w-5 h-5" />
                 </Button>
@@ -134,7 +134,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             {/* Welcome Message */}
             <div className="text-center mb-8">
               <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-2xl border-4 border-white/30">
-                <span className="text-5xl">📱</span>
+                <span className="text-5xl">🌟</span>
               </div>
               <h1 className="text-5xl font-bold text-white mb-3 arabic-text drop-shadow-2xl">
                 مرحباً بك في Elfahd App
@@ -145,21 +145,21 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             </div>
 
             {/* Search Bar المحدث */}
-            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-5 shadow-2xl border-2 border-white/50">
+            <div className="bg-card/95 backdrop-blur-md rounded-3xl p-5 shadow-2xl border-2 border-white/20">
               <div className="flex items-center space-x-4">
                 <Search className="w-6 h-6 text-primary" />
                 <input
                   type="text"
                   placeholder="ابحث في تطبيق الفهد..."
-                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-lg"
+                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder-muted-foreground arabic-text text-lg"
                 />
               </div>
             </div>
           </div>
           
           {/* Decorative Elements */}
-          <div className="absolute top-4 right-4 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-4 left-4 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+          <div className="absolute top-4 right-4 w-32 h-32 bg-accent/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-4 left-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
         </div>
 
         {/* Content */}
@@ -179,16 +179,16 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   // Sub-categories screen
   if (!currentSubCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        <div className="relative elfahd-gradient pb-6 pt-12">
-          <div className="absolute inset-0 bg-black/10"></div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-card">
+        <div className="relative elfahd-gradient pb-6 pt-12 shadow-lg border-b border-border/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-accent/80"></div>
           <div className="relative z-10 px-4">
             {/* Back Button */}
             <div className="flex items-center justify-between mb-4">
               <Button
                 onClick={handleBackToMain}
                 variant="ghost"
-                className="text-white hover:bg-white/20 p-2 rounded-xl"
+                className="text-white hover:bg-white/20 p-2 rounded-xl border border-white/20"
               >
                 <ArrowRight className="w-5 h-5 ml-2" />
                 <span className="arabic-text">العودة للرئيسية</span>
@@ -197,7 +197,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             
             <div className="text-center">
               <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
-                📱 {categoryName}
+                🌟 {categoryName}
               </h1>
               <p className="text-white/90 arabic-text text-lg drop-shadow-md">
                 اختر المتجرك المفضل في تطبيق الفهد
@@ -222,16 +222,16 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   // Products screen
   return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        <div className="relative elfahd-gradient pb-6 pt-12">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-card">
+        <div className="relative elfahd-gradient pb-6 pt-12 shadow-lg border-b border-border/50">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-accent/80"></div>
         <div className="relative z-10 px-4">
           {/* Back Button */}
           <div className="flex items-center justify-between mb-4">
             <Button
               onClick={handleBackToCategory}
               variant="ghost"
-              className="text-white hover:bg-white/20 p-2 rounded-xl"
+              className="text-white hover:bg-white/20 p-2 rounded-xl border border-white/20"
             >
               <ArrowRight className="w-5 h-5 ml-2" />
               <span className="arabic-text">العودة للمتاجر</span>
@@ -240,7 +240,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
           
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white mb-2 arabic-text drop-shadow-lg">
-              🍽️ {subCategoryName}
+              ⭐ {subCategoryName}
             </h1>
             <p className="text-white/90 arabic-text text-lg drop-shadow-md">
               اختر منتجاتك المفضلة من تطبيق الفهد

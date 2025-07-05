@@ -4,84 +4,84 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ألوان Elfahd App الحديثة */
+/* ألوان Elfahd App الداكنة الحديثة */
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 27%;
+    --background: 210 11% 8%;
+    --foreground: 60 30% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card: 215 15% 12%;
+    --card-foreground: 60 30% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover: 215 15% 12%;
+    --popover-foreground: 60 30% 96%;
 
-    --primary: 200 95% 40%; /* لون أزرق حديث */
-    --primary-foreground: 0 0% 100%;
+    --primary: 142 76% 36%; /* لون أخضر حديث */
+    --primary-foreground: 210 11% 8%;
 
-    --secondary: 210 40% 95%;
-    --secondary-foreground: 215 25% 27%;
+    --secondary: 210 11% 15%;
+    --secondary-foreground: 60 30% 96%;
 
-    --muted: 210 40% 95%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 210 11% 15%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 25 95% 53%; /* لون برتقالي مميز */
-    --accent-foreground: 0 0% 100%;
+    --accent: 38 92% 50%; /* لون ذهبي مميز */
+    --accent-foreground: 210 11% 8%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 60 30% 96%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 200 95% 40%;
+    --border: 215 15% 20%;
+    --input: 215 15% 20%;
+    --ring: 142 76% 36%;
 
-    --radius: 0.75rem; /* زوايا حديثة ونظيفة */
+    --radius: 1rem; /* زوايا ناعمة */
 
     /* ألوان إضافية لـ Elfahd App */
-    --elfahd-blue: 200 95% 40%;
-    --elfahd-orange: 25 95% 53%;
-    --elfahd-teal: 180 84% 50%;
-    --elfahd-gradient: linear-gradient(135deg, hsl(200, 95%, 40%), hsl(180, 84%, 50%));
-    --elfahd-warm-gradient: linear-gradient(135deg, hsl(25, 95%, 53%), hsl(200, 95%, 40%));
+    --elfahd-green: 142 76% 36%;
+    --elfahd-gold: 38 92% 50%;
+    --elfahd-emerald: 160 84% 39%;
+    --elfahd-gradient: linear-gradient(135deg, hsl(142, 76%, 36%), hsl(160, 84%, 39%));
+    --elfahd-gold-gradient: linear-gradient(135deg, hsl(38, 92%, 50%), hsl(142, 76%, 36%));
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 200 95% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 95%;
-    --sidebar-accent-foreground: 200 95% 40%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 200 95% 40%;
+    --sidebar-background: 210 11% 8%;
+    --sidebar-foreground: 60 30% 96%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 210 11% 8%;
+    --sidebar-accent: 210 11% 15%;
+    --sidebar-accent-foreground: 142 76% 36%;
+    --sidebar-border: 215 15% 20%;
+    --sidebar-ring: 142 76% 36%;
   }
 
   .dark {
-    --background: 215 28% 17%;
-    --foreground: 210 20% 98%;
-    --card: 215 28% 17%;
-    --card-foreground: 210 20% 98%;
-    --popover: 215 28% 17%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 200 95% 40%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 25% 27%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 25 95% 53%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 200 95% 40%;
-    --sidebar-background: 215 28% 17%;
-    --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 200 95% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 27%;
-    --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 215 25% 27%;
-    --sidebar-ring: 200 95% 40%;
+    --background: 210 11% 8%;
+    --foreground: 60 30% 96%;
+    --card: 215 15% 12%;
+    --card-foreground: 60 30% 96%;
+    --popover: 215 15% 12%;
+    --popover-foreground: 60 30% 96%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 210 11% 8%;
+    --secondary: 210 11% 15%;
+    --secondary-foreground: 60 30% 96%;
+    --muted: 210 11% 15%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 210 11% 8%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 60 30% 96%;
+    --border: 215 15% 20%;
+    --input: 215 15% 20%;
+    --ring: 142 76% 36%;
+    --sidebar-background: 210 11% 8%;
+    --sidebar-foreground: 60 30% 96%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 210 11% 8%;
+    --sidebar-accent: 210 11% 15%;
+    --sidebar-accent-foreground: 60 30% 96%;
+    --sidebar-border: 215 15% 20%;
+    --sidebar-ring: 142 76% 36%;
   }
 }
 
@@ -91,8 +91,10 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans;
+    @apply bg-gradient-to-br from-background via-background to-secondary text-foreground font-sans;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-image: radial-gradient(at 20% 30%, hsla(142, 76%, 36%, 0.1) 0px, transparent 50%),
+                      radial-gradient(at 80% 70%, hsla(38, 92%, 50%, 0.1) 0px, transparent 50%);
   }
 }
 
@@ -103,31 +105,31 @@
   }
   
   .elfahd-card {
-    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+    @apply bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:shadow-primary/20;
   }
   
   .special-card {
-    @apply bg-white rounded-xl shadow-lg border-2 border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+    @apply bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border-2 border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:shadow-accent/20;
   }
   
   .elfahd-button {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105;
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50;
   }
   
   .elfahd-input {
-    @apply bg-white border-2 border-input rounded-lg px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm;
+    @apply bg-card/50 backdrop-blur-sm border-2 border-input rounded-lg px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm text-foreground;
   }
   
   .category-card {
-    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1;
+    @apply bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1 hover:shadow-primary/30;
   }
   
   .product-card {
-    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+    @apply bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:shadow-accent/20;
   }
   
   .floating-card {
-    @apply bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-border;
+    @apply bg-card/95 backdrop-blur-md rounded-xl shadow-lg border border-border shadow-primary/10;
   }
 
   .animate-shimmer {

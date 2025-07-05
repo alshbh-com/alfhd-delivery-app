@@ -11,25 +11,25 @@ interface CategoryCardProps {
 }
 
 const gradients = [
-  'from-blue-500 via-teal-500 to-cyan-500',
-  'from-orange-500 via-red-500 to-pink-500', 
-  'from-emerald-500 via-green-500 to-teal-500',
-  'from-amber-500 via-yellow-500 to-orange-500',
-  'from-violet-500 via-purple-500 to-indigo-500',
-  'from-sky-500 via-blue-500 to-cyan-500',
-  'from-lime-500 via-green-500 to-emerald-500',
-  'from-rose-500 via-pink-500 to-red-500',
+  'from-primary via-accent to-primary',
+  'from-accent via-primary to-accent', 
+  'from-primary to-accent',
+  'from-accent to-primary',
+  'from-primary via-emerald-500 to-accent',
+  'from-accent via-primary to-emerald-500',
+  'from-emerald-500 via-primary to-accent',
+  'from-primary via-accent to-emerald-500',
 ];
 
 const shadowColors = [
-  'shadow-blue-500/25',
-  'shadow-orange-500/25',
+  'shadow-primary/25',
+  'shadow-accent/25',
+  'shadow-primary/25',
+  'shadow-accent/25',
   'shadow-emerald-500/25',
-  'shadow-amber-500/25',
-  'shadow-violet-500/25',
-  'shadow-sky-500/25',
-  'shadow-lime-500/25',
-  'shadow-rose-500/25',
+  'shadow-primary/25',
+  'shadow-accent/25',
+  'shadow-emerald-500/25',
 ];
 
 export const CategoryCard = ({ category, index, showSubCategories, onCategorySelect }: CategoryCardProps) => {

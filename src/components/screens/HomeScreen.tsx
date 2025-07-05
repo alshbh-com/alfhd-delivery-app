@@ -99,7 +99,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   // Main categories screen
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         {/* Header الجديد لـ Elfahd App */}
         <div className="relative elfahd-gradient pb-8 pt-12">
           <div className="absolute inset-0 bg-black/10"></div>
@@ -147,7 +147,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
             {/* Search Bar المحدث */}
             <div className="bg-white/95 backdrop-blur-md rounded-3xl p-5 shadow-2xl border-2 border-white/50">
               <div className="flex items-center space-x-4">
-                <Search className="w-6 h-6 text-purple-500" />
+                <Search className="w-6 h-6 text-primary" />
                 <input
                   type="text"
                   placeholder="ابحث في تطبيق الفهد..."
@@ -179,7 +179,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
   // Sub-categories screen
   if (!currentSubCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <div className="relative elfahd-gradient pb-6 pt-12">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10 px-4">
@@ -222,7 +222,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
   // Products screen
   return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <div className="relative elfahd-gradient pb-6 pt-12">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 px-4">

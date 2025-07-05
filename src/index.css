@@ -4,83 +4,84 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ألوان Elfahd App الجديدة */
+/* ألوان Elfahd App الحديثة */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 20% 98%;
+    --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 27%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 260 85% 60%; /* لون بنفسجي أساسي */
-    --primary-foreground: 210 40% 98%;
+    --primary: 200 95% 40%; /* لون أزرق حديث */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 95%;
+    --secondary-foreground: 215 25% 27%;
 
-    --muted: 270 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 95%;
+    --muted-foreground: 215 15% 45%;
 
-    --accent: 320 85% 65%; /* لون وردي مميز */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 25 95% 53%; /* لون برتقالي مميز */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 270 31.8% 91.4%;
-    --input: 270 31.8% 91.4%;
-    --ring: 260 85% 60%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 200 95% 40%;
 
-    --radius: 2rem; /* زوايا أكثر استدارة */
+    --radius: 0.75rem; /* زوايا حديثة ونظيفة */
 
     /* ألوان إضافية لـ Elfahd App */
-    --elfahd-purple: 260 85% 60%;
-    --elfahd-pink: 320 85% 65%;
-    --elfahd-blue: 240 85% 65%;
-    --elfahd-gradient: linear-gradient(135deg, hsl(260, 85%, 60%), hsl(320, 85%, 65%));
+    --elfahd-blue: 200 95% 40%;
+    --elfahd-orange: 25 95% 53%;
+    --elfahd-teal: 180 84% 50%;
+    --elfahd-gradient: linear-gradient(135deg, hsl(200, 95%, 40%), hsl(180, 84%, 50%));
+    --elfahd-warm-gradient: linear-gradient(135deg, hsl(25, 95%, 53%), hsl(200, 95%, 40%));
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 260 85% 60%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 270 4.8% 95.9%;
-    --sidebar-accent-foreground: 260 85% 60%;
-    --sidebar-border: 270 13% 91%;
-    --sidebar-ring: 260 85% 60%;
+    --sidebar-foreground: 215 25% 27%;
+    --sidebar-primary: 200 95% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 95%;
+    --sidebar-accent-foreground: 200 95% 40%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 200 95% 40%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 260 85% 60%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 270 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 270 32.6% 17.5%;
+    --background: 215 28% 17%;
+    --foreground: 210 20% 98%;
+    --card: 215 28% 17%;
+    --card-foreground: 210 20% 98%;
+    --popover: 215 28% 17%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 200 95% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 25% 27%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 25% 27%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 320 85% 65%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 270 32.6% 17.5%;
-    --input: 270 32.6% 17.5%;
-    --ring: 260 85% 60%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 260 85% 60%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 25% 27%;
+    --input: 215 25% 27%;
+    --ring: 200 95% 40%;
+    --sidebar-background: 215 28% 17%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 200 95% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 260 85% 60%;
+    --sidebar-accent: 215 25% 27%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 215 25% 27%;
+    --sidebar-ring: 200 95% 40%;
   }
 }
 
@@ -90,7 +91,7 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-purple-50 via-white to-pink-50 text-foreground font-sans;
+    @apply bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
@@ -98,35 +99,35 @@
 /* تأثيرات مخصصة لـ Elfahd App */
 @layer components {
   .elfahd-gradient {
-    @apply bg-gradient-to-br from-purple-600 via-pink-500 to-purple-700;
+    background: var(--elfahd-gradient);
   }
   
   .elfahd-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
+    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
   }
   
   .special-card {
-    @apply bg-white rounded-3xl shadow-2xl border-2 border-purple-200 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
+    @apply bg-white rounded-xl shadow-lg border-2 border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
   }
   
   .elfahd-button {
-    @apply bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-8 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 hover:from-purple-700 hover:to-pink-700;
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105;
   }
   
   .elfahd-input {
-    @apply bg-white/95 backdrop-blur-md border-2 border-purple-200 rounded-3xl px-6 py-4 focus:border-purple-500 focus:bg-white transition-all duration-300 shadow-lg;
+    @apply bg-white border-2 border-input rounded-lg px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm;
   }
   
   .category-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105 hover:-translate-y-2;
+    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1;
   }
   
   .product-card {
-    @apply bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden transition-all duration-300 hover:shadow-3xl hover:scale-105;
+    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
   }
   
   .floating-card {
-    @apply bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-purple-100;
+    @apply bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-border;
   }
 
   .animate-shimmer {
@@ -166,7 +167,7 @@
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
 }
 

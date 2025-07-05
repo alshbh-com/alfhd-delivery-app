@@ -129,7 +129,13 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       // الحصول على رقم واتساب القسم الفرعي
       let whatsappNumber = '201024713976'; // الافتراضي
       
-      if (selectedSubCategory) {
+      // فحص إذا كان الطلب يحتوي على عروض أو طلبات مميزة
+      const hasSpecialItems = cart.some(item => item.is_offer || item.is_special);
+      
+      if (hasSpecialItems) {
+        // للعروض والطلبات المميزة، استخدم الرقم الافتراضي مباشرة
+        console.log('Order contains special items, using default WhatsApp number:', whatsappNumber);
+      } else if (selectedSubCategory) {
         console.log('Getting WhatsApp number for sub-category:', selectedSubCategory);
         
         const { data: subCategoryData, error } = await supabase

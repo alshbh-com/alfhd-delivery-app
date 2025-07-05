@@ -142,29 +142,6 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
           </div>
         </div>
 
-        {/* Features */}
-        <div className="grid grid-cols-3 gap-6 w-full max-w-sm mb-8">
-          <div className="text-center group">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-xl border-2 border-white group-hover:scale-110 transition-transform duration-300">
-              <Clock className="w-8 h-8 text-white" />
-            </div>
-            <p className="text-sm text-gray-700 arabic-text font-bold">توصيل سريع</p>
-          </div>
-          
-          <div className="text-center group">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-xl border-2 border-white group-hover:scale-110 transition-transform duration-300">
-              <Star className="w-8 h-8 text-white" />
-            </div>
-            <p className="text-sm text-gray-700 arabic-text font-bold">جودة عالية</p>
-          </div>
-          
-          <div className="text-center group">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl flex items-center justify-center mb-3 mx-auto shadow-xl border-2 border-white group-hover:scale-110 transition-transform duration-300">
-              <Truck className="w-8 h-8 text-white" />
-            </div>
-            <p className="text-sm text-gray-700 arabic-text font-bold">خدمة 24/7</p>
-          </div>
-        </div>
       </div>
 
       {/* Bottom Section */}

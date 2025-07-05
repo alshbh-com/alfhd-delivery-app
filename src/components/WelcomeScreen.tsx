@@ -14,22 +14,22 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
 
   const slides = [
     {
-      title: "أهلاً بك في طلبيات",
-      subtitle: "أسرع خدمة توصيل في منطقتك",
-      icon: "🛍️",
-      color: "from-orange-400 to-red-400"
+      title: "أهلاً بك في Elfahd City",
+      subtitle: "مدينة الفهد - كل ما تحتاجه في مكان واحد",
+      icon: "🏰",
+      color: "from-purple-500 to-pink-500"
     },
     {
       title: "توصيل سريع ومضمون",
       subtitle: "نوصل طلبك في أقل من 30 دقيقة",
       icon: "🚚",
-      color: "from-blue-400 to-purple-400"
+      color: "from-purple-400 to-purple-600"
     },
     {
       title: "جودة عالية وأسعار مناسبة",
       subtitle: "أفضل المنتجات بأفضل الأسعار",
       icon: "⭐",
-      color: "from-green-400 to-teal-400"
+      color: "from-pink-400 to-pink-600"
     }
   ];
 
@@ -61,7 +61,7 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex flex-col relative overflow-hidden">
       {/* Background Video - Real cooking video */}
       <div className="absolute inset-0 z-0">
         <video
@@ -78,7 +78,7 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
           <source src="https://videos.pexels.com/video-files/2620043/2620043-uhd_2560_1440_30fps.mp4" type="video/mp4" />
         </video>
         
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-50/85 via-white/90 to-red-50/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/85 via-white/90 to-pink-50/85" />
         
         <button
           onClick={toggleVideo}
@@ -96,8 +96,8 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
         {/* Logo */}
         <div className="mb-8 animate-bounce">
-          <div className="w-28 h-28 bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white">
-            <span className="text-5xl">🛍️</span>
+          <div className="w-28 h-28 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white">
+            <span className="text-5xl">🏰</span>
           </div>
         </div>
 
@@ -123,7 +123,7 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
               key={index}
               className={`h-4 rounded-full transition-all duration-500 border-2 border-white shadow-lg ${
                 index === currentSlide
-                  ? 'bg-orange-500 w-12'
+                  ? 'bg-purple-500 w-12'
                   : 'bg-gray-300 w-4'
               }`}
             />
@@ -159,14 +159,14 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
       <div className="relative z-10 p-6 space-y-4">
         <Button
           onClick={onContinue}
-          className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xl py-6 arabic-text font-bold rounded-2xl shadow-2xl border-2 border-white hover:scale-105 transition-all duration-300"
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 arabic-text font-bold rounded-2xl shadow-2xl border-2 border-white hover:scale-105 transition-all duration-300"
         >
-          ابدأ التسوق الآن
+          ادخل إلى Elfahd City
           <ChevronLeft className="mr-3 h-6 w-6" />
         </Button>
         
         <p className="text-center text-base text-gray-600 arabic-text font-medium">
-          اضغط للمتابعة وابدأ تجربة تسوق رائعة
+          مرحباً بك في مدينة الفهد - ابدأ تجربة تسوق رائعة
         </p>
       </div>
     </div>

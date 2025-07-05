@@ -166,8 +166,6 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         <div className="relative -mt-6 z-10">
           <OffersCarousel />
           <div className="p-4 space-y-6">
-            {/* القسم المميز */}
-            <SpecialSection />
             <DeliveryNotice />
             <CategoriesGrid 
               onCategorySelect={handleCategorySelect}
@@ -209,7 +207,9 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
           </div>
         </div>
         
-        <div className="relative -mt-4 z-10 p-4">
+        <div className="relative -mt-4 z-10 p-4 space-y-6">
+          {/* القسم المميز */}
+          <SpecialSection />
           <DeliveryNotice />
           <CategoriesGrid 
             parentCategoryId={selectedCategory}

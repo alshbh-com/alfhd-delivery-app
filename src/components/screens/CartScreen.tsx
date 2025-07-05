@@ -147,7 +147,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       }
 
       // تكوين رسالة الطلب
-      let message = `🛍️ *طلب جديد من تطبيق طلبيات*\n\n`;
+      let message = `🏰 *طلب جديد من Elfahd City*\n\n`;
       message += `👤 *اسم العميل:* ${customerName}\n`;
       message += `📱 *رقم الهاتف:* ${customerPhone}\n`;
       message += `📍 *العنوان:* ${customerAddress}\n\n`;
@@ -190,9 +190,9 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
   if (cart.length === 0) {
     return (
       <div className="p-4 text-center">
-        <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <ShoppingBag className="w-16 h-16 text-purple-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-gray-600 mb-2">السلة فارغة</h2>
-        <p className="text-gray-500">لم تقم بإضافة أي منتجات بعد</p>
+        <p className="text-gray-500">لم تقم بإضافة أي منتجات من Elfahd City بعد</p>
       </div>
     );
   }

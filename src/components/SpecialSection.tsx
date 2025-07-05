@@ -5,7 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Camera, Upload, Send, Star } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-export const SpecialSection = () => {
+interface SpecialSectionProps {
+  onAddToCart?: (product: any, quantity?: number) => void;
+}
+
+export const SpecialSection = ({ onAddToCart }: SpecialSectionProps) => {
   const [message, setMessage] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,13 +47,19 @@ export const SpecialSection = () => {
       return;
     }
 
-    // Here you would typically send the data to your backend
-    console.log('Special request:', { message, images });
-    
-    toast({
-      title: "تم إرسال طلبك المميز!",
-      description: "سنتواصل معك قريباً"
-    });
+    // إضافة الطلب المميز للسلة
+    if (onAddToCart) {
+      const specialProduct = {
+        id: `special-${Date.now()}`,
+        name: "طلب مميز",
+        price: 0, // السعر سيتم تحديده في المحادثة
+        description: message,
+        images: images,
+        sub_category_id: 'special-requests',
+        is_special: true
+      };
+      onAddToCart(specialProduct, 1);
+    }
     
     // Reset form
     setMessage('');

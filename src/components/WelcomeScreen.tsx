@@ -130,6 +130,18 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
           ))}
         </div>
 
+        {/* Location Notice */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6 max-w-md mx-auto">
+          <div className="text-center">
+            <div className="text-2xl mb-2">📍</div>
+            <h3 className="font-bold text-yellow-800 mb-2 arabic-text">متاح في القليوبية فقط</h3>
+            <p className="text-yellow-700 text-sm arabic-text leading-relaxed">
+              تطبيق الفهد متاح حالياً لمحافظة القليوبية فقط<br/>
+              قريباً سنوسع خدماتنا لتشمل جميع أنحاء مصر
+            </p>
+          </div>
+        </div>
+
         {/* Features */}
         <div className="grid grid-cols-3 gap-6 w-full max-w-sm mb-8">
           <div className="text-center group">

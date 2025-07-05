@@ -24,7 +24,13 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
   const [addressWritten, setAddressWritten] = useState(false);
   const { toast } = useToast();
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce((sum, item) => {
+    // للعروض والطلبات المميزة، لا نحسب السعر في المجموع الفرعي
+    if (item.is_offer || item.is_special) {
+      return sum;
+    }
+    return sum + (item.price * item.quantity);
+  }, 0);
   const deliveryFee = 0; // سيتم تحديده على الواتساب
   const total = subtotal + deliveryFee;
 
@@ -154,12 +160,28 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       message += `🛒 *تفاصيل الطلب:*\n`;
       
       cart.forEach(item => {
-        message += `• ${item.name} × ${item.quantity} = ${item.price * item.quantity} جنيه\n`;
+        if (item.is_offer) {
+          message += `• 🎁 ${item.name} (عرض خاص`;
+          if (item.discount_percentage) {
+            message += ` - خصم ${item.discount_percentage}%`;
+          }
+          message += `) × ${item.quantity} = سعر مميز\n`;
+        } else if (item.is_special) {
+          message += `• ⭐ ${item.name} × ${item.quantity}\n`;
+          if (item.description) {
+            message += `  الوصف: ${item.description}\n`;
+          }
+          if (item.images && item.images.length > 0) {
+            message += `  صور مرفقة: ${item.images.length} صورة\n`;
+          }
+        } else {
+          message += `• ${item.name} × ${item.quantity} = ${item.price * item.quantity} جنيه\n`;
+        }
       });
       
-      message += `\n💰 *المجموع الفرعي:* ${subtotal} جنيه\n`;
+      message += `\n💰 *المجموع الفرعي:* ${subtotal > 0 ? `${subtotal} جنيه` : 'سعر مميز - سيتم تحديده في المحادثة'}\n`;
       message += `🚚 *رسوم التوصيل:* سيتم تحديدها حسب المنطقة\n`;
-      message += `💳 *المجموع النهائي:* ${subtotal} جنيه + رسوم التوصيل\n\n`;
+      message += `💳 *المجموع النهائي:* ${subtotal > 0 ? `${subtotal} جنيه + رسوم التوصيل` : 'سعر مميز + رسوم التوصيل'}\n\n`;
       message += `📝 *ملاحظة:* يرجى تأكيد الطلب وتحديد رسوم التوصيل حسب المنطقة`;
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -208,8 +230,22 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-green-600 font-bold">{item.price} جنيه</p>
+                  <h3 className="font-semibold flex items-center">
+                    {item.is_offer && <span className="text-orange-500 mr-2">🎁</span>}
+                    {item.is_special && <span className="text-purple-500 mr-2">⭐</span>}
+                    {item.name}
+                  </h3>
+                  {item.is_offer || item.is_special ? (
+                    <p className="text-blue-600 font-bold">سعر مميز - سيتم تحديده في المحادثة</p>
+                  ) : (
+                    <p className="text-green-600 font-bold">{item.price} جنيه</p>
+                  )}
+                  {item.description && (
+                    <p className="text-gray-600 text-sm mt-1">{item.description}</p>
+                  )}
+                  {item.discount_percentage && (
+                    <p className="text-orange-600 text-sm font-bold">خصم {item.discount_percentage}%</p>
+                  )}
                 </div>
                 
                 <div className="flex items-center space-x-2">
@@ -243,7 +279,11 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
               </div>
               
               <div className="text-right mt-2">
-                <span className="font-semibold">المجموع: {item.price * item.quantity} جنيه</span>
+                {item.is_offer || item.is_special ? (
+                  <span className="font-semibold text-blue-600">سعر مميز</span>
+                ) : (
+                  <span className="font-semibold">المجموع: {item.price * item.quantity} جنيه</span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -257,7 +297,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>المجموع الفرعي:</span>
-              <span>{subtotal} جنيه</span>
+              <span>{subtotal > 0 ? `${subtotal} جنيه` : 'سعر مميز'}</span>
             </div>
             <div className="flex justify-between">
               <span>رسوم التوصيل:</span>
@@ -266,7 +306,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
             <hr />
             <div className="flex justify-between font-bold text-lg">
               <span>المجموع:</span>
-              <span>{subtotal} جنيه + رسوم التوصيل</span>
+              <span>{subtotal > 0 ? `${subtotal} جنيه + رسوم التوصيل` : 'سعر مميز + رسوم التوصيل'}</span>
             </div>
           </div>
         </CardContent>

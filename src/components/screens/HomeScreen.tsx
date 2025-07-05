@@ -96,6 +96,32 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
     );
   }
 
+  // ... keep existing code
+  
+  const handleAddToCartWithToast = useCallback((product: any, quantity: number = 1) => {
+    handleAddToCartWithWarning(product, quantity);
+    
+    // إضافة إشعار بنجاح الإضافة
+    import('@/hooks/use-toast').then(({ toast }) => {
+      if (product.is_offer) {
+        toast({
+          title: "تم إضافة العرض للسلة!",
+          description: `${product.name} - سيتم تحديد السعر في المحادثة`
+        });
+      } else if (product.is_special) {
+        toast({
+          title: "تم إضافة طلبك المميز للسلة!",
+          description: "يمكنك الآن إتمام الطلب من السلة"
+        });
+      } else {
+        toast({
+          title: "تم إضافة المنتج للسلة!",
+          description: `${product.name} - ${product.price} جنيه`
+        });
+      }
+    });
+  }, [handleAddToCartWithWarning]);
+
   // Main categories screen
   if (!selectedCategory) {
     return (
@@ -164,7 +190,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
 
         {/* Content */}
         <div className="relative -mt-6 z-10">
-          <OffersCarousel />
+          <OffersCarousel onAddToCart={handleAddToCartWithToast} />
           <div className="p-4 space-y-6">
             <CategoriesGrid 
               onCategorySelect={handleCategorySelect}
@@ -208,7 +234,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         
         <div className="relative -mt-4 z-10 p-4 space-y-6">
           {/* القسم المميز */}
-          <SpecialSection />
+          <SpecialSection onAddToCart={handleAddToCartWithToast} />
           <CategoriesGrid 
             parentCategoryId={selectedCategory}
             onCategorySelect={handleSubCategorySelect}
@@ -252,7 +278,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
       <div className="relative -mt-4 z-10 p-4">
         <ProductsGrid 
           subCategoryId={currentSubCategory}
-          onAddToCart={handleAddToCartWithWarning}
+          onAddToCart={handleAddToCartWithToast}
         />
       </div>
     </div>

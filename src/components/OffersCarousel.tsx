@@ -6,7 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Star, Flame, Gift, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const OffersCarousel = () => {
+interface OffersCarouselProps {
+  onAddToCart?: (product: any, quantity?: number) => void;
+}
+
+export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
   const [offers, setOffers] = useState<any[]>([]);
   const [currentOffer, setCurrentOffer] = useState(0);
 
@@ -97,7 +101,24 @@ export const OffersCarousel = () => {
                           </div>
                         )}
                         
-                        <Button className="bg-white text-orange-600 hover:bg-white/90 font-bold px-6 py-3 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 arabic-text">
+                        <Button 
+                          onClick={() => {
+                            if (onAddToCart) {
+                              const offerProduct = {
+                                id: `offer-${offer.id}`,
+                                name: offer.title,
+                                price: 0, // السعر سيتم تحديده في المحادثة
+                                description: offer.description,
+                                image_url: offer.image_url,
+                                sub_category_id: 'special-offers',
+                                is_offer: true,
+                                discount_percentage: offer.discount_percentage
+                              };
+                              onAddToCart(offerProduct, 1);
+                            }
+                          }}
+                          className="bg-white text-orange-600 hover:bg-white/90 font-bold px-6 py-3 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 arabic-text"
+                        >
                           اطلب الآن
                         </Button>
                       </div>

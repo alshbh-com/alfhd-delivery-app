@@ -358,6 +358,7 @@ export type Database = {
           nutritional_info: Json | null
           price: number
           review_count: number | null
+          sizes: Json | null
           sort_order: number | null
           sub_category_id: string | null
           tags: Json | null
@@ -374,6 +375,7 @@ export type Database = {
           nutritional_info?: Json | null
           price: number
           review_count?: number | null
+          sizes?: Json | null
           sort_order?: number | null
           sub_category_id?: string | null
           tags?: Json | null
@@ -390,6 +392,7 @@ export type Database = {
           nutritional_info?: Json | null
           price?: number
           review_count?: number | null
+          sizes?: Json | null
           sort_order?: number | null
           sub_category_id?: string | null
           tags?: Json | null

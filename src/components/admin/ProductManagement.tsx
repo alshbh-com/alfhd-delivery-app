@@ -27,7 +27,8 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
     image_url: '',
     is_active: true,
     sort_order: 0,
-    sub_category_id: ''
+    sub_category_id: '',
+    sizes: [] as Array<{size: string, price: number}>
   });
   const { toast } = useToast();
 
@@ -104,7 +105,8 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
       image_url: product.image_url || '',
       is_active: product.is_active ?? true,
       sort_order: product.sort_order || 0,
-      sub_category_id: product.sub_category_id || ''
+      sub_category_id: product.sub_category_id || '',
+      sizes: product.sizes || []
     });
     setShowAddForm(true);
   };
@@ -117,7 +119,8 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
       image_url: '',
       is_active: true,
       sort_order: 0,
-      sub_category_id: ''
+      sub_category_id: '',
+      sizes: []
     });
     setEditingProduct(null);
     setShowAddForm(false);
@@ -266,6 +269,61 @@ export const ProductManagement = ({ onBack }: ProductManagementProps) => {
                   value={formData.sort_order}
                   onChange={(e) => setFormData(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
                 />
+              </div>
+
+              <div>
+                <Label>الأحجام والأسعار</Label>
+                <div className="space-y-3 border rounded-lg p-4">
+                  {formData.sizes.map((size, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <Input
+                        placeholder="الحجم (مثل: صغير)"
+                        value={size.size}
+                        onChange={(e) => {
+                          const newSizes = [...formData.sizes];
+                          newSizes[index] = { ...size, size: e.target.value };
+                          setFormData(prev => ({ ...prev, sizes: newSizes }));
+                        }}
+                        className="flex-1"
+                      />
+                      <Input
+                        type="number"
+                        placeholder="السعر"
+                        value={size.price}
+                        onChange={(e) => {
+                          const newSizes = [...formData.sizes];
+                          newSizes[index] = { ...size, price: parseFloat(e.target.value) || 0 };
+                          setFormData(prev => ({ ...prev, sizes: newSizes }));
+                        }}
+                        className="w-24"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          const newSizes = formData.sizes.filter((_, i) => i !== index);
+                          setFormData(prev => ({ ...prev, sizes: newSizes }));
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        sizes: [...prev.sizes, { size: '', price: 0 }]
+                      }));
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    إضافة حجم
+                  </Button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between">

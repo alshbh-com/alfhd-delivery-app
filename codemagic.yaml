@@ -3,16 +3,13 @@ workflows:
     name: Build Android (Free Plan)
     max_build_duration: 60
     environment:
-      node: 16.20.0
-      npm: 8.19.4
-      java: 11
+      flutter: stable
     scripts:
-      - name: Install dependencies
+      - name: Get Flutter packages
         script: |
-          npm install
-      - name: Build Android release
+          flutter pub get
+      - name: Build APK
         script: |
-          cd android
-          ./gradlew assembleRelease
+          flutter build apk --release
     artifacts:
-      - android/app/build/outputs/**/*.apk
+      - build/app/outputs/flutter-apk/app-release.apk

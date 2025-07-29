@@ -1,8 +1,7 @@
 workflows:
   build-android:
     name: Build Android (Free Plan)
-    instance_type: linux_x2   # مجاني
-    max_build_duration: 60    # أقصى مدة للبناء بالدقائق
+    max_build_duration: 60
     environment:
       node: 16.20.0
       npm: 8.19.4

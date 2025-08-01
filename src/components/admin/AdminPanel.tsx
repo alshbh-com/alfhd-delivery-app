@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Store, Bell } from 'lucide-react';
+import { ArrowLeft, Package, Tag, Gift, MapPin, Settings, Store, Bell, BarChart3 } from 'lucide-react';
 import { CategoryManagement } from './CategoryManagement';
 import { ProductManagement } from './ProductManagement';
 import { OfferManagement } from './OfferManagement';
@@ -20,6 +20,7 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const adminSections = [
+    { id: 'stats', icon: BarChart3, title: 'الإحصائيات والطلبات', description: 'مشاهدة تحليل الأداء وإدارة الطلبات' },
     { id: 'notifications', icon: Bell, title: 'إدارة الإشعارات', description: 'إرسال إشعارات للمستخدمين مع الصور والأصوات' },
     { id: 'categories', icon: Tag, title: 'إدارة الأقسام', description: 'إضافة وتعديل الأقسام الرئيسية والفرعية' },
     { id: 'subcategories', icon: Store, title: 'إدارة الأقسام الفرعية', description: 'إدارة أرقام الواتساب وحالة الأقسام' },
@@ -28,6 +29,10 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
     { id: 'cities', icon: MapPin, title: 'إدارة المناطق', description: 'إدارة المناطق وأسعار التوصيل' },
     { id: 'settings', icon: Settings, title: 'الإعدادات العامة', description: 'إعدادات التطبيق العامة' },
   ];
+
+  if (activeSection === 'stats') {
+    return <StatsPanel onBack={() => setActiveSection(null)} />;
+  }
 
   if (activeSection === 'notifications') {
     return <NotificationManager onBack={() => setActiveSection(null)} />;

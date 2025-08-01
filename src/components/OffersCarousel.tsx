@@ -105,13 +105,30 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
                           onClick={() => {
                             // إرسال مباشر للوتساب
                             const whatsappNumber = '201024713976';
+                            const orderId = Date.now().toString().slice(-8);
+                            const orderTime = new Date().toLocaleString('ar-EG', {
+                              timeZone: 'Africa/Cairo',
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                            });
+
                             let message = `📱 *طلب عرض خاص من Elfahd App*\n\n`;
+                            message += `🆔 *رقم الطلب:* #${orderId}\n`;
+                            message += `🕐 *وقت الطلب:* ${orderTime}\n`;
+                            message += `🏪 *القسم:* العروض الخاصة\n\n`;
                             message += `🎁 *العرض:* ${offer.title}\n`;
                             message += `📝 *الوصف:* ${offer.description}\n`;
                             if (offer.discount_percentage) {
                               message += `💰 *الخصم:* ${offer.discount_percentage}%\n`;
                             }
-                            message += `\n💳 *السعر:* سعر مميز - سيتم تحديده في المحادثة\n`;
+                            message += `\n💳 *السعر:* سعر مميز - سيتم تحديده في المحادثة\n\n`;
+                            message += `📞 *للاستفسار أو المتابعة:*\n`;
+                            message += `• خدمة العملاء: 201204486263\n`;
+                            message += `• اذكر رقم الطلب: #${orderId}\n\n`;
                             message += `📝 *ملاحظة:* يرجى تأكيد العرض وتحديد السعر والتفاصيل`;
 
                             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;

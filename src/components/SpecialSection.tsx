@@ -49,7 +49,21 @@ export const SpecialSection = ({ onAddToCart }: SpecialSectionProps) => {
 
     // إرسال مباشر للوتساب
     const whatsappNumber = '201024713976';
+    const orderId = Date.now().toString().slice(-8);
+    const orderTime = new Date().toLocaleString('ar-EG', {
+      timeZone: 'Africa/Cairo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
     let whatsappMessage = `📱 *طلب مميز من Elfahd App*\n\n`;
+    whatsappMessage += `🆔 *رقم الطلب:* #${orderId}\n`;
+    whatsappMessage += `🕐 *وقت الطلب:* ${orderTime}\n`;
+    whatsappMessage += `🏪 *القسم:* القسم المميز\n\n`;
     whatsappMessage += `⭐ *نوع الطلب:* طلب مميز\n`;
     if (message.trim()) {
       whatsappMessage += `📝 *تفاصيل الطلب:* ${message}\n`;
@@ -57,7 +71,10 @@ export const SpecialSection = ({ onAddToCart }: SpecialSectionProps) => {
     if (images.length > 0) {
       whatsappMessage += `📷 *عدد الصور المرفقة:* ${images.length} صورة\n`;
     }
-    whatsappMessage += `\n💳 *السعر:* سعر مميز - سيتم تحديده حسب الطلب\n`;
+    whatsappMessage += `\n💳 *السعر:* سعر مميز - سيتم تحديده حسب الطلب\n\n`;
+    whatsappMessage += `📞 *للاستفسار أو المتابعة:*\n`;
+    whatsappMessage += `• خدمة العملاء: 201204486263\n`;
+    whatsappMessage += `• اذكر رقم الطلب: #${orderId}\n\n`;
     whatsappMessage += `📝 *ملاحظة:* يرجى تأكيد الطلب وتحديد السعر والتفاصيل`;
 
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;

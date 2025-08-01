@@ -20,6 +20,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
+  const [customerNotes, setCustomerNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressWritten, setAddressWritten] = useState(false);
   const { toast } = useToast();
@@ -105,6 +106,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       setCustomerName('');
       setCustomerPhone('');
       setCustomerAddress('');
+      setCustomerNotes('');
       setAddressWritten(false);
 
       toast({
@@ -126,8 +128,9 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
 
   const sendWhatsAppOrder = async () => {
     try {
-      // الحصول على رقم واتساب القسم الفرعي
+      // الحصول على رقم واتساب واسم القسم الفرعي
       let whatsappNumber = '201024713976'; // الافتراضي
+      let subCategoryName = 'قسم عام';
       
       // فحص إذا كان الطلب يحتوي على عروض أو طلبات مميزة
       const hasSpecialItems = cart.some(item => item.is_offer || item.is_special);
@@ -135,6 +138,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       if (hasSpecialItems) {
         // للعروض والطلبات المميزة، استخدم الرقم الافتراضي مباشرة
         console.log('Order contains special items, using default WhatsApp number:', whatsappNumber);
+        subCategoryName = 'العروض والطلبات المميزة';
       } else if (selectedSubCategory) {
         console.log('Getting WhatsApp number for sub-category:', selectedSubCategory);
         
@@ -150,20 +154,45 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
           console.error('Error getting sub-category:', error);
         }
         
-        if (subCategoryData?.whatsapp_number) {
-          whatsappNumber = subCategoryData.whatsapp_number;
-          console.log('Using sub-category WhatsApp number:', whatsappNumber);
+        if (subCategoryData) {
+          if (subCategoryData.whatsapp_number) {
+            whatsappNumber = subCategoryData.whatsapp_number;
+            console.log('Using sub-category WhatsApp number:', whatsappNumber);
+          }
+          if (subCategoryData.name) {
+            subCategoryName = subCategoryData.name;
+          }
         } else {
-          console.log('No WhatsApp number found for sub-category, using default:', whatsappNumber);
+          console.log('No sub-category data found, using defaults');
         }
       }
 
+      // إنشاء ID فريد للطلب
+      const orderId = Date.now().toString().slice(-8);
+      const orderTime = new Date().toLocaleString('ar-EG', {
+        timeZone: 'Africa/Cairo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+
       // تكوين رسالة الطلب
       let message = `📱 *طلب جديد من Elfahd App*\n\n`;
-      message += `👤 *اسم العميل:* ${customerName}\n`;
-      message += `📱 *رقم الهاتف:* ${customerPhone}\n`;
-      message += `📍 *العنوان:* ${customerAddress}\n\n`;
-      message += `🛒 *تفاصيل الطلب:*\n`;
+      message += `🆔 *رقم الطلب:* #${orderId}\n`;
+      message += `🕐 *وقت الطلب:* ${orderTime}\n`;
+      message += `🏪 *القسم:* ${subCategoryName}\n\n`;
+      
+      message += `👤 *بيانات العميل:*\n`;
+      message += `• الاسم: ${customerName}\n`;
+      message += `• الهاتف: ${customerPhone}\n`;
+      message += `• العنوان: ${customerAddress}\n`;
+      if (customerNotes.trim()) {
+        message += `• ملاحظات: ${customerNotes}\n`;
+      }
+      message += `\n🛒 *تفاصيل الطلب:*\n`;
       
       cart.forEach(item => {
         if (item.is_offer) {
@@ -181,13 +210,31 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
             message += `  صور مرفقة: ${item.images.length} صورة\n`;
           }
         } else {
-          message += `• ${item.name} × ${item.quantity} = ${item.price * item.quantity} جنيه\n`;
+          // عرض تفاصيل المنتج مع الحجم والسعر الصحيح
+          let productLine = `• ${item.name}`;
+          if (item.selectedSize) {
+            productLine += ` (${item.selectedSize})`;
+          }
+          productLine += ` × ${item.quantity}`;
+          if (item.price > 0) {
+            productLine += ` = ${(item.price * item.quantity).toFixed(2)} جنيه`;
+          }
+          message += `${productLine}\n`;
+          
+          if (item.description) {
+            message += `  الوصف: ${item.description}\n`;
+          }
         }
       });
       
-      message += `\n💰 *المجموع الفرعي:* ${subtotal > 0 ? `${subtotal} جنيه` : 'سعر مميز - سيتم تحديده في المحادثة'}\n`;
-      message += `🚚 *رسوم التوصيل:* سيتم تحديدها حسب المنطقة\n`;
-      message += `💳 *المجموع النهائي:* ${subtotal > 0 ? `${subtotal} جنيه + رسوم التوصيل` : 'سعر مميز + رسوم التوصيل'}\n\n`;
+      message += `\n💰 *الملخص المالي:*\n`;
+      message += `• المجموع الفرعي: ${subtotal > 0 ? `${subtotal.toFixed(2)} جنيه` : 'سعر مميز'}\n`;
+      message += `• رسوم التوصيل: سيتم تحديدها حسب المنطقة\n`;
+      message += `• المجموع النهائي: ${subtotal > 0 ? `${subtotal.toFixed(2)} جنيه + رسوم التوصيل` : 'سعر مميز + رسوم التوصيل'}\n\n`;
+      
+      message += `📞 *للاستفسار أو المتابعة:*\n`;
+      message += `• خدمة العملاء: 201204486263\n`;
+      message += `• اذكر رقم الطلب: #${orderId}\n\n`;
       message += `📝 *ملاحظة:* يرجى تأكيد الطلب وتحديد رسوم التوصيل حسب المنطقة`;
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -352,6 +399,17 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
               onChange={(e) => setCustomerAddress(e.target.value)}
               placeholder="أدخل عنوانك التفصيلي (الشارع، المنطقة، معالم مميزة)"
               rows={3}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">ملاحظات إضافية (اختياري)</Label>
+            <Textarea
+              id="notes"
+              value={customerNotes}
+              onChange={(e) => setCustomerNotes(e.target.value)}
+              placeholder="أي ملاحظات إضافية للطلب..."
+              rows={2}
             />
           </div>
 

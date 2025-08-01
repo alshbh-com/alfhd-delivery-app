@@ -21,6 +21,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerNotes, setCustomerNotes] = useState('');
+  const [sharedOrderCode, setSharedOrderCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressWritten, setAddressWritten] = useState(false);
   const { toast } = useToast();
@@ -63,7 +64,65 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       return;
     }
 
+    // فحص صحة كود التوصيل المشترك إذا تم إدخاله
+    if (sharedOrderCode.trim()) {
+      const isValidCode = await validateSharedOrder(sharedOrderCode.trim());
+      if (!isValidCode) {
+        return; // سيتم عرض رسالة الخطأ في دالة validateSharedOrder
+      }
+    }
+
     await submitOrder();
+  };
+
+  const validateSharedOrder = async (code: string) => {
+    try {
+      // البحث عن طلب مطابق بالكود
+      const { data: existingOrder, error } = await supabase
+        .from('orders')
+        .select('id, created_at')
+        .eq('id', code)
+        .eq('status', 'pending')
+        .single();
+
+      if (error || !existingOrder) {
+        toast({
+          title: "كود غير صحيح",
+          description: "لم يتم العثور على طلب مطابق لهذا الكود",
+          variant: "destructive"
+        });
+        return false;
+      }
+
+      // فحص إذا كان الطلب قديم (أكثر من ساعة)
+      const orderTime = new Date(existingOrder.created_at);
+      const currentTime = new Date();
+      const timeDifference = (currentTime.getTime() - orderTime.getTime()) / (1000 * 60 * 60); // بالساعات
+
+      if (timeDifference > 1) {
+        toast({
+          title: "انتهت صلاحية الكود",
+          description: "لا يمكن الانضمام للطلب بعد مرور ساعة على إنشائه",
+          variant: "destructive"
+        });
+        return false;
+      }
+
+      toast({
+        title: "تم التحقق بنجاح",
+        description: "سيتم إضافة طلبك للتوصيل المشترك",
+      });
+      return true;
+
+    } catch (error) {
+      console.error('Error validating shared order:', error);
+      toast({
+        title: "خطأ في التحقق",
+        description: "حدث خطأ أثناء التحقق من الكود",
+        variant: "destructive"
+      });
+      return false;
+    }
   };
 
   const submitOrder = async () => {
@@ -107,6 +166,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       setCustomerPhone('');
       setCustomerAddress('');
       setCustomerNotes('');
+      setSharedOrderCode('');
       setAddressWritten(false);
 
       toast({
@@ -189,6 +249,9 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       message += `• الاسم: ${customerName}\n`;
       message += `• الهاتف: ${customerPhone}\n`;
       message += `• العنوان: ${customerAddress}\n`;
+      if (sharedOrderCode.trim()) {
+        message += `• 🚚 توصيل مشترك مع الطلب: #${sharedOrderCode}\n`;
+      }
       if (customerNotes.trim()) {
         message += `• ملاحظات: ${customerNotes}\n`;
       }
@@ -400,6 +463,19 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
               placeholder="أدخل عنوانك التفصيلي (الشارع، المنطقة، معالم مميزة)"
               rows={3}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="sharedOrderCode">كود التوصيل المشترك (اختياري)</Label>
+            <Input
+              id="sharedOrderCode"
+              value={sharedOrderCode}
+              onChange={(e) => setSharedOrderCode(e.target.value)}
+              placeholder="أدخل كود صديقك للانضمام لنفس التوصيلة"
+            />
+            <p className="text-xs text-gray-500">
+              إذا كان لديك صديق طلب قبلك بأقل من ساعة، يمكنك إدخال كود طلبه للتوصيل المشترك
+            </p>
           </div>
 
           <div className="space-y-2">

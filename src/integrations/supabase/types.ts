@@ -269,6 +269,7 @@ export type Database = {
           delivery_fee: number
           id: string
           items: Json
+          shared_code: string | null
           status: string | null
           sub_category_id: string | null
           total_amount: number
@@ -283,6 +284,7 @@ export type Database = {
           delivery_fee: number
           id?: string
           items: Json
+          shared_code?: string | null
           status?: string | null
           sub_category_id?: string | null
           total_amount: number
@@ -297,6 +299,7 @@ export type Database = {
           delivery_fee?: number
           id?: string
           items?: Json
+          shared_code?: string | null
           status?: string | null
           sub_category_id?: string | null
           total_amount?: number
@@ -689,7 +692,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_shared_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

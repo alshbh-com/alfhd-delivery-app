@@ -77,13 +77,13 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
 
   const validateSharedOrder = async (code: string) => {
     try {
-      // البحث عن طلب مطابق بالكود
+      // البحث عن طلب مطابق بالكود المشترك
       const { data: existingOrder, error } = await supabase
         .from('orders')
-        .select('id, created_at')
-        .eq('id', code)
+        .select('id, created_at, shared_code')
+        .eq('shared_code', code.toUpperCase())
         .eq('status', 'pending')
-        .single();
+        .maybeSingle();
 
       if (error || !existingOrder) {
         toast({
@@ -158,7 +158,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       console.log('Order saved successfully:', data);
 
       // إرسال الطلب عبر واتساب
-      await sendWhatsAppOrder();
+      await sendWhatsAppOrder(data.shared_code);
 
       // مسح السلة وإعادة تعيين النموذج
       onClearCart();
@@ -186,7 +186,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
     }
   };
 
-  const sendWhatsAppOrder = async () => {
+  const sendWhatsAppOrder = async (orderSharedCode?: string) => {
     try {
       // الحصول على رقم واتساب واسم القسم الفرعي
       let whatsappNumber = '201024713976'; // الافتراضي
@@ -242,6 +242,9 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       // تكوين رسالة الطلب
       let message = `📱 *طلب جديد من Elfahd App*\n\n`;
       message += `🆔 *رقم الطلب:* #${orderId}\n`;
+      if (orderSharedCode) {
+        message += `🔗 *كود المشاركة:* ${orderSharedCode}\n`;
+      }
       message += `🕐 *وقت الطلب:* ${orderTime}\n`;
       message += `🏪 *القسم:* ${subCategoryName}\n\n`;
       
@@ -250,7 +253,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       message += `• الهاتف: ${customerPhone}\n`;
       message += `• العنوان: ${customerAddress}\n`;
       if (sharedOrderCode.trim()) {
-        message += `• 🚚 توصيل مشترك مع الطلب: #${sharedOrderCode}\n`;
+        message += `• 🚚 توصيل مشترك مع الطلب: #${sharedOrderCode.toUpperCase()}\n`;
       }
       if (customerNotes.trim()) {
         message += `• ملاحظات: ${customerNotes}\n`;

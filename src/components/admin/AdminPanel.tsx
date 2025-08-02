@@ -11,6 +11,7 @@ import { AppSettings } from './AppSettings';
 import { SubCategoryManager } from './SubCategoryManager';
 import { StatsPanel } from './StatsPanel';
 import { NotificationManager } from './NotificationManager';
+import { OrderManagement } from './OrderManagement';
 
 interface AdminPanelProps {
   onBack: () => void;
@@ -20,7 +21,8 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const adminSections = [
-    { id: 'stats', icon: BarChart3, title: 'الإحصائيات والطلبات', description: 'مشاهدة تحليل الأداء وإدارة الطلبات' },
+    { id: 'stats', icon: BarChart3, title: 'الإحصائيات', description: 'مشاهدة تحليل الأداء' },
+    { id: 'orders', icon: Package, title: 'إدارة الطلبات', description: 'إدارة وتتبع الطلبات والكود المشترك' },
     { id: 'notifications', icon: Bell, title: 'إدارة الإشعارات', description: 'إرسال إشعارات للمستخدمين مع الصور والأصوات' },
     { id: 'categories', icon: Tag, title: 'إدارة الأقسام', description: 'إضافة وتعديل الأقسام الرئيسية والفرعية' },
     { id: 'subcategories', icon: Store, title: 'إدارة الأقسام الفرعية', description: 'إدارة أرقام الواتساب وحالة الأقسام' },
@@ -36,6 +38,10 @@ export const AdminPanel = ({ onBack }: AdminPanelProps) => {
 
   if (activeSection === 'notifications') {
     return <NotificationManager onBack={() => setActiveSection(null)} />;
+  }
+
+  if (activeSection === 'orders') {
+    return <OrderManagement onBack={() => setActiveSection(null)} />;
   }
 
   if (activeSection === 'categories') {

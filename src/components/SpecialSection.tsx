@@ -73,7 +73,7 @@ export const SpecialSection = ({ onAddToCart }: SpecialSectionProps) => {
     }
     whatsappMessage += `\n💳 *السعر:* سعر مميز - سيتم تحديده حسب الطلب\n\n`;
     whatsappMessage += `📞 *للاستفسار أو المتابعة:*\n`;
-    whatsappMessage += `• خدمة العملاء: 201204486263\n`;
+    whatsappMessage += `• خدمة العملاء: 201024713976\n`;
     whatsappMessage += `• اذكر رقم الطلب: #${orderId}\n\n`;
     whatsappMessage += `📝 *ملاحظة:* يرجى تأكيد الطلب وتحديد السعر والتفاصيل`;
 

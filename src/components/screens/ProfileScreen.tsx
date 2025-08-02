@@ -292,7 +292,7 @@ export const ProfileScreen = () => {
                 </div>
                 <p className="text-green-700 mb-3">تواصل معنا مباشرة عبر واتساب للحصول على دعم فوري</p>
                 <Button 
-                  onClick={() => window.open('https://wa.me/201204486263', '_blank')}
+                  onClick={() => window.open('https://wa.me/201024713976', '_blank')}
                   className="w-full bg-green-600 hover:bg-green-700 text-white"
                 >
                   <MessageCircle className="w-4 h-4 ml-2" />

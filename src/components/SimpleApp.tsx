@@ -8,7 +8,7 @@ import { ProfileScreen } from './screens/ProfileScreen';
 import { WelcomeScreen } from './WelcomeScreen';
 
 export const SimpleApp = () => {
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [cart, setCart] = useState<any[]>([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);

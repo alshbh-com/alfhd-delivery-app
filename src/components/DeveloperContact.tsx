@@ -9,7 +9,7 @@ interface DeveloperContactProps {
 
 export const DeveloperContact = ({ onBack }: DeveloperContactProps) => {
   const handleContactDeveloper = () => {
-    window.open('https://wa.me/201204486263?text=أريد تطبيق أو موقع جديد', '_blank');
+    window.open('https://wa.me/201204486263?text=' + encodeURIComponent('أريد تطبيق أو موقع جديد'), '_blank');
   };
 
   const handleVisitWebsite = () => {
@@ -17,7 +17,7 @@ export const DeveloperContact = ({ onBack }: DeveloperContactProps) => {
   };
 
   const handleAddStore = () => {
-    window.open('https://wa.me/201204486263?text=أريد إضافة متجري أو مطعمي للتطبيق', '_blank');
+    window.open('https://wa.me/201204486263?text=' + encodeURIComponent('أريد إضافة متجري أو مطعمي للتطبيق'), '_blank');
   };
 
   return (

@@ -292,7 +292,11 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
             }
             message += `) × ${item.quantity} = سعر مميز\n`;
           } else if (item.is_special) {
-            message += `• ${item.name} × ${item.quantity}\n`;
+            message += `• ${item.name} × ${item.quantity}`;
+            if (item.price > 0) {
+              message += ` - ${item.price} جنيه للقطعة`;
+            }
+            message += `\n`;
             if (item.description) {
               message += `  الوصف: ${item.description}\n`;
             }
@@ -304,6 +308,9 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
             let productLine = `• ${item.name}`;
             if (item.selectedSize) {
               productLine += ` (${item.selectedSize})`;
+            }
+            if (item.price > 0) {
+              productLine += ` - ${item.price} جنيه للقطعة`;
             }
             productLine += ` × ${item.quantity}`;
             if (item.price > 0) {

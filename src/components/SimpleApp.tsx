@@ -58,6 +58,7 @@ export const SimpleApp = () => {
           <HomeScreen 
             onAddToCart={addToCart} 
             selectedSubCategory={selectedSubCategory}
+            cart={cart}
           />
         );
       case 'cart':
@@ -78,6 +79,7 @@ export const SimpleApp = () => {
           <HomeScreen 
             onAddToCart={addToCart} 
             selectedSubCategory={selectedSubCategory}
+            cart={cart}
           />
         );
     }

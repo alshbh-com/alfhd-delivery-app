@@ -51,6 +51,7 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
           <HomeScreen 
             onAddToCart={addToCart} 
             selectedSubCategory={selectedSubCategory}
+            cart={cart}
           />
         );
       case 'cart':
@@ -71,6 +72,7 @@ export const MainApp = ({ selectedCity }: MainAppProps) => {
           <HomeScreen 
             onAddToCart={addToCart} 
             selectedSubCategory={selectedSubCategory}
+            cart={cart}
           />
         );
     }

@@ -12,9 +12,10 @@ import { useToast } from '@/hooks/use-toast';
 interface ProductsGridProps {
   subCategoryId: string;
   onAddToCart: (product: any, quantity: number) => void;
+  cart?: any[];
 }
 
-export const ProductsGrid = ({ subCategoryId, onAddToCart }: ProductsGridProps) => {
+export const ProductsGrid = ({ subCategoryId, onAddToCart, cart = [] }: ProductsGridProps) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantities, setQuantities] = useState<{[key: string]: number}>({});
@@ -84,6 +85,13 @@ export const ProductsGrid = ({ subCategoryId, onAddToCart }: ProductsGridProps) 
     });
   };
 
+  // دالة للحصول على كمية المنتج في السلة
+  const getCartQuantity = (productId: string) => {
+    return cart.reduce((total, item) => {
+      return item.id === productId ? total + item.quantity : total;
+    }, 0);
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -145,25 +153,32 @@ export const ProductsGrid = ({ subCategoryId, onAddToCart }: ProductsGridProps) 
                    )}
                  </div>
                  
-                 {/* Product Info */}
-                 <div className="flex-1 min-w-0">
-                   <div className="flex items-start justify-between mb-2">
-                     <div className="flex-1">
-                       <h3 className="font-bold text-lg text-gray-800 arabic-text">
-                         {product.name}
-                       </h3>
-                       {product.description && (
-                         <p className="text-gray-600 text-sm mt-1 arabic-text leading-relaxed">
-                           {product.description}
-                         </p>
-                       )}
-                     </div>
-                     
-                     <div className="flex items-center space-x-1 ml-2">
-                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                       <span className="text-sm text-gray-600">4.5</span>
-                     </div>
-                   </div>
+                  {/* Product Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-lg text-gray-800 arabic-text">
+                            {product.name}
+                          </h3>
+                          {getCartQuantity(product.id) > 0 && (
+                            <div className="bg-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                              {getCartQuantity(product.id)}
+                            </div>
+                          )}
+                        </div>
+                        {product.description && (
+                          <p className="text-gray-600 text-sm mt-1 arabic-text leading-relaxed">
+                            {product.description}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center space-x-1 ml-2">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm text-gray-600">4.5</span>
+                      </div>
+                    </div>
                    
                    {/* Size Selection */}
                    {product.sizes && product.sizes.length > 0 && (

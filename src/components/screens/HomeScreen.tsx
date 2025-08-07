@@ -14,9 +14,10 @@ import { SpecialSection } from '@/components/SpecialSection';
 interface HomeScreenProps {
   onAddToCart: (product: any, quantity?: number) => void;
   selectedSubCategory?: string | null;
+  cart?: any[];
 }
 
-export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreenProps) => {
+export const HomeScreen = memo(({ onAddToCart, selectedSubCategory, cart = [] }: HomeScreenProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentSubCategory, setCurrentSubCategory] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState<string>('');
@@ -279,6 +280,7 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory }: HomeScreen
         <ProductsGrid 
           subCategoryId={currentSubCategory}
           onAddToCart={handleAddToCartWithToast}
+          cart={cart}
         />
       </div>
     </div>

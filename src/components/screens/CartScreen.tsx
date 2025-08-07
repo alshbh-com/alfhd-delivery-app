@@ -188,42 +188,32 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
 
   const sendWhatsAppOrder = async (orderSharedCode?: string) => {
     try {
-      // الحصول على رقم واتساب واسم القسم الفرعي
-      let whatsappNumber = '201024713976'; // الافتراضي
-      let subCategoryName = 'قسم عام';
+      // الحصول على أسماء الأقسام الفرعية
+      const subCategoryIds = [...new Set(cart.map(item => item.sub_category_id).filter(id => id))];
+      const subCategories = new Map();
       
-      // فحص إذا كان الطلب يحتوي على عروض أو طلبات مميزة
-      const hasSpecialItems = cart.some(item => item.is_offer || item.is_special);
-      
-      if (hasSpecialItems) {
-        // للعروض والطلبات المميزة، استخدم الرقم الافتراضي مباشرة
-        console.log('Order contains special items, using default WhatsApp number:', whatsappNumber);
-        subCategoryName = 'العروض والطلبات المميزة';
-      } else if (selectedSubCategory) {
-        console.log('Getting WhatsApp number for sub-category:', selectedSubCategory);
-        
-        const { data: subCategoryData, error } = await supabase
+      // جلب أسماء الأقسام الفرعية من قاعدة البيانات
+      if (subCategoryIds.length > 0) {
+        const { data: subCategoriesData } = await supabase
           .from('sub_categories')
-          .select('whatsapp_number, name')
-          .eq('id', selectedSubCategory)
-          .single();
+          .select('id, name, whatsapp_number')
+          .in('id', subCategoryIds);
         
-        console.log('Sub-category data:', subCategoryData);
-        
-        if (error) {
-          console.error('Error getting sub-category:', error);
+        if (subCategoriesData) {
+          subCategoriesData.forEach(cat => {
+            subCategories.set(cat.id, cat);
+          });
         }
-        
-        if (subCategoryData) {
-          if (subCategoryData.whatsapp_number) {
-            whatsappNumber = subCategoryData.whatsapp_number;
-            console.log('Using sub-category WhatsApp number:', whatsappNumber);
-          }
-          if (subCategoryData.name) {
-            subCategoryName = subCategoryData.name;
-          }
-        } else {
-          console.log('No sub-category data found, using defaults');
+      }
+
+      // تحديد رقم الواتساب (استخدام الرقم الافتراضي إذا كان هناك منتجات من أقسام متعددة)
+      let whatsappNumber = '201024713976'; // الرقم الافتراضي
+      
+      // إذا كان كل المنتجات من قسم واحد فقط، استخدم رقم ذلك القسم
+      if (subCategoryIds.length === 1 && !cart.some(item => item.is_offer || item.is_special)) {
+        const singleSubCategory = subCategories.get(subCategoryIds[0]);
+        if (singleSubCategory?.whatsapp_number) {
+          whatsappNumber = singleSubCategory.whatsapp_number;
         }
       }
 
@@ -245,8 +235,7 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       if (orderSharedCode) {
         message += `🔗 *كود المشاركة:* ${orderSharedCode}\n`;
       }
-      message += `🕐 *وقت الطلب:* ${orderTime}\n`;
-      message += `🏪 *القسم:* ${subCategoryName}\n\n`;
+      message += `🕐 *وقت الطلب:* ${orderTime}\n\n`;
       
       message += `👤 *بيانات العميل:*\n`;
       message += `• الاسم: ${customerName}\n`;
@@ -260,37 +249,73 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
       }
       message += `\n🛒 *تفاصيل الطلب:*\n`;
       
+      // تجميع المنتجات حسب الأقسام
+      const itemsByCategory = new Map();
+      
       cart.forEach(item => {
+        let categoryKey;
+        let categoryName;
+        
         if (item.is_offer) {
-          message += `• 🎁 ${item.name} (عرض خاص`;
-          if (item.discount_percentage) {
-            message += ` - خصم ${item.discount_percentage}%`;
-          }
-          message += `) × ${item.quantity} = سعر مميز\n`;
+          categoryKey = 'offers';
+          categoryName = '🎁 العروض الخاصة';
         } else if (item.is_special) {
-          message += `• ⭐ ${item.name} × ${item.quantity}\n`;
-          if (item.description) {
-            message += `  الوصف: ${item.description}\n`;
-          }
-          if (item.images && item.images.length > 0) {
-            message += `  صور مرفقة: ${item.images.length} صورة\n`;
-          }
+          categoryKey = 'special';
+          categoryName = '⭐ الطلبات المميزة';
+        } else if (item.sub_category_id) {
+          categoryKey = item.sub_category_id;
+          categoryName = subCategories.get(item.sub_category_id)?.name || 'قسم غير محدد';
         } else {
-          // عرض تفاصيل المنتج مع الحجم والسعر الصحيح
-          let productLine = `• ${item.name}`;
-          if (item.selectedSize) {
-            productLine += ` (${item.selectedSize})`;
-          }
-          productLine += ` × ${item.quantity}`;
-          if (item.price > 0) {
-            productLine += ` = ${(item.price * item.quantity).toFixed(2)} جنيه`;
-          }
-          message += `${productLine}\n`;
-          
-          if (item.description) {
-            message += `  الوصف: ${item.description}\n`;
-          }
+          categoryKey = 'general';
+          categoryName = 'منتجات عامة';
         }
+        
+        if (!itemsByCategory.has(categoryKey)) {
+          itemsByCategory.set(categoryKey, {
+            name: categoryName,
+            items: []
+          });
+        }
+        
+        itemsByCategory.get(categoryKey).items.push(item);
+      });
+      
+      // عرض المنتجات مجمعة حسب الأقسام
+      itemsByCategory.forEach((category) => {
+        message += `\n🏪 *${category.name}:*\n`;
+        
+        category.items.forEach(item => {
+          if (item.is_offer) {
+            message += `• ${item.name} (عرض خاص`;
+            if (item.discount_percentage) {
+              message += ` - خصم ${item.discount_percentage}%`;
+            }
+            message += `) × ${item.quantity} = سعر مميز\n`;
+          } else if (item.is_special) {
+            message += `• ${item.name} × ${item.quantity}\n`;
+            if (item.description) {
+              message += `  الوصف: ${item.description}\n`;
+            }
+            if (item.images && item.images.length > 0) {
+              message += `  صور مرفقة: ${item.images.length} صورة\n`;
+            }
+          } else {
+            // عرض تفاصيل المنتج مع الحجم والسعر الصحيح
+            let productLine = `• ${item.name}`;
+            if (item.selectedSize) {
+              productLine += ` (${item.selectedSize})`;
+            }
+            productLine += ` × ${item.quantity}`;
+            if (item.price > 0) {
+              productLine += ` = ${(item.price * item.quantity).toFixed(2)} جنيه`;
+            }
+            message += `${productLine}\n`;
+            
+            if (item.description) {
+              message += `  الوصف: ${item.description}\n`;
+            }
+          }
+        });
       });
       
       message += `\n💰 *الملخص المالي:*\n`;

@@ -31,7 +31,17 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
     if (item.is_offer || item.is_special) {
       return sum;
     }
-    return sum + (item.price * item.quantity);
+    
+    // استخدام السعر الصحيح حسب الحجم المختار
+    let unitPrice = item.price;
+    if (item.selectedSize && item.sizes && item.sizes.length > 0) {
+      const selectedSizeData = item.sizes.find((s: any) => s.size === item.selectedSize);
+      if (selectedSizeData && selectedSizeData.price) {
+        unitPrice = selectedSizeData.price;
+      }
+    }
+    
+    return sum + (unitPrice * item.quantity);
   }, 0);
   const deliveryFee = 0; // سيتم تحديده على الواتساب
   const total = subtotal + deliveryFee;
@@ -306,15 +316,23 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
           } else {
             // عرض تفاصيل المنتج مع الحجم والسعر الصحيح
             let productLine = `• ${item.name}`;
-            if (item.selectedSize) {
+            
+            // استخدام السعر الصحيح حسب الحجم المختار
+            let unitPrice = item.price;
+            if (item.selectedSize && item.sizes && item.sizes.length > 0) {
+              const selectedSizeData = item.sizes.find((s: any) => s.size === item.selectedSize);
+              if (selectedSizeData && selectedSizeData.price) {
+                unitPrice = selectedSizeData.price;
+              }
               productLine += ` (${item.selectedSize})`;
             }
-            if (item.price > 0) {
-              productLine += ` - ${item.price} جنيه للقطعة`;
+            
+            if (unitPrice > 0) {
+              productLine += ` - ${unitPrice} جنيه للقطعة`;
             }
             productLine += ` × ${item.quantity}`;
-            if (item.price > 0) {
-              productLine += ` = ${(item.price * item.quantity).toFixed(2)} جنيه`;
+            if (unitPrice > 0) {
+              productLine += ` = ${(unitPrice * item.quantity).toFixed(2)} جنيه`;
             }
             message += `${productLine}\n`;
             
@@ -389,7 +407,12 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
                   {item.is_offer || item.is_special ? (
                     <p className="text-blue-600 font-bold">سعر مميز - سيتم تحديده في المحادثة</p>
                   ) : (
-                    <p className="text-green-600 font-bold">{item.price} جنيه</p>
+                    <p className="text-green-600 font-bold">
+                      {item.selectedSize && item.sizes ? 
+                        `${item.sizes.find((s: any) => s.size === item.selectedSize)?.price || item.price} جنيه` :
+                        `${item.price} جنيه`
+                      }
+                    </p>
                   )}
                   {item.description && (
                     <p className="text-gray-600 text-sm mt-1">{item.description}</p>
@@ -433,7 +456,20 @@ export const CartScreen = ({ cart, onUpdateCart, onClearCart, selectedSubCategor
                 {item.is_offer || item.is_special ? (
                   <span className="font-semibold text-blue-600">سعر مميز</span>
                 ) : (
-                  <span className="font-semibold">المجموع: {item.price * item.quantity} جنيه</span>
+                  <span className="font-semibold">
+                    المجموع: {
+                      (() => {
+                        let unitPrice = item.price;
+                        if (item.selectedSize && item.sizes && item.sizes.length > 0) {
+                          const selectedSizeData = item.sizes.find((s: any) => s.size === item.selectedSize);
+                          if (selectedSizeData && selectedSizeData.price) {
+                            unitPrice = selectedSizeData.price;
+                          }
+                        }
+                        return (unitPrice * item.quantity).toFixed(2);
+                      })()
+                    } جنيه
+                  </span>
                 )}
               </div>
             </CardContent>

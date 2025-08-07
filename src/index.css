@@ -1,87 +1,88 @@
-
-
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ألوان Elfahd App الحديثة */
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 27%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-
-    --primary: 200 95% 40%; /* لون أزرق حديث */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 40% 95%;
-    --secondary-foreground: 215 25% 27%;
-
-    --muted: 210 40% 95%;
-    --muted-foreground: 215 15% 45%;
-
-    --accent: 25 95% 53%; /* لون برتقالي مميز */
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 200 95% 40%;
-
-    --radius: 0.75rem; /* زوايا حديثة ونظيفة */
-
-    /* ألوان إضافية لـ Elfahd App */
-    --elfahd-blue: 200 95% 40%;
-    --elfahd-orange: 25 95% 53%;
-    --elfahd-teal: 180 84% 50%;
-    --elfahd-gradient: linear-gradient(135deg, hsl(200, 95%, 40%), hsl(180, 84%, 50%));
-    --elfahd-warm-gradient: linear-gradient(135deg, hsl(25, 95%, 53%), hsl(200, 95%, 40%));
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 200 95% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 95%;
-    --sidebar-accent-foreground: 200 95% 40%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 200 95% 40%;
+    /* Modern Food Delivery App Colors */
+    --background: 248 250 252; /* slate-50 */
+    --foreground: 15 23 42; /* slate-900 */
+    --card: 255 255 255; /* white */
+    --card-foreground: 15 23 42; /* slate-900 */
+    --popover: 255 255 255; /* white */
+    --popover-foreground: 15 23 42; /* slate-900 */
+    
+    /* Primary Brand Colors - Food delivery theme */
+    --primary: 239 68 68; /* red-500 - main brand color */
+    --primary-foreground: 255 255 255; /* white */
+    --primary-light: 248 113 113; /* red-400 */
+    --primary-dark: 220 38 38; /* red-600 */
+    
+    /* Secondary Colors */
+    --secondary: 34 197 94; /* green-500 - success/delivery */
+    --secondary-foreground: 255 255 255; /* white */
+    --secondary-light: 74 222 128; /* green-400 */
+    --secondary-dark: 21 128 61; /* green-600 */
+    
+    /* Accent Colors */
+    --accent: 251 146 60; /* orange-400 - special offers */
+    --accent-foreground: 255 255 255; /* white */
+    --accent-light: 253 186 116; /* orange-300 */
+    --accent-dark: 234 88 12; /* orange-600 */
+    
+    /* Status Colors */
+    --success: 34 197 94; /* green-500 */
+    --warning: 251 146 60; /* orange-400 */
+    --error: 239 68 68; /* red-500 */
+    --info: 59 130 246; /* blue-500 */
+    
+    /* Neutral Colors */
+    --muted: 241 245 249; /* slate-100 */
+    --muted-foreground: 100 116 139; /* slate-500 */
+    --border: 226 232 240; /* slate-200 */
+    --input: 241 245 249; /* slate-100 */
+    --ring: 239 68 68; /* red-500 */
+    --radius: 0.75rem; /* 12px - more rounded for modern look */
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-dark)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-dark)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--secondary)) 100%);
+    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
+    --shadow-success: 0 0 20px rgba(34, 197, 94, 0.3);
+    
+    /* Animations */
+    --animation-duration: 0.3s;
+    --animation-ease: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    --background: 215 28% 17%;
-    --foreground: 210 20% 98%;
-    --card: 215 28% 17%;
-    --card-foreground: 210 20% 98%;
-    --popover: 215 28% 17%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 200 95% 40%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 25% 27%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 25 95% 53%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 200 95% 40%;
-    --sidebar-background: 215 28% 17%;
-    --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 200 95% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 27%;
-    --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 215 25% 27%;
-    --sidebar-ring: 200 95% 40%;
+    --background: 15 23 42; /* slate-900 */
+    --foreground: 248 250 252; /* slate-50 */
+    --card: 30 41 59; /* slate-800 */
+    --card-foreground: 248 250 252; /* slate-50 */
+    --popover: 30 41 59; /* slate-800 */
+    --popover-foreground: 248 250 252; /* slate-50 */
+    --primary: 248 113 113; /* red-400 */
+    --primary-foreground: 15 23 42; /* slate-900 */
+    --secondary: 74 222 128; /* green-400 */
+    --secondary-foreground: 15 23 42; /* slate-900 */
+    --muted: 51 65 85; /* slate-700 */
+    --muted-foreground: 148 163 184; /* slate-400 */
+    --accent: 253 186 116; /* orange-300 */
+    --accent-foreground: 15 23 42; /* slate-900 */
+    --border: 51 65 85; /* slate-700 */
+    --input: 51 65 85; /* slate-700 */
+    --ring: 248 113 113; /* red-400 */
   }
 }
 
@@ -89,85 +90,190 @@
   * {
     @apply border-border;
   }
-
+  
   body {
-    @apply bg-gradient-to-br from-slate-50 via-white to-blue-50 text-foreground font-sans;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-background text-foreground font-cairo;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-/* تأثيرات مخصصة لـ Elfahd App */
 @layer components {
-  .elfahd-gradient {
-    background: var(--elfahd-gradient);
+  /* Arabic Text Styling */
+  .arabic-text {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+    line-height: 1.6;
+    direction: rtl;
+    text-align: right;
   }
   
-  .elfahd-card {
-    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+  /* Modern App Gradients */
+  .app-gradient {
+    background: var(--gradient-hero);
   }
   
-  .special-card {
-    @apply bg-white rounded-xl shadow-lg border-2 border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+  .card-gradient {
+    background: var(--gradient-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  .elfahd-button {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105;
+  /* Food Delivery Button Styles */
+  .delivery-button {
+    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
+    box-shadow: var(--shadow-glow);
   }
   
-  .elfahd-input {
-    @apply bg-white border-2 border-input rounded-lg px-4 py-3 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm;
+  .success-button {
+    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
+    box-shadow: var(--shadow-success);
+  }
+  
+  .accent-button {
+    @apply bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
+  }
+  
+  /* Modern Card Styles */
+  .modern-card {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-100;
+  }
+  
+  .food-card {
+    @apply modern-card p-4 hover:scale-[1.02] cursor-pointer;
   }
   
   .category-card {
-    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-1;
+    @apply modern-card p-6 text-center hover:bg-gradient-to-br hover:from-red-50 hover:to-orange-50;
   }
   
   .product-card {
-    @apply bg-white rounded-xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105;
+    @apply modern-card p-4 hover:scale-[1.02] cursor-pointer transition-all duration-300;
   }
   
-  .floating-card {
-    @apply bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-border;
+  /* App Header */
+  .app-header {
+    @apply bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white p-4 rounded-b-3xl shadow-2xl;
   }
-
-  .animate-shimmer {
+  
+  /* Bottom Navigation */
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t border-slate-200 rounded-t-3xl z-50;
+  }
+  
+  .nav-item {
+    @apply flex-1 py-3 px-2 text-center transition-all duration-300 hover:bg-red-50 hover:text-red-500 rounded-xl mx-1;
+  }
+  
+  .nav-item.active {
+    @apply bg-red-500 text-white shadow-lg;
+  }
+  
+  /* Search Bar */
+  .search-bar {
+    @apply bg-white rounded-2xl shadow-lg border border-slate-200 p-4 focus-within:border-red-300 focus-within:shadow-xl transition-all duration-300;
+  }
+  
+  /* Status Badges */
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium arabic-text;
+  }
+  
+  .status-active {
+    @apply status-badge bg-green-100 text-green-800;
+  }
+  
+  .status-pending {
+    @apply status-badge bg-yellow-100 text-yellow-800;
+  }
+  
+  .status-delivery {
+    @apply status-badge bg-blue-100 text-blue-800;
+  }
+  
+  /* Quantity Controls */
+  .quantity-control {
+    @apply flex items-center space-x-2 bg-slate-50 rounded-xl p-2;
+  }
+  
+  .quantity-btn {
+    @apply w-8 h-8 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center hover:bg-red-50 hover:text-red-500;
+  }
+  
+  /* Food Item Animations */
+  .food-item {
+    @apply transform transition-all duration-300 hover:scale-105 hover:shadow-xl;
+  }
+  
+  /* Loading States */
+  .loading-skeleton {
+    @apply animate-pulse bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 bg-[length:200%_100%];
     animation: shimmer 2s infinite;
   }
-
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
+  
+  /* Special Effects */
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
   }
-
-  .shadow-3xl {
-    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+  
+  .bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 }
 
-/* تحسينات الخط والطباعة */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-.arabic-text {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  direction: rtl;
-}
-
-/* تحسينات الحركة */
 @layer utilities {
-  .hover-scale {
-    @apply transition-transform duration-300 hover:scale-105;
+  /* Custom Animations */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
   
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
+  @keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); opacity: 1; }
   }
   
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+  }
+  
+  /* RTL Support */
+  [dir="rtl"] {
+    text-align: right;
+  }
+  
+  /* Hide scrollbar */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
+/* Cairo Font Setup */
+.font-cairo {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

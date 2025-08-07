@@ -14,34 +14,22 @@ export const SimpleApp = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
 
   const addToCart = (product: any, quantity: number = 1) => {
-    // التحقق من أن المنتج ينتمي لنفس القسم الفرعي
-    if (cart.length > 0 && cart[0].sub_category_id !== product.sub_category_id) {
-      // إفراغ السلة إذا كان المنتج من قسم مختلف
-      setCart([{ ...product, quantity }]);
-      setSelectedSubCategory(product.sub_category_id);
-    } else {
-      setCart(prev => {
-        const existingItem = prev.find(item => item.id === product.id);
-        if (existingItem) {
-          return prev.map(item =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
-          );
-        }
-        return [...prev, { ...product, quantity }];
-      });
-      setSelectedSubCategory(product.sub_category_id);
-    }
+    setCart(prev => {
+      const existingItem = prev.find(item => item.id === product.id);
+      if (existingItem) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+      return [...prev, { ...product, quantity }];
+    });
   };
 
   const updateCartItem = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      const newCart = cart.filter(item => item.id !== productId);
-      setCart(newCart);
-      if (newCart.length === 0) {
-        setSelectedSubCategory(null);
-      }
+      setCart(cart.filter(item => item.id !== productId));
     } else {
       setCart(prev =>
         prev.map(item =>
@@ -53,7 +41,6 @@ export const SimpleApp = () => {
 
   const clearCart = () => {
     setCart([]);
-    setSelectedSubCategory(null);
   };
 
   const handleStartShopping = () => {

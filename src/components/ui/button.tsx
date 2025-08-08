@@ -5,27 +5,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transform hover:scale-105 shadow-md hover:shadow-lg",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-primary to-primary-dark text-primary-foreground hover:from-primary-dark hover:to-primary shadow-glow",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border-2 border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-gradient-to-r from-secondary to-secondary-dark text-secondary-foreground hover:from-secondary-dark hover:to-secondary shadow-success",
-        ghost: "hover:bg-accent hover:text-accent-foreground hover:scale-105",
-        link: "text-primary underline-offset-4 hover:underline hover:scale-105",
-        delivery: "bg-gradient-to-r from-primary to-primary-dark text-white font-bold shadow-glow hover:from-primary-dark hover:to-primary",
-        success: "bg-gradient-to-r from-secondary to-secondary-dark text-white font-bold shadow-success hover:from-secondary-dark hover:to-secondary",
-        accent: "bg-gradient-to-r from-accent to-accent-dark text-white font-bold hover:from-accent-dark hover:to-accent",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-lg px-3 text-xs",
-        lg: "h-12 rounded-xl px-8 text-base",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
       },
     },

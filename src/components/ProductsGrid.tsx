@@ -120,143 +120,153 @@ export const ProductsGrid = ({ subCategoryId, onAddToCart, cart = [] }: Products
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 arabic-text">المنتجات</h2>
+          <p className="text-gray-600 mt-1 arabic-text">اختر منتجاتك المفضلة</p>
+        </div>
+        <Badge variant="secondary" className="arabic-text">
+          {products.length} منتج
+        </Badge>
+      </div>
+      
       {/* Products List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {products.map((product) => (
-          <Card key={product.id} className="modern-card hover:scale-[1.01] transition-all duration-200">
-            <CardContent className="p-3">
-              <div className="flex gap-3">
-                {/* Product Image */}
-                <div className="flex-shrink-0">
-                  {product.image_url ? (
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-16 h-16 object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
-                      <ShoppingCart className="w-6 h-6 text-gray-400" />
-                    </div>
-                  )}
-                </div>
-                
-                {/* Product Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-1">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-sm text-gray-800 arabic-text">
-                          {product.name}
-                        </h3>
-                        {getCartQuantity(product.id) > 0 && (
-                          <div className="bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                            {getCartQuantity(product.id)}
-                          </div>
+          <Card key={product.id} className="product-card">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-4">
+                 {/* Product Image */}
+                 <div className="flex-shrink-0">
+                   {product.image_url ? (
+                     <img
+                       src={product.image_url}
+                       alt={product.name}
+                       className="w-20 h-20 object-cover rounded-xl shadow-md"
+                     />
+                   ) : (
+                     <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center shadow-md">
+                       <ShoppingCart className="w-8 h-8 text-gray-400" />
+                     </div>
+                   )}
+                 </div>
+                 
+                  {/* Product Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-lg text-gray-800 arabic-text">
+                            {product.name}
+                          </h3>
+                          {getCartQuantity(product.id) > 0 && (
+                            <div className="bg-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                              {getCartQuantity(product.id)}
+                            </div>
+                          )}
+                        </div>
+                        {product.description && (
+                          <p className="text-gray-600 text-sm mt-1 arabic-text leading-relaxed">
+                            {product.description}
+                          </p>
                         )}
                       </div>
-                      {product.description && (
-                        <p className="text-gray-500 text-xs arabic-text line-clamp-2 mb-2">
-                          {product.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                   
-                  {/* Size Selection */}
-                  {product.sizes && product.sizes.length > 0 && (
-                    <div className="mb-2">
-                      <Label className="text-xs font-medium text-gray-600 arabic-text mb-1 block">
-                        اختر الحجم:
-                      </Label>
-                      <RadioGroup
-                        value={selectedSizes[product.id] || ''}
-                        onValueChange={(value) => setSelectedSizes(prev => ({ ...prev, [product.id]: value }))}
-                        className="flex flex-wrap gap-1"
-                      >
-                        {product.sizes.map((size: any, index: number) => (
-                          <div key={index} className="flex items-center">
-                            <RadioGroupItem 
-                              value={size.size} 
-                              id={`${product.id}-${size.size}`}
-                              className="text-primary w-3 h-3"
-                            />
-                            <Label 
-                              htmlFor={`${product.id}-${size.size}`}
-                              className="text-xs arabic-text cursor-pointer mr-1"
-                            >
-                              {size.size} ({size.price}ج)
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                  )}
-                  
-                  {/* Price and Actions */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-base font-bold text-primary arabic-text">
-                        {selectedSizes[product.id] ? 
-                          `${product.sizes.find((s: any) => s.size === selectedSizes[product.id])?.price || product.price} جنيه`
-                          : `${product.price} جنيه`
-                        }
-                      </span>
-                      <div className="flex items-center gap-1 text-gray-400">
-                        <Clock className="w-3 h-3" />
-                        <span className="text-xs arabic-text">25 دقيقة</span>
+                      
+                      <div className="flex items-center space-x-1 ml-2">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm text-gray-600">4.5</span>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {quantities[product.id] > 0 ? (
-                        <div className="flex items-center bg-gray-50 rounded-full">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => updateQuantity(product.id, -1)}
-                            className="w-7 h-7 p-0 rounded-full hover:bg-gray-200"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </Button>
-                          
-                          <span className="font-semibold text-sm min-w-[20px] text-center px-2">
-                            {quantities[product.id]}
-                          </span>
-                          
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => updateQuantity(product.id, 1)}
-                            className="w-7 h-7 p-0 rounded-full hover:bg-gray-200"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => updateQuantity(product.id, 1)}
-                          size="sm"
-                          className="delivery-button h-8 px-3 text-xs arabic-text"
-                        >
-                          <Plus className="w-3 h-3 ml-1" />
-                          أضف
-                        </Button>
-                      )}
-                      
-                      {quantities[product.id] > 0 && (
-                        <Button
-                          onClick={() => handleAddToCart(product)}
-                          size="sm"
-                          className="success-button h-8 px-4 text-xs arabic-text"
-                        >
-                          للسلة
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                   
+                   {/* Size Selection */}
+                   {product.sizes && product.sizes.length > 0 && (
+                     <div className="mb-3">
+                       <Label className="text-sm font-medium text-gray-700 arabic-text mb-2 block">
+                         اختر الحجم:
+                       </Label>
+                       <RadioGroup
+                         value={selectedSizes[product.id] || ''}
+                         onValueChange={(value) => setSelectedSizes(prev => ({ ...prev, [product.id]: value }))}
+                         className="flex flex-wrap gap-2"
+                       >
+                         {product.sizes.map((size: any, index: number) => (
+                           <div key={index} className="flex items-center space-x-2">
+                             <RadioGroupItem 
+                               value={size.size} 
+                               id={`${product.id}-${size.size}`}
+                               className="text-primary"
+                             />
+                             <Label 
+                               htmlFor={`${product.id}-${size.size}`}
+                               className="text-sm arabic-text cursor-pointer flex items-center gap-1"
+                             >
+                               {size.size} - {size.price} جنيه
+                             </Label>
+                           </div>
+                         ))}
+                       </RadioGroup>
+                     </div>
+                   )}
+                   
+                   {/* Price and Actions */}
+                   <div className="flex items-center justify-between">
+                     <div className="flex items-center space-x-2">
+                       <span className="text-2xl font-bold text-orange-600">
+                         {selectedSizes[product.id] ? 
+                           `${product.sizes.find((s: any) => s.size === selectedSizes[product.id])?.price || product.price} جنيه`
+                           : `${product.price} جنيه`
+                         }
+                       </span>
+                       <div className="flex items-center space-x-1 text-gray-500">
+                         <Clock className="w-4 h-4" />
+                         <span className="text-xs arabic-text">20-30 دقيقة</span>
+                       </div>
+                     </div>
+                     
+                     <div className="flex items-center space-x-2">
+                       {quantities[product.id] > 0 && (
+                         <div className="flex items-center space-x-2 bg-gray-50 rounded-full px-3 py-1">
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => updateQuantity(product.id, -1)}
+                             className="w-8 h-8 p-0 rounded-full hover:bg-gray-200"
+                           >
+                             <Minus className="w-4 h-4" />
+                           </Button>
+                           
+                           <span className="font-bold text-lg min-w-[20px] text-center">
+                             {quantities[product.id]}
+                           </span>
+                           
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => updateQuantity(product.id, 1)}
+                             className="w-8 h-8 p-0 rounded-full hover:bg-gray-200"
+                           >
+                             <Plus className="w-4 h-4" />
+                           </Button>
+                         </div>
+                       )}
+                       
+                       <Button
+                         onClick={() => {
+                           if (quantities[product.id] === 0) {
+                             updateQuantity(product.id, 1);
+                           }
+                           handleAddToCart(product);
+                         }}
+                         className="talabat-button px-6 arabic-text"
+                       >
+                         {quantities[product.id] > 0 ? 'إضافة للسلة' : 'اطلب الآن'}
+                         <Plus className="mr-2 h-4 w-4" />
+                       </Button>
+                     </div>
+                   </div>
+                 </div>
               </div>
             </CardContent>
           </Card>

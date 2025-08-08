@@ -6,8 +6,6 @@ import { CartScreen } from './screens/CartScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { WelcomeScreen } from './WelcomeScreen';
-import { NotificationToast } from './NotificationToast';
-import { Toaster } from './ui/toaster';
 
 export const SimpleApp = () => {
   const [showWelcome, setShowWelcome] = useState(false);
@@ -88,8 +86,7 @@ export const SimpleApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <NotificationToast />
+    <div className="min-h-screen bg-white">
       <div className="pb-20">
         {renderScreen()}
       </div>
@@ -98,7 +95,6 @@ export const SimpleApp = () => {
         onTabChange={setActiveTab}
         cartItemCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
       />
-      <Toaster />
     </div>
   );
 };

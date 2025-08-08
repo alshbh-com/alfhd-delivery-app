@@ -127,85 +127,59 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory, cart = [] }:
   if (!selectedCategory) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        {/* Header بتصميم تطبيق الطعام الحديث */}
-        <div className="relative app-gradient pb-8 pt-6 px-4">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="relative z-10">
-            {/* Top Status Bar */}
-            <div className="flex items-center justify-between mb-6 pt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <MapPin className="w-4 h-4 text-white" />
+        {/* Header الجديد لـ Elfahd App */}
+        <div className="relative elfahd-gradient pb-8 pt-12">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative z-10 px-4">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3 text-white">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-xs arabic-text">التوصيل لـ</p>
-                  <p className="text-white font-semibold arabic-text text-sm">المنزل</p>
+                  <p className="text-white/80 text-sm arabic-text">التوصيل إلى</p>
+                  <p className="text-white font-bold arabic-text">الموقع الحالي</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-white hover:bg-white/20 w-9 h-9 rounded-full"
-                  >
-                    <Bell className="w-4 h-4" />
-                  </Button>
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 w-10 h-10 rounded-xl">
+                  <Bell className="w-5 h-5" />
+                </Button>
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setShowSearch(true)}
-                  className="text-white hover:bg-white/20 w-9 h-9 rounded-full"
+                  className="text-white hover:bg-white/20 w-10 h-10 rounded-xl"
                 >
-                  <Search className="w-4 h-4" />
+                  <Search className="w-5 h-5" />
                 </Button>
               </div>
             </div>
 
-            {/* Hero Section */}
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/15 rounded-2xl mb-4 backdrop-blur-sm border border-white/30">
-                <span className="text-3xl">🛒</span>
+            {/* Welcome Message */}
+            <div className="text-center mb-8">
+              <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm shadow-2xl border-4 border-white/30">
+                <span className="text-5xl">📱</span>
               </div>
-              <h1 className="text-3xl font-bold text-white mb-2 arabic-text">
-                مرحباً بك في الفهد
+              <h1 className="text-5xl font-bold text-white mb-3 arabic-text drop-shadow-2xl">
+                مرحباً بك في Elfahd App
               </h1>
-              <p className="text-white/90 arabic-text text-sm">
-                اطلب ما تشاء من متاجرك المفضلة
+              <p className="text-white/90 arabic-text text-xl font-medium drop-shadow-lg">
+                تطبيق الفهد - كل ما تحتاجه في مكان واحد
               </p>
             </div>
 
-            {/* Modern Search Bar */}
-            <div 
-              className="bg-white rounded-2xl p-4 shadow-lg mb-4 cursor-pointer hover:shadow-xl transition-shadow"
-              onClick={() => setShowSearch(true)}
-            >
-              <div className="flex items-center gap-3">
-                <Search className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-500 arabic-text flex-1 text-right">ابحث عن منتج، متجر أو صنف...</span>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="grid grid-cols-4 gap-3 mb-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-                <div className="text-2xl mb-1">⚡</div>
-                <span className="text-white text-xs arabic-text">توصيل سريع</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-                <div className="text-2xl mb-1">🎯</div>
-                <span className="text-white text-xs arabic-text">عروض خاصة</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-                <div className="text-2xl mb-1">⭐</div>
-                <span className="text-white text-xs arabic-text">الأكثر طلباً</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-                <div className="text-2xl mb-1">🏪</div>
-                <span className="text-white text-xs arabic-text">متاجر قريبة</span>
+            {/* Search Bar المحدث */}
+            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-5 shadow-2xl border-2 border-white/50">
+              <div className="flex items-center space-x-4">
+                <Search className="w-6 h-6 text-primary" />
+                <input
+                  type="text"
+                  placeholder="ابحث في تطبيق الفهد..."
+                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-lg"
+                />
               </div>
             </div>
           </div>

@@ -5,60 +5,60 @@
 
 @layer base {
   :root {
-    /* Modern Food Delivery App Colors */
-    --background: 248 250 252; /* slate-50 */
-    --foreground: 15 23 42; /* slate-900 */
-    --card: 255 255 255; /* white */
-    --card-foreground: 15 23 42; /* slate-900 */
-    --popover: 255 255 255; /* white */
-    --popover-foreground: 15 23 42; /* slate-900 */
+    /* Beautiful Orange & White Theme */
+    --background: 0 0% 100%; /* pure white */
+    --foreground: 25 25% 15%; /* warm dark brown */
+    --card: 0 0% 100%; /* white */
+    --card-foreground: 25 25% 15%; /* warm dark brown */
+    --popover: 0 0% 100%; /* white */
+    --popover-foreground: 25 25% 15%; /* warm dark brown */
     
-    /* Primary Brand Colors - Food delivery theme */
-    --primary: 239 68 68; /* red-500 - main brand color */
-    --primary-foreground: 255 255 255; /* white */
-    --primary-light: 248 113 113; /* red-400 */
-    --primary-dark: 220 38 38; /* red-600 */
+    /* Primary Brand Colors - Beautiful Orange Theme */
+    --primary: 25 95% 53%; /* vibrant orange */
+    --primary-foreground: 0 0% 100%; /* white */
+    --primary-light: 30 100% 65%; /* lighter orange */
+    --primary-dark: 20 100% 45%; /* darker orange */
     
     /* Secondary Colors */
-    --secondary: 34 197 94; /* green-500 - success/delivery */
-    --secondary-foreground: 255 255 255; /* white */
-    --secondary-light: 74 222 128; /* green-400 */
-    --secondary-dark: 21 128 61; /* green-600 */
+    --secondary: 28 100% 95%; /* very light orange/cream */
+    --secondary-foreground: 25 25% 15%; /* warm dark brown */
+    --secondary-light: 32 100% 97%; /* almost white with orange tint */
+    --secondary-dark: 25 85% 85%; /* light orange */
     
     /* Accent Colors */
-    --accent: 251 146 60; /* orange-400 - special offers */
-    --accent-foreground: 255 255 255; /* white */
-    --accent-light: 253 186 116; /* orange-300 */
-    --accent-dark: 234 88 12; /* orange-600 */
+    --accent: 32 98% 88%; /* soft orange */
+    --accent-foreground: 25 25% 15%; /* warm dark brown */
+    --accent-light: 35 100% 92%; /* very light orange */
+    --accent-dark: 28 90% 80%; /* medium orange */
     
     /* Status Colors */
-    --success: 34 197 94; /* green-500 */
-    --warning: 251 146 60; /* orange-400 */
-    --error: 239 68 68; /* red-500 */
-    --info: 59 130 246; /* blue-500 */
+    --success: 142 71% 45%; /* green for success */
+    --warning: 25 95% 53%; /* orange for warnings */
+    --error: 0 84% 60%; /* red for errors */
+    --info: 25 95% 53%; /* orange for info */
     
     /* Neutral Colors */
-    --muted: 241 245 249; /* slate-100 */
-    --muted-foreground: 100 116 139; /* slate-500 */
-    --border: 226 232 240; /* slate-200 */
-    --input: 241 245 249; /* slate-100 */
-    --ring: 239 68 68; /* red-500 */
-    --radius: 0.75rem; /* 12px - more rounded for modern look */
+    --muted: 28 50% 96%; /* very light orange tint */
+    --muted-foreground: 25 15% 55%; /* medium brown */
+    --border: 28 30% 92%; /* light orange border */
+    --input: 28 30% 92%; /* light orange input */
+    --ring: 25 95% 53%; /* orange focus ring */
+    --radius: 0.75rem; /* rounded corners */
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-dark)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-dark)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--secondary)) 100%);
-    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+    /* Beautiful Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(25 95% 53%), hsl(30 100% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(28 100% 95%), hsl(25 85% 85%));
+    --gradient-accent: linear-gradient(135deg, hsl(32 98% 88%), hsl(28 90% 80%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 95% 53%) 0%, hsl(30 100% 65%) 50%, hsl(32 98% 88%) 100%);
+    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,248,240,0.8));
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
-    --shadow-success: 0 0 20px rgba(34, 197, 94, 0.3);
+    /* Beautiful Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(25 95% 53% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(25 95% 53% / 0.15), 0 2px 4px -2px hsl(25 95% 53% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(25 95% 53% / 0.2), 0 4px 6px -4px hsl(25 95% 53% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(25 95% 53% / 0.25), 0 10px 10px -5px hsl(25 95% 53% / 0.1);
+    --shadow-glow: 0 0 25px hsl(25 95% 53% / 0.4);
+    --shadow-success: 0 0 20px hsl(142 71% 45% / 0.3);
     
     /* Animations */
     --animation-duration: 0.3s;
@@ -66,23 +66,23 @@
   }
 
   .dark {
-    --background: 15 23 42; /* slate-900 */
-    --foreground: 248 250 252; /* slate-50 */
-    --card: 30 41 59; /* slate-800 */
-    --card-foreground: 248 250 252; /* slate-50 */
-    --popover: 30 41 59; /* slate-800 */
-    --popover-foreground: 248 250 252; /* slate-50 */
-    --primary: 248 113 113; /* red-400 */
-    --primary-foreground: 15 23 42; /* slate-900 */
-    --secondary: 74 222 128; /* green-400 */
-    --secondary-foreground: 15 23 42; /* slate-900 */
-    --muted: 51 65 85; /* slate-700 */
-    --muted-foreground: 148 163 184; /* slate-400 */
-    --accent: 253 186 116; /* orange-300 */
-    --accent-foreground: 15 23 42; /* slate-900 */
-    --border: 51 65 85; /* slate-700 */
-    --input: 51 65 85; /* slate-700 */
-    --ring: 248 113 113; /* red-400 */
+    --background: 12 25% 8%; /* dark brown */
+    --foreground: 30 50% 95%; /* light cream */
+    --card: 12 25% 8%; /* dark brown */
+    --card-foreground: 30 50% 95%; /* light cream */
+    --popover: 12 25% 8%; /* dark brown */
+    --popover-foreground: 30 50% 95%; /* light cream */
+    --primary: 25 95% 53%; /* vibrant orange */
+    --primary-foreground: 0 0% 100%; /* white */
+    --secondary: 15 30% 15%; /* dark orange brown */
+    --secondary-foreground: 30 50% 95%; /* light cream */
+    --muted: 15 30% 15%; /* dark orange brown */
+    --muted-foreground: 25 15% 65%; /* medium orange */
+    --accent: 15 30% 15%; /* dark orange brown */
+    --accent-foreground: 30 50% 95%; /* light cream */
+    --border: 15 30% 15%; /* dark orange brown */
+    --input: 15 30% 15%; /* dark orange brown */
+    --ring: 25 95% 53%; /* vibrant orange */
   }
 }
 
@@ -123,19 +123,19 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  /* Food Delivery Button Styles */
+  /* Beautiful Orange Button Styles */
   .delivery-button {
-    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
+    @apply bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
     box-shadow: var(--shadow-glow);
   }
   
   .success-button {
-    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
+    @apply bg-gradient-to-r from-success to-success hover:from-success hover:to-success text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
     box-shadow: var(--shadow-success);
   }
   
   .accent-button {
-    @apply bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
+    @apply bg-gradient-to-r from-primary-light to-primary hover:from-primary hover:to-primary-light text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 arabic-text;
   }
   
   /* Modern Card Styles */
@@ -148,7 +148,7 @@
   }
   
   .category-card {
-    @apply modern-card p-6 text-center hover:bg-gradient-to-br hover:from-red-50 hover:to-orange-50;
+    @apply modern-card p-6 text-center hover:bg-gradient-to-br hover:from-secondary hover:to-accent;
   }
   
   .product-card {
@@ -157,7 +157,7 @@
   
   /* App Header */
   .app-header {
-    @apply bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white p-4 rounded-b-3xl shadow-2xl;
+    @apply bg-gradient-to-r from-primary via-primary-light to-primary-dark text-white p-4 rounded-b-3xl shadow-2xl;
   }
   
   /* Bottom Navigation */
@@ -166,16 +166,16 @@
   }
   
   .nav-item {
-    @apply flex-1 py-3 px-2 text-center transition-all duration-300 hover:bg-red-50 hover:text-red-500 rounded-xl mx-1;
+    @apply flex-1 py-3 px-2 text-center transition-all duration-300 hover:bg-secondary hover:text-primary rounded-xl mx-1;
   }
   
   .nav-item.active {
-    @apply bg-red-500 text-white shadow-lg;
+    @apply bg-primary text-white shadow-lg;
   }
   
   /* Search Bar */
   .search-bar {
-    @apply bg-white rounded-2xl shadow-lg border border-slate-200 p-4 focus-within:border-red-300 focus-within:shadow-xl transition-all duration-300;
+    @apply bg-white rounded-2xl shadow-lg border border-border p-4 focus-within:border-primary focus-within:shadow-xl transition-all duration-300;
   }
   
   /* Status Badges */
@@ -188,7 +188,7 @@
   }
   
   .status-pending {
-    @apply status-badge bg-yellow-100 text-yellow-800;
+    @apply status-badge bg-secondary text-primary;
   }
   
   .status-delivery {
@@ -201,7 +201,7 @@
   }
   
   .quantity-btn {
-    @apply w-8 h-8 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center hover:bg-red-50 hover:text-red-500;
+    @apply w-8 h-8 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center hover:bg-secondary hover:text-primary;
   }
   
   /* Food Item Animations */
@@ -217,7 +217,7 @@
   
   /* Special Effects */
   .glow-effect {
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 20px hsl(25 95% 53% / 0.4);
   }
   
   .bounce-in {

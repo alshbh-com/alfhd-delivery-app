@@ -126,109 +126,91 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory, cart = [] }:
   // Main categories screen
   if (!selectedCategory) {
     return (
-      <div className="min-h-screen">
-        {/* Hero Section with Side Layout */}
-        <div className="relative min-h-screen flex">
-          {/* Left Side - Content */}
-          <div className="flex-1 p-8 pt-4">
-            {/* Welcome Section */}
-            <div className="mb-12">
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="w-16 h-16 rounded-3xl flex items-center justify-center shadow-2xl"
-                     style={{
-                       background: 'linear-gradient(135deg, hsl(24, 95%, 60%) 0%, hsl(28, 85%, 65%) 100%)',
-                     }}>
-                  <span className="text-white text-2xl">🎯</span>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        {/* Header الجديد لـ Elfahd App - تصميم أنيق ومتدرج */}
+        <div className="relative pb-12 pt-16 overflow-hidden"
+             style={{
+               background: 'linear-gradient(135deg, hsl(24, 95%, 60%) 0%, hsl(28, 85%, 65%) 50%, hsl(200, 85%, 55%) 100%)',
+             }}>
+          {/* Animated background elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-white/3 rounded-full blur-3xl"></div>
+          </div>
+          
+          <div className="relative z-10 px-6">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center space-x-4 text-white">
+                <div className="w-14 h-14 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-lg shadow-2xl border border-white/30">
+                  <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-black text-gray-800 mb-2 arabic-text">
-                    أهلاً وسهلاً
-                  </h1>
-                  <p className="text-gray-600 arabic-text text-lg">
-                    اكتشف عالماً من الخيارات المميزة
-                  </p>
+                  <p className="text-white/80 text-sm arabic-text font-medium">التوصيل إلى</p>
+                  <p className="text-white font-bold arabic-text text-lg">الموقع الحالي</p>
                 </div>
               </div>
-
-              {/* Action Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 cursor-pointer"
-                     style={{
-                       background: 'linear-gradient(135deg, #ffffff 0%, #fef7f0 100%)',
-                       border: '2px solid rgba(251, 146, 60, 0.1)'
-                     }}
-                     onClick={() => setShowSearch(true)}>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
-                         style={{
-                           background: 'linear-gradient(135deg, hsl(24, 95%, 60%) 0%, hsl(28, 85%, 65%) 100%)',
-                         }}>
-                      <Search className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800 arabic-text">البحث السريع</h3>
-                      <p className="text-gray-500 text-sm arabic-text">ابحث عن أي شيء تريده</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 cursor-pointer"
-                     style={{
-                       background: 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)',
-                       border: '2px solid rgba(59, 130, 246, 0.1)'
-                     }}>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
-                      <span className="text-white text-lg">🎁</span>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800 arabic-text">العروض المميزة</h3>
-                      <p className="text-gray-500 text-sm arabic-text">اكتشف أفضل العروض</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 cursor-pointer"
-                     style={{
-                       background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
-                       border: '2px solid rgba(34, 197, 94, 0.1)'
-                     }}>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg">
-                      <span className="text-white text-lg">⚡</span>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800 arabic-text">توصيل سريع</h3>
-                      <p className="text-gray-500 text-sm arabic-text">خلال 30 دقيقة</p>
-                    </div>
-                  </div>
-                </div>
+              
+              <div className="flex items-center space-x-3">
+                <Button variant="floating" size="icon" className="text-white bg-white/20 hover:bg-white/30 border-white/30 w-12 h-12 rounded-3xl shadow-2xl">
+                  <Bell className="w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="floating" 
+                  size="icon" 
+                  onClick={() => setShowSearch(true)}
+                  className="text-white bg-white/20 hover:bg-white/30 border-white/30 w-12 h-12 rounded-3xl shadow-2xl"
+                >
+                  <Search className="w-5 h-5" />
+                </Button>
               </div>
             </div>
 
-            {/* Categories Section */}
-            <div>
-              <h2 className="text-2xl font-black text-gray-800 mb-6 arabic-text">تصفح الأقسام</h2>
-              <CategoriesGrid 
-                onCategorySelect={handleCategorySelect}
-                selectedSubCategory={selectedSubCategory}
-              />
+            {/* Welcome Message */}
+            <div className="text-center mb-10">
+              <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-lg shadow-3xl border-4 border-white/30 hover:scale-105 transition-transform duration-500">
+                <span className="text-6xl animate-bounce">📱</span>
+              </div>
+              <h1 className="text-6xl font-black text-white mb-4 arabic-text drop-shadow-2xl leading-tight">
+                مرحباً بك في Elfahd App
+              </h1>
+              <p className="text-white/90 arabic-text text-2xl font-bold drop-shadow-lg">
+                تطبيق الفهد - كل ما تحتاجه في مكان واحد
+              </p>
             </div>
-          </div>
 
-          {/* Right Side - Floating Offers */}
-          <div className="hidden lg:block w-80 p-6">
-            <div className="sticky top-24">
-              <h3 className="text-xl font-bold text-gray-800 mb-4 arabic-text">العروض الحصرية</h3>
-              <OffersCarousel onAddToCart={handleAddToCartWithToast} />
+            {/* Search Bar المحدث */}
+            <div className="bg-white/98 backdrop-blur-2xl rounded-3xl p-6 shadow-3xl border border-white/50 hover:shadow-4xl transition-all duration-500 hover:scale-[1.02]"
+                 style={{
+                   background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(254,247,240,0.98) 100%)',
+                 }}>
+              <div className="flex items-center space-x-5">
+                <div className="p-3 rounded-2xl bg-primary/10">
+                  <Search className="w-6 h-6 text-primary" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="ابحث في تطبيق الفهد..."
+                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-xl font-medium"
+                />
+                <Button variant="gradient" size="sm" className="rounded-2xl shadow-xl">
+                  بحث
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile Offers Section */}
-        <div className="lg:hidden px-8 pb-8">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 arabic-text">العروض الحصرية</h3>
+        {/* Content */}
+        <div className="relative -mt-6 z-10">
           <OffersCarousel onAddToCart={handleAddToCartWithToast} />
+          <div className="p-4 space-y-6">
+            <CategoriesGrid 
+              onCategorySelect={handleCategorySelect}
+              selectedSubCategory={selectedSubCategory}
+            />
+          </div>
         </div>
       </div>
     );

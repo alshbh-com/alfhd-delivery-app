@@ -1,12 +1,10 @@
 
 import { useState } from 'react';
-import { TopNavigation } from './TopNavigation';
-import { FloatingActionButton } from './FloatingActionButton';
+import { BottomNavigation } from './BottomNavigation';
 import { HomeScreen } from './screens/HomeScreen';
 import { CartScreen } from './screens/CartScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
-import { SearchScreen } from './screens/SearchScreen';
 import { WelcomeScreen } from './WelcomeScreen';
 
 export const SimpleApp = () => {
@@ -63,13 +61,6 @@ export const SimpleApp = () => {
             cart={cart}
           />
         );
-      case 'search':
-        return (
-          <SearchScreen 
-            onAddToCart={addToCart}
-            onBack={() => setActiveTab('home')}
-          />
-        );
       case 'cart':
         return (
           <CartScreen
@@ -95,20 +86,13 @@ export const SimpleApp = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      <TopNavigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        cartItemCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
-      />
-      <div className="pt-20 pb-4">
+    <div className="min-h-screen bg-white">
+      <div className="pb-20">
         {renderScreen()}
       </div>
-      
-      {/* Floating Action Button */}
-      <FloatingActionButton 
-        onCartClick={() => setActiveTab('cart')}
-        onSearchClick={() => setActiveTab('search')}
+      <BottomNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
         cartItemCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
       />
     </div>

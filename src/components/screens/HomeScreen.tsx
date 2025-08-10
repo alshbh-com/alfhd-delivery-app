@@ -127,74 +127,58 @@ export const HomeScreen = memo(({ onAddToCart, selectedSubCategory, cart = [] }:
   if (!selectedCategory) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        {/* Header الجديد لـ Elfahd App - تصميم أنيق ومتدرج */}
-        <div className="relative pb-12 pt-16 overflow-hidden"
+        {/* Header مصغر وأنيق */}
+        <div className="relative pb-4 pt-8 overflow-hidden"
              style={{
                background: 'linear-gradient(135deg, hsl(24, 95%, 60%) 0%, hsl(28, 85%, 65%) 50%, hsl(200, 85%, 55%) 100%)',
-             }}>
-          {/* Animated background elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-white/3 rounded-full blur-3xl"></div>
-          </div>
-          
-          <div className="relative z-10 px-6">
-            {/* Top Bar */}
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center space-x-4 text-white">
-                <div className="w-14 h-14 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-lg shadow-2xl border border-white/30">
-                  <MapPin className="w-6 h-6" />
+             }}>          
+          <div className="relative z-10 px-4">
+            {/* Top Bar مصغر */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3 text-white">
+                <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-lg">
+                  <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-sm arabic-text font-medium">التوصيل إلى</p>
-                  <p className="text-white font-bold arabic-text text-lg">الموقع الحالي</p>
+                  <p className="text-white/80 text-xs arabic-text">التوصيل إلى</p>
+                  <p className="text-white font-bold arabic-text text-sm">الموقع الحالي</p>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-3">
-                <Button variant="floating" size="icon" className="text-white bg-white/20 hover:bg-white/30 border-white/30 w-12 h-12 rounded-3xl shadow-2xl">
-                  <Bell className="w-5 h-5" />
+              <div className="flex items-center space-x-2">
+                <Button variant="floating" size="icon" className="text-white bg-white/20 hover:bg-white/30 border-white/30 w-8 h-8 rounded-xl">
+                  <Bell className="w-4 h-4" />
                 </Button>
                 <Button 
                   variant="floating" 
                   size="icon" 
                   onClick={() => setShowSearch(true)}
-                  className="text-white bg-white/20 hover:bg-white/30 border-white/30 w-12 h-12 rounded-3xl shadow-2xl"
+                  className="text-white bg-white/20 hover:bg-white/30 border-white/30 w-8 h-8 rounded-xl"
                 >
-                  <Search className="w-5 h-5" />
+                  <Search className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
-            {/* Welcome Message */}
-            <div className="text-center mb-10">
-              <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-lg shadow-3xl border-4 border-white/30 hover:scale-105 transition-transform duration-500">
-                <span className="text-6xl animate-bounce">📱</span>
-              </div>
-              <h1 className="text-6xl font-black text-white mb-4 arabic-text drop-shadow-2xl leading-tight">
+            {/* Welcome Message مصغر */}
+            <div className="text-center mb-4">
+              <h1 className="text-2xl font-bold text-white mb-2 arabic-text">
                 مرحباً بك في Elfahd App
               </h1>
-              <p className="text-white/90 arabic-text text-2xl font-bold drop-shadow-lg">
-                تطبيق الفهد - كل ما تحتاجه في مكان واحد
-              </p>
             </div>
 
-            {/* Search Bar المحدث */}
-            <div className="bg-white/98 backdrop-blur-2xl rounded-3xl p-6 shadow-3xl border border-white/50 hover:shadow-4xl transition-all duration-500 hover:scale-[1.02]"
-                 style={{
-                   background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(254,247,240,0.98) 100%)',
-                 }}>
-              <div className="flex items-center space-x-5">
-                <div className="p-3 rounded-2xl bg-primary/10">
-                  <Search className="w-6 h-6 text-primary" />
+            {/* Search Bar مصغر */}
+            <div className="bg-white/98 backdrop-blur-2xl rounded-2xl p-3 shadow-lg border border-white/30">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 rounded-xl bg-primary/10">
+                  <Search className="w-4 h-4 text-primary" />
                 </div>
                 <input
                   type="text"
                   placeholder="ابحث في تطبيق الفهد..."
-                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-xl font-medium"
+                  className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 arabic-text text-sm"
                 />
-                <Button variant="gradient" size="sm" className="rounded-2xl shadow-xl">
+                <Button variant="gradient" size="sm" className="rounded-xl text-xs px-3 py-1">
                   بحث
                 </Button>
               </div>

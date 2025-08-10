@@ -27,8 +27,8 @@ export const BottomNavigation = ({ activeTab, onTabChange, cartItemCount }: Bott
            }}>
       </div>
       
-      {/* Content */}
-      <div className="relative px-4 py-3">
+      {/* Content مصغر */}
+      <div className="relative px-2 py-1">
         <div className="flex justify-around items-center">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -38,42 +38,43 @@ export const BottomNavigation = ({ activeTab, onTabChange, cartItemCount }: Bott
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`flex flex-col items-center py-3 px-4 relative transition-all duration-500 ${
+                className={`flex flex-col items-center py-1 px-2 relative transition-all duration-300 ${
                   isActive
-                    ? 'transform scale-110'
-                    : 'hover:scale-105'
+                    ? 'transform scale-105'
+                    : 'hover:scale-100'
                 }`}
               >
-                {/* Active Background */}
+                {/* Active Background مصغر */}
                 {isActive && (
-                  <div className="absolute inset-0 rounded-3xl shadow-xl transition-all duration-500"
+                  <div className="absolute inset-0 rounded-2xl shadow-lg transition-all duration-300"
                        style={{
                          background: 'linear-gradient(135deg, hsl(24, 95%, 60%) 0%, hsl(28, 85%, 65%) 100%)',
                        }}>
                   </div>
                 )}
                 
-                {/* Icon Container */}
-                <div className={`relative p-3 rounded-3xl transition-all duration-500 ${
+                {/* Icon Container مصغر */}
+                <div className={`relative p-2 rounded-2xl transition-all duration-300 ${
                   isActive 
-                    ? 'text-white transform scale-110'
-                    : 'text-gray-400 hover:text-primary hover:bg-primary/5'
+                    ? 'text-white'
+                    : 'text-gray-400 hover:text-primary'
                 }`}>
-                  <Icon className="w-6 h-6" />
+                  <Icon className="w-4 h-4" />
                   
-                  {/* Cart Badge */}
+                  {/* Cart Badge مصغر */}
                   {tab.id === 'cart' && cartItemCount > 0 && (
-                    <div className="absolute -top-1 -right-1 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-2xl animate-pulse border-2 border-white"
+                    <div className="absolute -top-1 -right-1 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold shadow-lg animate-pulse border border-white"
                          style={{
                            background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                           fontSize: '8px'
                          }}>
                       {cartItemCount > 9 ? '9+' : cartItemCount}
                     </div>
                   )}
                 </div>
                 
-                {/* Label */}
-                <span className={`text-xs font-bold mt-2 arabic-text transition-all duration-500 ${
+                {/* Label مصغر */}
+                <span className={`text-xs font-medium mt-1 arabic-text transition-all duration-300 ${
                   isActive 
                     ? 'text-white'
                     : 'text-gray-500'

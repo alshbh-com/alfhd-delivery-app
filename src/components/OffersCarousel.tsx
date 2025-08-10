@@ -46,15 +46,15 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
   if (offers.length === 0) return null;
 
   return (
-    <div className="relative p-4">
-      <div className="overflow-hidden rounded-3xl shadow-2xl">
+    <div className="relative px-3 py-2">
+      <div className="overflow-hidden rounded-2xl shadow-lg">
         <div 
           className="flex transition-transform duration-700 ease-out"
           style={{ transform: `translateX(-${currentOffer * 100}%)` }}
         >
           {offers.map((offer, index) => (
             <div key={offer.id} className="w-full flex-shrink-0">
-              <Card className="border-0 overflow-hidden shadow-2xl">
+              <Card className="border-0 overflow-hidden shadow-lg">
                 <CardContent className="p-0 relative">
                   {/* Dynamic Background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500"></div>
@@ -62,41 +62,40 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
                   
                   {/* Animated Background Elements */}
                   <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-4 right-4 w-24 h-24 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
-                    <div className="absolute bottom-4 left-4 w-16 h-16 bg-white/10 rounded-full blur-xl animate-bounce"></div>
-                    <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-white/20 rounded-full animate-ping"></div>
+                    <div className="absolute top-2 right-2 w-12 h-12 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+                    <div className="absolute bottom-2 left-2 w-8 h-8 bg-white/10 rounded-full blur-lg animate-bounce"></div>
                   </div>
                   
-                  {/* Content */}
-                  <div className="relative z-10 p-8 text-white">
-                    <div className="flex items-start justify-between mb-6">
+                  {/* Content مصغر */}
+                  <div className="relative z-10 p-4 text-white">
+                    <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-4">
-                          <Badge className="bg-white/25 text-white backdrop-blur-sm border-white/30 arabic-text px-3 py-1.5">
-                            <Gift className="w-4 h-4 mr-1" />
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Badge className="bg-white/25 text-white backdrop-blur-sm border-white/30 arabic-text px-2 py-1 text-xs">
+                            <Gift className="w-3 h-3 mr-1" />
                             عرض خاص
                           </Badge>
-                          <Badge className="bg-yellow-400/90 text-yellow-900 backdrop-blur-sm border-0 arabic-text px-3 py-1.5 font-bold">
-                            <Flame className="w-4 h-4 mr-1" />
+                          <Badge className="bg-yellow-400/90 text-yellow-900 backdrop-blur-sm border-0 arabic-text px-2 py-1 text-xs font-bold">
+                            <Flame className="w-3 h-3 mr-1" />
                             جديد
                           </Badge>
                         </div>
                         
-                        <h3 className="text-3xl font-bold mb-3 arabic-text drop-shadow-xl leading-tight">
+                        <h3 className="text-lg font-bold mb-2 arabic-text drop-shadow-lg leading-tight">
                           {offer.title}
                         </h3>
-                        <p className="text-white/95 mb-6 arabic-text leading-relaxed text-lg drop-shadow-lg">
+                        <p className="text-white/95 mb-3 arabic-text leading-relaxed text-sm drop-shadow-md">
                           {offer.description}
                         </p>
                         
                         {offer.discount_percentage && (
-                          <div className="flex items-center space-x-3 mb-4">
-                            <div className="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-2xl font-bold text-lg shadow-xl">
+                          <div className="flex items-center space-x-2 mb-3">
+                            <div className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-xl font-bold text-sm shadow-lg">
                               خصم {offer.discount_percentage}%
                             </div>
                             <div className="flex items-center space-x-1 text-white/90">
-                              <Zap className="w-5 h-5 text-yellow-300" />
-                              <span className="font-medium arabic-text">وفر الآن</span>
+                              <Zap className="w-4 h-4 text-yellow-300" />
+                              <span className="font-medium arabic-text text-sm">وفر الآن</span>
                             </div>
                           </div>
                         )}
@@ -134,14 +133,14 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
                             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
                             window.open(whatsappUrl, '_blank');
                           }}
-                          className="bg-white text-orange-600 hover:bg-white/90 font-bold px-6 py-3 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 arabic-text"
+                          className="bg-white text-orange-600 hover:bg-white/90 font-bold px-4 py-2 rounded-xl shadow-lg hover:scale-105 transition-all duration-300 arabic-text text-sm"
                         >
                           اطلب الآن
                         </Button>
                       </div>
                       
                       {offer.image_url && (
-                        <div className="w-32 h-32 rounded-3xl overflow-hidden ml-6 shadow-2xl border-4 border-white/50 backdrop-blur-sm">
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden ml-3 shadow-lg border-2 border-white/50 backdrop-blur-sm">
                           <img
                             src={offer.image_url}
                             alt={offer.title}
@@ -152,14 +151,14 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 text-white/90">
-                        <Clock className="w-5 h-5" />
-                        <span className="arabic-text font-medium">عرض محدود الوقت</span>
+                      <div className="flex items-center space-x-2 text-white/90">
+                        <Clock className="w-4 h-4" />
+                        <span className="arabic-text font-medium text-sm">عرض محدود الوقت</span>
                       </div>
                       
-                      <div className="flex items-center space-x-2">
-                        <Star className="w-5 h-5 text-yellow-300 fill-current" />
-                        <span className="font-bold">عرض مميز</span>
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 text-yellow-300 fill-current" />
+                        <span className="font-bold text-sm">عرض مميز</span>
                       </div>
                     </div>
                   </div>
@@ -170,17 +169,17 @@ export const OffersCarousel = ({ onAddToCart }: OffersCarouselProps) => {
         </div>
       </div>
       
-      {/* Enhanced Indicators */}
+      {/* Enhanced Indicators مصغر */}
       {offers.length > 1 && (
-        <div className="flex justify-center mt-6 space-x-3">
+        <div className="flex justify-center mt-3 space-x-2">
           {offers.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentOffer(index)}
-              className={`transition-all duration-500 rounded-full shadow-lg ${
+              className={`transition-all duration-500 rounded-full shadow-md ${
                 index === currentOffer 
-                  ? 'bg-gradient-to-r from-orange-500 to-red-500 w-12 h-4 shadow-orange-500/50' 
-                  : 'bg-white/70 hover:bg-white/90 w-4 h-4 shadow-gray-300/50'
+                  ? 'bg-gradient-to-r from-orange-500 to-red-500 w-8 h-3 shadow-orange-500/50' 
+                  : 'bg-white/70 hover:bg-white/90 w-3 h-3 shadow-gray-300/50'
               }`}
             />
           ))}
